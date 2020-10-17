@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UniAtHome.DAL;
+using UniAtHome.WebAPI.Extensions;
 
 namespace UniAtHome.WebAPI
 {
@@ -18,6 +21,13 @@ namespace UniAtHome.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<UniAtHomeDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentityConfiguration();
+            services.RegisterIoC();
+
             services.AddControllers();
         }
 
@@ -33,6 +43,7 @@ namespace UniAtHome.WebAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
