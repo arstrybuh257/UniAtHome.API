@@ -38,7 +38,7 @@ namespace UniAtHome.DAL.Migrations
                 name: "Courses",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Added = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: false),
@@ -61,11 +61,11 @@ namespace UniAtHome.DAL.Migrations
                 name: "Lessons",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Added = table.Column<DateTime>(nullable: false),
                     Modified = table.Column<DateTime>(nullable: false),
-                    CourseId = table.Column<long>(nullable: false)
+                    CourseId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

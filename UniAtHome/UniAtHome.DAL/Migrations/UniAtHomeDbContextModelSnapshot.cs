@@ -3,6 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using UniAtHome.DAL;
 
 namespace UniAtHome.DAL.Migrations
 {
@@ -19,9 +21,9 @@ namespace UniAtHome.DAL.Migrations
 
             modelBuilder.Entity("UniAtHome.DAL.Entities.Course", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Added")
@@ -53,16 +55,16 @@ namespace UniAtHome.DAL.Migrations
 
             modelBuilder.Entity("UniAtHome.DAL.Entities.Lesson", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Added")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("CourseId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Modified")
                         .HasColumnType("datetime2");
