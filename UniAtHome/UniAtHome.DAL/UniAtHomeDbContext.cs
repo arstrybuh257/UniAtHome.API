@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.DAL
 {
-    public class UniAtHomeDbContext : DbContext
+    public class UniAtHomeDbContext : IdentityDbContext<User>
     {
         public UniAtHomeDbContext(DbContextOptions<UniAtHomeDbContext> options) : base(options)
         {
@@ -14,7 +15,7 @@ namespace UniAtHome.DAL
 
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,9 +40,9 @@ namespace UniAtHome.DAL
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>().HasKey(u => u.Id);
-            modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(30);
-            modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired().HasMaxLength(30);
+            //modelBuilder.Entity<User>().HasKey(u => u.Id);
+            //modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(30);
+            //modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired().HasMaxLength(30);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
