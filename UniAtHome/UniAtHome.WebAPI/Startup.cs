@@ -28,6 +28,8 @@ namespace UniAtHome.WebAPI
             services.AddIdentityConfiguration();
             services.RegisterIoC();
 
+            services.SwaggerConfiguration();
+
             services.AddControllers();
         }
 
@@ -45,6 +47,12 @@ namespace UniAtHome.WebAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
