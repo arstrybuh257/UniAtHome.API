@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
@@ -12,50 +16,87 @@ namespace UniAtHome.WebAPI.Extensions
 {
     public sealed class AuthTokenValidationOptions : TokenValidationParameters
     {
-        public int LifetimeMinutes => 60;
+        private IConfiguration configuration;
 
-        public AuthTokenValidationOptions()
+        public int LifetimeMinutes { get; set; }
+
+        public AuthTokenValidationOptions(IConfiguration configuration)
         {
+            this.configuration = configuration;
+            var fromAppsettings = GetAuthTokenSettings();
+
+            ValidateLifetime = fromAppsettings.ValidateLifetime;
+            this.LifetimeMinutes = fromAppsettings.TokenLifetimeMinutes;
+
             ValidateIssuer = true;
-            ValidIssuer = "UniAtHomeBackEnd";
+            ValidIssuer = fromAppsettings.ValidIssuer;
 
             ValidateAudience = true;
-            ValidAudience = "UniAtHomeFrontEnd";
+            ValidAudience = fromAppsettings.ValidAudience;
 
-            ValidateLifetime = true;
-
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetSecretKey()));
             ValidateIssuerSigningKey = true;
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.ASCII.GetBytes(fromAppsettings.SigningKey));
         }
 
-        private static string GetSecretKey()
+        private AuthTokenSettings GetAuthTokenSettings()
         {
-            return "here must be really strong secret key";
+            var tokenOptionsFromAppsettings = new AuthTokenSettings();
+            configuration.Bind("AuthenticationToken", tokenOptionsFromAppsettings);
+            return tokenOptionsFromAppsettings;
+        }
+
+        private class AuthTokenSettings
+        {
+            public string ValidIssuer { get; set; }
+
+            public string ValidAudience { get; set; }
+
+            public string SigningKey { get; set; }
+
+            public bool ValidateLifetime { get; set; }
+
+            public int TokenLifetimeMinutes { get; set; }
         }
     }
 
     public static class StartupExtensions
     {
+
+        // TODO: i'll use it
+        public static IServiceCollection AddJwtTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.RequireHttpsMetadata = true;
+            //        options.TokenValidationParameters = new AuthTokenValidationOptions(configuration);
+            //    });
+            return services;
+        }
+
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
-            //Please, configure all required dependencies here (repositories, services)
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    // TODO: change to true when in production mode
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new AuthTokenValidationOptions();
-                });
-
+            
             return services;
         }
 
         public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services)
         {
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = new AuthTokenValidationOptions(Configuration); // <---- try to get it
+            });
+
             services.AddIdentity<User, IdentityRole>(
                     config =>
                     {
-                        config.User.RequireUniqueEmail = true;
+                        // Our UserNames = Emails. When registering new user with already registered email
+                        // there will be two unique violations unless emails ain't requiered to be unique.
+                        config.User.RequireUniqueEmail = false;
                         config.Password.RequireNonAlphanumeric = false;
                         config.Password.RequireDigit = true;
                     })

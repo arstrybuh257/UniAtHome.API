@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections;
@@ -21,36 +22,32 @@ namespace UniAtHome.WebAPI.Controllers
     {
         private readonly UserManager<User> userManager;
 
-        private readonly SignInManager<User> signInManager;
+        private readonly IConfiguration configuration;
 
-        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public UsersController(UserManager<User> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
+            this.configuration = configuration;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<object> Register([FromBody] RegistrationRequest registerModel)
         {
-            if (ModelState.IsValid)
+            var user = new User
             {
-                var user = new User
-                {
-                    UserName = $"{registerModel.FirstName}{registerModel.LastName}",
-                    FirstName = registerModel.FirstName,
-                    LastName = registerModel.LastName,
-                    Email = registerModel.Email
-                };
-                var registerResult = await userManager.CreateAsync(user, registerModel.Password);
-                if (registerResult.Succeeded)
-                {
-                    return Ok("User is successfully registered!");
-                }
-
-                return GetErrorOfNotSucceededRequest(registerResult);
+                UserName = registerModel.Email,
+                FirstName = registerModel.FirstName,
+                LastName = registerModel.LastName,
+                Email = registerModel.Email
+            };
+            var registerResult = await userManager.CreateAsync(user, registerModel.Password);
+            if (registerResult.Succeeded)
+            {
+                return Ok("User is successfully registered!");
             }
-            return BadRequest("Not all values are present!");
+
+            return GetErrorOfNotSucceededRequest(registerResult);
         }
 
         private ObjectResult GetErrorOfNotSucceededRequest(IdentityResult registerResult)
@@ -77,7 +74,7 @@ namespace UniAtHome.WebAPI.Controllers
             }
 
             var now = DateTime.UtcNow;
-            var authOptions = new AuthTokenValidationOptions();
+            var authOptions = new AuthTokenValidationOptions(configuration);
             var jwt = new JwtSecurityToken(
                     issuer: authOptions.ValidIssuer,
                     audience: authOptions.ValidAudience,

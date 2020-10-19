@@ -15,7 +15,6 @@ namespace UniAtHome.DAL
 
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
-        //public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,10 +38,6 @@ namespace UniAtHome.DAL
                 .HasForeignKey(l => l.CourseId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<User>().HasKey(u => u.Id);
-            //modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(30);
-            //modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired().HasMaxLength(30);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

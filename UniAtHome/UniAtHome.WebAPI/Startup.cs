@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,8 @@ namespace UniAtHome.WebAPI
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            // i'll use it
+            //services.AddJwtTokenAuthentication(Configuration);
 
             services.AddIdentityConfiguration();
             services.RegisterIoC();
