@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
 
@@ -21,6 +23,41 @@ namespace UniAtHome.WebAPI.Extensions
                         //Please, add identity configuration here
                     })
                 .AddEntityFrameworkStores<UniAtHomeDbContext>();
+            return services;
+        }
+
+        public static IServiceCollection SwaggerConfiguration(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(
+                options =>
+                {
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "UniAtHome.API", Version = "v1" });
+
+                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                    {
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer",
+                        BearerFormat = "JWT",
+                        In = ParameterLocation.Header,
+                        Description = "JWT Authorization header using the Bearer scheme."
+                    });
+
+                    var securityScheme = new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Id = "Bearer",
+                            Type = ReferenceType.SecurityScheme
+                        }
+                    };
+                    var requirements = new OpenApiSecurityRequirement
+                    {
+                        {securityScheme, new List<string>()}
+                    };
+                    options.AddSecurityRequirement(requirements);
+                }
+            );
             return services;
         }
     }
