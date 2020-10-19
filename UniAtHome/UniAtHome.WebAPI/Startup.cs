@@ -27,8 +27,7 @@ namespace UniAtHome.WebAPI
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            // i'll use it
-            //services.AddJwtTokenAuthentication(Configuration);
+            services.AddJwtTokenAuthentication(Configuration);
 
             services.AddIdentityConfiguration();
             services.RegisterIoC();

@@ -62,16 +62,14 @@ namespace UniAtHome.WebAPI.Extensions
 
     public static class StartupExtensions
     {
-
-        // TODO: i'll use it
         public static IServiceCollection AddJwtTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.RequireHttpsMetadata = true;
-            //        options.TokenValidationParameters = new AuthTokenValidationOptions(configuration);
-            //    });
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = true;
+                    options.TokenValidationParameters = new AuthTokenValidationOptions(configuration);
+                });
             return services;
         }
 
@@ -83,14 +81,6 @@ namespace UniAtHome.WebAPI.Extensions
 
         public static IServiceCollection AddIdentityConfiguration(this IServiceCollection services)
         {
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = true;
-                options.TokenValidationParameters = new AuthTokenValidationOptions(Configuration); // <---- try to get it
-            });
-
             services.AddIdentity<User, IdentityRole>(
                     config =>
                     {
