@@ -1,18 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
-using UniAtHome.WebAPI.Extensions;
-using UniAtHome.WebAPI.Models;
+using UniAtHome.WebAPI.Models.UsersRequests;
 
 namespace UniAtHome.WebAPI.Controllers
 {
@@ -22,12 +17,12 @@ namespace UniAtHome.WebAPI.Controllers
     {
         private readonly UserManager<User> userManager;
 
-        private readonly IConfiguration configuration;
+        private readonly IAuthTokenGenerator tokenGenerator;
 
-        public UsersController(UserManager<User> userManager, IConfiguration configuration)
+        public UsersController(UserManager<User> userManager, IAuthTokenGenerator tokenGenerator)
         {
             this.userManager = userManager;
-            this.configuration = configuration;
+            this.tokenGenerator = tokenGenerator;
         }
 
         [AllowAnonymous]
@@ -70,27 +65,11 @@ namespace UniAtHome.WebAPI.Controllers
             var identity = await GetIdentity(loginModel);
             if (identity == null)
             {
-                return new { error = "Either email or password is incorrect." };
+                return BadRequest("Either email or password is incorrect.");
             }
 
-            var now = DateTime.UtcNow;
-            var authOptions = new AuthTokenValidationOptions(configuration);
-            var jwt = new JwtSecurityToken(
-                    issuer: authOptions.ValidIssuer,
-                    audience: authOptions.ValidAudience,
-                    notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(authOptions.LifetimeMinutes)),
-                    signingCredentials: new SigningCredentials(authOptions.IssuerSigningKey, SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            var response = new
-            {
-                access_token = encodedJwt,
-                username = identity.Name
-            };
-
-            return response;
+            var accessToken = tokenGenerator.GenerateTokenForClaims(identity.Claims);
+            return new { AccessToken = accessToken };
         }
 
         private async Task<ClaimsIdentity> GetIdentity(LoginRequest loginModel)
