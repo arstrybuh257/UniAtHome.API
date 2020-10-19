@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
@@ -87,6 +88,13 @@ namespace UniAtHome.WebAPI.Controllers
             }
 
             return null;
+        }
+
+        [NoGuest]
+        [HttpGet("check")]
+        public ActionResult<string> CheckAuthorization()
+        {
+            return Ok();
         }
     }
 }

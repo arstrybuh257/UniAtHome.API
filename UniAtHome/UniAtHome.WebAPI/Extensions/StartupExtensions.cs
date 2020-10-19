@@ -11,6 +11,7 @@ using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.WebAPI.Extensions
 {
+
     public static class StartupExtensions
     {
         public static IServiceCollection AddJwtTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
