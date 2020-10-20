@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UniAtHome.WebAPI.Models.UsersRequests
+namespace UniAtHome.BLL.DTOs.UserRequests
 {
     public sealed class RegistrationRequest
     {

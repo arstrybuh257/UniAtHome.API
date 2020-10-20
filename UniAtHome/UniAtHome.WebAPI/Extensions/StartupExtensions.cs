@@ -8,6 +8,7 @@ using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Services;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.WebAPI.Extensions
 {
@@ -36,6 +37,12 @@ namespace UniAtHome.WebAPI.Extensions
 
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
+            services.AddTransient(services => new UsersRepository(
+                userManager: services.GetRequiredService<UserManager<User>>()));
+
+            services.AddTransient<IAuthServiceAsync>(services => new AuthServiceAsync(
+                    usersRepository: services.GetRequiredService<UsersRepository>(),
+                    tokenGenerator: services.GetRequiredService<IAuthTokenGenerator>()));
 
             return services;
         }
