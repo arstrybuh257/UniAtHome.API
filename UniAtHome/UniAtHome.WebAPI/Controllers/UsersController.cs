@@ -40,6 +40,7 @@ namespace UniAtHome.WebAPI.Controllers
             var registerResult = await userManager.CreateAsync(user, registerModel.Password);
             if (registerResult.Succeeded)
             {
+                await userManager.AddToRoleAsync(user, registerModel.Role);
                 return Ok("User is successfully registered!");
             }
 
@@ -76,14 +77,18 @@ namespace UniAtHome.WebAPI.Controllers
         private async Task<ClaimsIdentity> GetIdentity(LoginRequest loginModel)
         {
             User user = await userManager.FindByEmailAsync(loginModel.Email);
-            if (user != null)
+            if (user != null) 
             {
                 bool passwordIsCorrect = await userManager.CheckPasswordAsync(user, loginModel.Password);
+                var userRoles = await userManager.GetRolesAsync(user);
                 if (passwordIsCorrect)
                 {
-                    var userClaims = await userManager.GetClaimsAsync(user);
-                    userClaims.Add(new Claim("UserId<==", user.Id));
-                    return new ClaimsIdentity(userClaims, "Token");
+                    var userClaims = new[]
+                    {
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
+                    };
+                    return new ClaimsIdentity(userClaims, JwtBearerDefaults.AuthenticationScheme, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
                 }
             }
 
@@ -93,6 +98,13 @@ namespace UniAtHome.WebAPI.Controllers
         [Authorize]
         [HttpGet("check")]
         public ActionResult<string> CheckAuthorization()
+        {
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public ActionResult<string> CheckAdmin()
         {
             return Ok();
         }
