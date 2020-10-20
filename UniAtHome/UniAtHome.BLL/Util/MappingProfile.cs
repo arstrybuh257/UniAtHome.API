@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AutoMapper;
+using UniAtHome.BLL.DTOs;
+using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.BLL.Util
 {
-    class MappingProfile
+    public class MappingProfile: Profile
     {
+        public MappingProfile()
+        {
+            CreateMap<Course, CourseDTO>();
+            CreateMap<CourseDTO, Course>();
+        }
     }
 }
