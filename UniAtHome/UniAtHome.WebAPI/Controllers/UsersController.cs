@@ -90,7 +90,7 @@ namespace UniAtHome.WebAPI.Controllers
             return null;
         }
 
-        [NoGuest]
+        [Authorize]
         [HttpGet("check")]
         public ActionResult<string> CheckAuthorization()
         {

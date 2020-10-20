@@ -24,10 +24,11 @@ namespace UniAtHome.WebAPI
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddJwtTokenAuthentication(Configuration);
 
             services.AddIdentityConfiguration();
             services.RegisterIoC();
+
+            services.AddJwtTokenAuthentication(Configuration);
 
             services.SwaggerConfiguration();
 

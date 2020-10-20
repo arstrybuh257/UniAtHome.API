@@ -19,12 +19,18 @@ namespace UniAtHome.WebAPI.Extensions
             var tokenProvider = new JwtTokenGenerator(configuration);
             services
                 .AddSingleton<IAuthTokenGenerator>(tokenProvider)
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+                .AddAuthentication(options =>
                 {
-                    options.RequireHttpsMetadata = true;
-                    options.TokenValidationParameters = tokenProvider.TokenValidationParameters;
-                });
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(
+                    authenticationScheme: JwtBearerDefaults.AuthenticationScheme,
+                    configureOptions: options =>
+                    {
+                        options.RequireHttpsMetadata = true;
+                        options.TokenValidationParameters = tokenProvider.TokenValidationParameters;
+                    });
             return services;
         }
 
