@@ -5,7 +5,7 @@ namespace UniAtHome.BLL.Interfaces
 {
     public interface ICourseService
     {
-        CourseDTO GetCourseByIdAsync(int id);
+        Task<CourseDTO> GetCourseByIdAsync(int id);
 
         Task AddCourseAsync(CourseDTO course);
     }

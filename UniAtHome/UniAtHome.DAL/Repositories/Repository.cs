@@ -5,7 +5,7 @@ using UniAtHome.DAL.Interfaces;
 
 namespace UniAtHome.DAL.Repositories
 {
-    public class Repository : IRepository<BaseEntity> 
+    public class Repository<T> : IRepository<T> where T: BaseEntity
     {
         protected readonly DbContext context;
 
@@ -14,14 +14,14 @@ namespace UniAtHome.DAL.Repositories
             this.context = context;
         }
 
-        public async Task<BaseEntity> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
-            return await context.Set<BaseEntity>().FindAsync(id);
+            return await context.Set<T>().FindAsync(id);
         }
 
-        public async Task AddAsync(BaseEntity item)
+        public async Task AddAsync(T item)
         {
-            await context.Set<BaseEntity>().AddAsync(item);
+            await context.Set<T>().AddAsync(item);
         }
     }
 }
