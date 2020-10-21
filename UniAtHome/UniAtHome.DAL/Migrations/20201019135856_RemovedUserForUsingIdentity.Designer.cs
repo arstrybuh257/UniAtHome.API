@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniAtHome.DAL;
 
 namespace UniAtHome.DAL.Migrations
 {
     [DbContext(typeof(UniAtHomeDbContext))]
-    partial class UniAtHomeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201019135856_RemovedUserForUsingIdentity")]
+    partial class RemovedUserForUsingIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
