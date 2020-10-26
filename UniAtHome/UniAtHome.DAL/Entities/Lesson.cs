@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 
 namespace UniAtHome.DAL.Entities
 {
     public class Lesson : BaseAuditableEntity
     {
-        public int CourseId { get; set; }
-
-        public Course Course { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public List<Timetable> Timetables { get; set; }
     }
 }
