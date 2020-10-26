@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UserRequests;
+using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
 
 namespace UniAtHome.WebAPI.Controllers
@@ -20,27 +19,54 @@ namespace UniAtHome.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<object> Register([FromBody] RegistrationRequest registerModel)
+        public async Task<ActionResult> Register([FromBody] RegistrationRequest request)
         {
-            var errors = await authService.TryRegisterAndReturnErrorsAsync(registerModel);
-            if (!errors.Any())
+            var response = await authService.RegisterAsync(request);
+            if (!response.Success)
             {
-                return Ok();
+                return BadRequest(response.Errors);
             }
-            return BadRequest(errors);
+
+            return Ok(response);
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<object> Login([FromBody] LoginRequest loginModel)
+        public async Task<ObjectResult> Login([FromBody] LoginRequest request)
         {
-            var token = await authService.GetAuthTokenAsync(loginModel);
-            if (token == null)
+            var response = await authService.LoginAsync(request);
+            if (!response.Success)
             {
-                return BadRequest("Either email or password is incorrect.");
+                return BadRequest(response.Errors);
             }
 
-            return token;
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<ObjectResult> Refresh([FromBody] TokenRefreshRequest request)
+        {
+            var response = await authService.RefreshTokenAsync(request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Errors);
+            }
+
+            return Ok(response);
+        }
+
+        [Authorize]
+        [HttpPost("revoke")]
+        public async Task<ObjectResult> Revoke([FromBody] TokenRevokeRequest request)
+        {
+            var response = await authService.RevokeTokenAsync(request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Errors);
+            }
+
+            return Ok(response);
         }
 
         [Authorize]
