@@ -1,17 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Services;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.WebAPI.Extensions
 {
+
     public static class StartupExtensions
     {
+        public static IServiceCollection AddJwtTokenAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            var tokenProvider = new JwtTokenGenerator(configuration);
+            services
+                .AddSingleton<IAuthTokenGenerator>(tokenProvider)
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(
+                    authenticationScheme: JwtBearerDefaults.AuthenticationScheme,
+                    configureOptions: options =>
+                    {
+                        options.RequireHttpsMetadata = true;
+                        options.TokenValidationParameters = tokenProvider.TokenValidationParameters;
+                    });
+            return services;
+        }
+
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
-            //Please, configure all required dependencies here (repositories, services)
+            services.AddTransient(services => new UsersRepository(
+                userManager: services.GetRequiredService<UserManager<User>>()));
+
+            services.AddTransient<IAuthServiceAsync>(services => new AuthServiceAsync(
+                    usersRepository: services.GetRequiredService<UsersRepository>(),
+                    tokenGenerator: services.GetRequiredService<IAuthTokenGenerator>()));
+
             return services;
         }
 
@@ -20,7 +52,11 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddIdentity<User, IdentityRole>(
                     config =>
                     {
-                        //Please, add identity configuration here
+                        // Our UserNames = Emails. When registering new user with already registered email
+                        // there will be two unique violations unless emails ain't requiered to be unique.
+                        config.User.RequireUniqueEmail = false;
+                        config.Password.RequireNonAlphanumeric = false;
+                        config.Password.RequireDigit = true;
                     })
                 .AddEntityFrameworkStores<UniAtHomeDbContext>();
             return services;

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.DAL
 {
-    public class UniAtHomeDbContext : DbContext
+    public class UniAtHomeDbContext : IdentityDbContext<User>
     {
         public UniAtHomeDbContext(DbContextOptions<UniAtHomeDbContext> options) : base(options)
         {
@@ -19,7 +20,6 @@ namespace UniAtHome.DAL
         public DbSet<CourseMember> CourseMembers { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

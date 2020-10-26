@@ -9,6 +9,9 @@ namespace UniAtHome.WebAPI.Controllers
     {
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult<string> Get() => Ok("OK");
+        public ActionResult<string> Get()
+        {
+            return Ok("OK");
+        }
     }
 }
