@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UserRequests;
+using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Repositories;
@@ -24,39 +24,26 @@ namespace UniAtHome.BLL.Services
             this.tokenGenerator = tokenGenerator;
         }
 
-        public async Task<IEnumerable<object>> TryRegisterAndReturnErrorsAsync(RegistrationRequest registerModel)
+        public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
             var user = new User
             {
-                UserName = registerModel.Email,
-                FirstName = registerModel.FirstName,
-                LastName = registerModel.LastName,
-                Email = registerModel.Email,
+                UserName = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
             };
             var registerResult = await usersRepository.TryCreateAsync(
                 user: user,
-                password: registerModel.Password,
-                role: registerModel.Role);
+                password: request.Password,
+                role: request.Role);
 
-            if (registerResult.Succeeded)
+            if (!registerResult.Succeeded)
             {
-                return Enumerable.Empty<object>();
+                return new RegistrationResponse(registerResult.Errors);
             }
 
-            return GetErrorOfNotSucceededRequest(registerResult);
-        }
-
-        private IEnumerable<object> GetErrorOfNotSucceededRequest(IdentityResult registerResult)
-        {
-            var errors = new List<object>();
-            errors.AddRange(registerResult.Errors.Select(
-                error => new
-                {
-                    code = error.Code,
-                    message = error.Description
-                })
-                .ToArray());
-            return errors;
+            return new RegistrationResponse();
         }
 
         public async Task<object> GetAuthTokenAsync(LoginRequest loginModel)
@@ -91,7 +78,23 @@ namespace UniAtHome.BLL.Services
             return null;
         }
 
+
+        public Task<LoginResponse> LoginAsync(LoginRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<object> RefreshTokenAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
         {
             throw new NotImplementedException();
         }
