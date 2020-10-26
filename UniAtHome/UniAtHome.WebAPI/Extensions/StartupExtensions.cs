@@ -8,6 +8,7 @@ using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Services;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.WebAPI.Extensions
@@ -39,6 +40,7 @@ namespace UniAtHome.WebAPI.Extensions
         {
             services.AddTransient<UsersRepository>();
 
+            services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
 
             return services;
