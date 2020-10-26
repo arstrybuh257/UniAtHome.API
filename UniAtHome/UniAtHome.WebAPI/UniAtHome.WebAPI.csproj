@@ -19,5 +19,7 @@
     <ProjectReference Include="..\UniAtHome.DAL\UniAtHome.DAL.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 
 </Project>

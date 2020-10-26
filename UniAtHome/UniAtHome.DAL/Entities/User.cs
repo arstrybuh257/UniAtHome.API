@@ -7,7 +7,5 @@ namespace UniAtHome.DAL.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
-        public List<Course> Courses { get; set; }
     }
 }
