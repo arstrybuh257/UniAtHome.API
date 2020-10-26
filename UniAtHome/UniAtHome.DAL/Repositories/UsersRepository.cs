@@ -65,7 +65,7 @@ namespace UniAtHome.DAL.Repositories
             await context.SaveChangesAsync(); // I'm not sure when and where to put it 
         }
 
-        public RefreshToken GetRefreshTokenAsync(User user, string refreshToken)
+        public RefreshToken GetRefreshToken(User user, string refreshToken)
         {
             return context.RefreshTokens
                 .FirstOrDefault(token => token.UserId == user.Id && token.Token == refreshToken);

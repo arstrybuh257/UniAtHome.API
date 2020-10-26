@@ -66,13 +66,7 @@ namespace UniAtHome.BLL.Services
             {
                 return new LoginResponse("Password is incorrect!");
             }
-
-            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
-            var userClaims = new[]
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
-            };
+            Claim[] userClaims = await GetAuthTokenClaimsForUserAsync(user);
 
             var accessToken = tokenGenerator.GenerateTokenForClaims(userClaims);
             var refreshToken = refreshTokenFactory.GenerateRefreshToken();
@@ -84,15 +78,50 @@ namespace UniAtHome.BLL.Services
                 Token = accessToken,
                 RefreshToken = refreshToken
             };
+        }
 
-            public Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
+        private async Task<Claim[]> GetAuthTokenClaimsForUserAsync(User user)
+        {
+            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
+            var userClaims = new[]
             {
-                throw new NotImplementedException();
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
+            };
+            return userClaims;
+        }
+
+        public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
+        {
+            User user = await usersRepository.FindByEmailAsync(request.UserName);
+            if (user == null)
+            {
+                return new TokenRefreshResponse("User does not exist!");
             }
 
-            public Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
+            RefreshToken token = usersRepository.GetRefreshToken(user, request.RefreshToken);
+            if (token == null)
             {
-                throw new NotImplementedException();
+                return new TokenRefreshResponse("Refresh token is not valid!");
             }
+
+            var newRefreshToken = refreshTokenFactory.GenerateRefreshToken();
+            await usersRepository.DeleteRefreshTokenAsync(user, token);
+            await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
+
+            Claim[] tokenClaims = await GetAuthTokenClaimsForUserAsync(user);
+            string newAccessToken = tokenGenerator.GenerateTokenForClaims(tokenClaims);
+
+            return new TokenRefreshResponse
+            {
+                Token = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
+        public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
+}
