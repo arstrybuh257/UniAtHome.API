@@ -2,7 +2,7 @@
 {
     public sealed class TokenRefreshRequest
     {
-        public string UserName { get; set; }
+        public string Email { get; set; }
 
         public string RefreshToken { get; set; }
     }

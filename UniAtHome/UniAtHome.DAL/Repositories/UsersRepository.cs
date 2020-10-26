@@ -60,7 +60,6 @@ namespace UniAtHome.DAL.Repositories
                 User = user,
                 ExpirationDate = DateTime.Now.AddMinutes(refreshTokenLifetime),
             };
-            user.RefreshTokens.Add(newToken);
             context.RefreshTokens.Add(newToken);
             await context.SaveChangesAsync(); // I'm not sure when and where to put it 
         }
