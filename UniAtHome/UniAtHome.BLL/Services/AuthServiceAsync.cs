@@ -121,7 +121,20 @@ namespace UniAtHome.BLL.Services
 
         public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
         {
-            throw new NotImplementedException();
+            User user = await usersRepository.FindByEmailAsync(request.UserName);
+            if (user == null)
+            {
+                return new TokenRevokeResponse("User does not exist!");
+            }
+
+            RefreshToken refreshToken = usersRepository.GetRefreshToken(user, request.RefreshToken);
+            if (refreshToken == null)
+            {
+                return new TokenRevokeResponse("Refresh token is not valid!");
+            }
+
+            await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
+            return new TokenRevokeResponse();
         }
     }
 }
