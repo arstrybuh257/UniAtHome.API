@@ -14,7 +14,10 @@ namespace UniAtHome.DAL
         }
 
         public DbSet<Course> Courses { get; set; }
+
         public DbSet<Lesson> Lessons { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,6 +39,16 @@ namespace UniAtHome.DAL
                 .HasOne(l => l.Course)
                 .WithMany(c => c.Lessons)
                 .HasForeignKey(l => l.CourseId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RefreshToken>().HasKey(rt => rt.Id);
+            modelBuilder.Entity<RefreshToken>().Property(rt => rt.Token).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<RefreshToken>().Property(rt => rt.ExpirationDate).IsRequired();
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(rt => rt.User)
+                .WithMany(user => user.RefreshTokens)
+                .HasForeignKey(rt => rt.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
