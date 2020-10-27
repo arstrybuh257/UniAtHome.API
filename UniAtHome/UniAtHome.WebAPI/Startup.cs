@@ -23,7 +23,7 @@ namespace UniAtHome.WebAPI
             services.AddDbContext<UniAtHomeDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddTransient<DbContext, UniAtHomeDbContext>();
 
             services.AddIdentityConfiguration();
             services.RegisterIoC();

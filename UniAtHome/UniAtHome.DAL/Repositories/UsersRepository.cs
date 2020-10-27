@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,14 @@ namespace UniAtHome.DAL.Repositories
 {
     public sealed class UsersRepository
     {
-        private readonly UniAtHomeDbContext context;
+        private readonly DbContext context;
 
         private readonly UserManager<User> userManager;
 
         private readonly int refreshTokenLifetime;
 
         public UsersRepository(
-            UniAtHomeDbContext context,
+            DbContext context,
             UserManager<User> userManager, 
             IConfiguration config)
         {
@@ -57,22 +58,21 @@ namespace UniAtHome.DAL.Repositories
             {
                 Token = refreshToken,
                 UserId = user.Id,
-                User = user,
                 ExpirationDate = DateTime.Now.AddMinutes(refreshTokenLifetime),
             };
-            context.RefreshTokens.Add(newToken);
+            context.Set<RefreshToken>().Add(newToken);
             await context.SaveChangesAsync(); // I'm not sure when and where to put it 
         }
 
         public RefreshToken GetRefreshToken(User user, string refreshToken)
         {
-            return context.RefreshTokens
+            return context.Set<RefreshToken>()
                 .FirstOrDefault(token => token.UserId == user.Id && token.Token == refreshToken);
         }
 
         public async Task DeleteRefreshTokenAsync(User user, RefreshToken refreshToken)
         {
-            context.RefreshTokens.Remove(refreshToken);
+            context.Set<RefreshToken>().Remove(refreshToken);
             await context.SaveChangesAsync(); // I'm not sure when and where to put it 
         }
     }
