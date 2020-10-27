@@ -9,8 +9,6 @@ namespace UniAtHome.DAL.Entities
 
         public string LastName { get; set; }
 
-        public List<Course> Courses { get; set; }
-
         public List<RefreshToken> RefreshTokens { get; set; }
     }
 }
