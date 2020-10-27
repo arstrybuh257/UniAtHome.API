@@ -13,6 +13,11 @@ namespace UniAtHome.DAL
         {
         }
 
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<StudentGroup> StudentGroups { get; set; }
+        public DbSet<Timetable> Timetables { get; set; }
+        public DbSet<CourseMember> CourseMembers { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
 
@@ -21,23 +26,71 @@ namespace UniAtHome.DAL
             base.OnModelCreating(modelBuilder);
             modelBuilder.Seed();
 
-            modelBuilder.Entity<Course>().HasKey(c => c.Id);
-            modelBuilder.Entity<Course>().Property(c => c.Name).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<Course>().Property(c => c.Description).IsRequired().HasMaxLength(1000);
-            modelBuilder.Entity<Course>()
-                .HasOne(c => c.Teacher)
-                .WithMany(t => t.Courses)
-                .HasForeignKey(c => c.TeacherId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+            //User
+            modelBuilder.Entity<User>().HasKey(u => u.Id);
+            modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(30);
+            modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired().HasMaxLength(30);
 
-            modelBuilder.Entity<Lesson>().HasKey(l => l.Id);
+            //Student
+            modelBuilder.Entity<Student>().HasKey(s => s.UserId);
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.User)
+                .WithOne();
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.StudentGroups)
+                .WithOne(sg => sg.Student)
+                .HasForeignKey(sg=>sg.StudentId);
+
+            //Teacher
+            modelBuilder.Entity<Teacher>().HasKey(t => t.UserId);
+            modelBuilder.Entity<Teacher>()
+                .HasOne(t=>t.User)
+                .WithOne();
+            modelBuilder.Entity<Teacher>()
+                .HasMany(t=>t.CourseMembers)
+                .WithOne(cm=>cm.Teacher)
+                .HasForeignKey(cm=>cm.TeacherId);
+
+            //Course
+            modelBuilder.Entity<Course>().HasKey(ct => ct.Id);
+            modelBuilder.Entity<Course>().Property(c => c.Name).IsRequired().HasMaxLength(200);
+            modelBuilder.Entity<Course>().Property(c => c.Description).HasMaxLength(2000);
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.CourseMembers)
+                .WithOne(cm => cm.Course)
+                .HasForeignKey(cm => cm.CourseId);
+
+            modelBuilder.Entity<CourseMember>().HasKey(cm => cm.Id);
+
+            //Group
+            modelBuilder.Entity<Group>().HasKey(g => g.Id);
+            modelBuilder.Entity<Group>()
+                .HasMany(g=>g.StudentGroups)
+                .WithOne(sg=>sg.Group)
+                .HasForeignKey(sg=>sg.GroupId);
+            modelBuilder.Entity<Group>()
+                .HasMany(g=>g.Timetables)
+                .WithOne(tt=>tt.Group)
+                .HasForeignKey(tt=>tt.GroupId);
+            modelBuilder.Entity<Group>()
+                .HasOne(g=>g.CourseMember)
+                .WithMany(cm=>cm.Groups)
+                .HasForeignKey(g=>g.CourseMemberId);
+
+            //StudentGroup
+            modelBuilder.Entity<StudentGroup>().HasKey(sg=>new{sg.StudentId, sg.GroupId});
+
+            //Lesson
+            modelBuilder.Entity<Lesson>().HasKey(l=>l.Id);
+            modelBuilder.Entity<Lesson>().Property(l=>l.Name).IsRequired().HasMaxLength(200);
+            modelBuilder.Entity<Lesson>().Property(l => l.Description).HasMaxLength(2000);
             modelBuilder.Entity<Lesson>()
-                .HasOne(l => l.Course)
-                .WithMany(c => c.Lessons)
-                .HasForeignKey(l => l.CourseId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasMany(l=>l.Timetables)
+                .WithOne(tt=>tt.Lesson)
+                .HasForeignKey(tt=>tt.LessonId);
+
+            //Timetable
+            modelBuilder.Entity<Timetable>().HasKey(tt => new { tt.GroupId, tt.LessonId });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
