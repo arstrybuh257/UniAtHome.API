@@ -23,7 +23,7 @@ namespace UniAtHome.WebAPI.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // DELETE: api/Course/5
+        // GET: api/Course/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourseById(int id)
         {
@@ -36,9 +36,17 @@ namespace UniAtHome.WebAPI.Controllers
             return BadRequest();
         }
 
+        // POST: api/Course
         [HttpPost]
-        public void CreateCourse([FromBody] string value)
+        public async Task<IActionResult> CreateCourse([FromBody] CourseDTO course)
         {
+            if (course != null && ModelState.IsValid)
+            {
+                await this.courseService.AddCourseAsync(course);
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         [HttpPut("{id}")]
