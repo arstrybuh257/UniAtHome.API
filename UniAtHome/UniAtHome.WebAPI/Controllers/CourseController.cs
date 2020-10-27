@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UniAtHome.BLL.DTOs;
+using UniAtHome.BLL.Interfaces;
 
 namespace UniAtHome.WebAPI.Controllers
 {
@@ -7,16 +10,30 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
+        private ICourseService courseService;
+
+        public CourseController(ICourseService courseService)
+        {
+            this.courseService = courseService;
+        }
+
         [HttpGet]
         public IEnumerable<string> GetAllCourses()
         {
             return new string[] { "value1", "value2" };
         }
 
-        [HttpGet("{id}", Name = "GetCourseById")]
-        public string GetCourseById(int id)
+        // DELETE: api/Course/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCourseById(int id)
         {
-            return "value";
+            var course = await this.courseService.GetCourseByIdAsync(id);
+            if (course != null)
+            {
+                return Ok(course);
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
@@ -29,7 +46,6 @@ namespace UniAtHome.WebAPI.Controllers
         {
         }
 
-        // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
