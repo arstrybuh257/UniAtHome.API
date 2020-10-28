@@ -14,10 +14,15 @@ namespace UniAtHome.DAL
         }
 
         public DbSet<Teacher> Teachers { get; set; }
+
         public DbSet<Student> Students { get; set; }
+
         public DbSet<StudentGroup> StudentGroups { get; set; }
+
         public DbSet<Timetable> Timetables { get; set; }
+
         public DbSet<CourseMember> CourseMembers { get; set; }
+
         public DbSet<Course> Courses { get; set; }
 
         public DbSet<Lesson> Lessons { get; set; }
@@ -95,6 +100,7 @@ namespace UniAtHome.DAL
             //Timetable
             modelBuilder.Entity<Timetable>().HasKey(tt => new { tt.GroupId, tt.LessonId });
 
+            // Refresh token
             modelBuilder.Entity<RefreshToken>().HasKey(rt => rt.Id);
             modelBuilder.Entity<RefreshToken>().Property(rt => rt.Token).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<RefreshToken>().Property(rt => rt.ExpirationDate).IsRequired();
