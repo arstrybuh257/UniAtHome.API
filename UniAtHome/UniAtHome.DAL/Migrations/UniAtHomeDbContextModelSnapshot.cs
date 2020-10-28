@@ -161,27 +161,59 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasColumnType("nvarchar(2000)")
+                        .HasMaxLength(2000);
 
                     b.Property<DateTime>("Modified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.CourseMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TeacherId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseId");
+
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("CourseMembers");
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CourseMemberId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseMemberId");
+
+                    b.ToTable("Group");
                 });
 
             modelBuilder.Entity("UniAtHome.DAL.Entities.Lesson", b =>
@@ -194,43 +226,74 @@ namespace UniAtHome.DAL.Migrations
                     b.Property<DateTime>("Added")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(2000)")
+                        .HasMaxLength(2000);
 
                     b.Property<DateTime>("Modified")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
-                    b.HasIndex("CourseId");
+                    b.HasKey("Id");
 
                     b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("UniAtHome.DAL.Entities.RefreshToken", b =>
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
-                    b.HasIndex("UserId");
+                    b.ToTable("Students");
+                });
 
-                    b.ToTable("RefreshTokens");
+            modelBuilder.Entity("UniAtHome.DAL.Entities.StudentGroup", b =>
+                {
+                    b.Property<string>("StudentId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("StudentGroups");
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Teacher", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Teachers");
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Timetable", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("GroupId", "LessonId");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("Timetables");
                 });
 
             modelBuilder.Entity("UniAtHome.DAL.Entities.User", b =>
@@ -253,10 +316,14 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -355,29 +422,72 @@ namespace UniAtHome.DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UniAtHome.DAL.Entities.Course", b =>
-                {
-                    b.HasOne("UniAtHome.DAL.Entities.User", "Teacher")
-                        .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UniAtHome.DAL.Entities.Lesson", b =>
+            modelBuilder.Entity("UniAtHome.DAL.Entities.CourseMember", b =>
                 {
                     b.HasOne("UniAtHome.DAL.Entities.Course", "Course")
-                        .WithMany("Lessons")
+                        .WithMany("CourseMembers")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("UniAtHome.DAL.Entities.Teacher", "Teacher")
+                        .WithMany("CourseMembers")
+                        .HasForeignKey("TeacherId");
                 });
 
-            modelBuilder.Entity("UniAtHome.DAL.Entities.RefreshToken", b =>
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Group", b =>
+                {
+                    b.HasOne("UniAtHome.DAL.Entities.CourseMember", "CourseMember")
+                        .WithMany("Groups")
+                        .HasForeignKey("CourseMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Student", b =>
                 {
                     b.HasOne("UniAtHome.DAL.Entities.User", "User")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
+                        .WithOne()
+                        .HasForeignKey("UniAtHome.DAL.Entities.Student", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.StudentGroup", b =>
+                {
+                    b.HasOne("UniAtHome.DAL.Entities.Group", "Group")
+                        .WithMany("StudentGroups")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UniAtHome.DAL.Entities.Student", "Student")
+                        .WithMany("StudentGroups")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Teacher", b =>
+                {
+                    b.HasOne("UniAtHome.DAL.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("UniAtHome.DAL.Entities.Teacher", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.Timetable", b =>
+                {
+                    b.HasOne("UniAtHome.DAL.Entities.Group", "Group")
+                        .WithMany("Timetables")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UniAtHome.DAL.Entities.Lesson", "Lesson")
+                        .WithMany("Timetables")
+                        .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
