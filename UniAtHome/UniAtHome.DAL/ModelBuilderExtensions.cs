@@ -43,7 +43,9 @@ namespace UniAtHome.DAL
                 FirstName = "Admin",
                 LastName = "Adminovich",
                 UserName = "admin@gmail.com",
+                NormalizedUserName = "admin@gmail.com",
                 Email = "admin@gmail.com",
+                NormalizedEmail = "admin@gmail.com",
                 PasswordHash = new PasswordHasher<User>().HashPassword(null, "Qwerty12345")
             });
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
