@@ -44,8 +44,6 @@ namespace UniAtHome.WebAPI.Extensions
             //Please, configure all required dependencies here (repositories, services)
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICourseService, CourseService>();
-            services.AddTransient(services => new UsersRepository(
-                userManager: services.GetRequiredService<UserManager<User>>()));
             services.AddTransient<UsersRepository>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
