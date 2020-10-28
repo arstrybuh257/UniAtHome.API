@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UserRequests;
+﻿using System.Threading.Tasks;
+using UniAtHome.BLL.DTOs.Auth;
 
 namespace UniAtHome.BLL.Interfaces
 {
     public interface IAuthServiceAsync
     {
-        Task<IEnumerable<object>> TryRegisterAndReturnErrorsAsync(RegistrationRequest registerModel);
-        Task<object> GetAuthTokenAsync(LoginRequest loginModel);
-        Task<object> RefreshTokenAsync();
+        Task<RegistrationResponse> RegisterAsync(RegistrationRequest request);
+
+        Task<LoginResponse> LoginAsync(LoginRequest request);
+
+        Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request);
+
+        Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request);
     }
 }

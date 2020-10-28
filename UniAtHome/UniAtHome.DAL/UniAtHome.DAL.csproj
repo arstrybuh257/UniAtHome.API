@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201026113510_RefreshTokenEntity.cs" />
+    <Compile Remove="Migrations\20201026113510_RefreshTokenEntity.Designer.cs" />
+    <Compile Remove="Migrations\20201027204343_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201027204343_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201028161428_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201028161428_InitialCreate.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />

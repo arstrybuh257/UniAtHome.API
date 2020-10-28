@@ -46,10 +46,10 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ICourseService, CourseService>();
             services.AddTransient(services => new UsersRepository(
                 userManager: services.GetRequiredService<UserManager<User>>()));
+            services.AddTransient<UsersRepository>();
 
-            services.AddTransient<IAuthServiceAsync>(services => new AuthServiceAsync(
-                    usersRepository: services.GetRequiredService<UsersRepository>(),
-                    tokenGenerator: services.GetRequiredService<IAuthTokenGenerator>()));
+            services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
+            services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 
