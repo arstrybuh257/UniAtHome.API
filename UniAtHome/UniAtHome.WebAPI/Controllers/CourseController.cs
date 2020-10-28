@@ -18,7 +18,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> GetAllCourses()
+        public IEnumerable<string> GetAllUserCourses()
         {
             return new string[] { "value1", "value2" };
         }
