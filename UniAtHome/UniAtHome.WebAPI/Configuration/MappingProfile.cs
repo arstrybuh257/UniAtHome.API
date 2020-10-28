@@ -8,8 +8,7 @@ namespace UniAtHome.BLL.Util
     {
         public MappingProfile()
         {
-            CreateMap<Course, CourseDTO>();
-            CreateMap<CourseDTO, Course>();
+            CreateMap<Course, CourseDTO>().ReverseMap();
         }
     }
 }
