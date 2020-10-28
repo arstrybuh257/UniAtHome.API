@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UserRequests;
+using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
@@ -18,82 +16,122 @@ namespace UniAtHome.BLL.Services
 
         private IAuthTokenGenerator tokenGenerator;
 
-        public AuthServiceAsync(UsersRepository usersRepository, IAuthTokenGenerator tokenGenerator)
+        private IRefreshTokenFactory refreshTokenFactory;
+
+        public AuthServiceAsync(
+            UsersRepository usersRepository,
+            IAuthTokenGenerator tokenGenerator,
+            IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = usersRepository;
             this.tokenGenerator = tokenGenerator;
+            this.refreshTokenFactory = refreshTokenFactory;
         }
 
-        public async Task<IEnumerable<object>> TryRegisterAndReturnErrorsAsync(RegistrationRequest registerModel)
+        public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
             var user = new User
             {
-                UserName = registerModel.Email,
-                FirstName = registerModel.FirstName,
-                LastName = registerModel.LastName,
-                Email = registerModel.Email,
+                UserName = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
             };
             var registerResult = await usersRepository.TryCreateAsync(
                 user: user,
-                password: registerModel.Password,
-                role: registerModel.Role);
+                password: request.Password,
+                role: request.Role);
 
-            if (registerResult.Succeeded)
+            if (!registerResult.Succeeded)
             {
-                return Enumerable.Empty<object>();
+                return new RegistrationResponse(registerResult.Errors);
             }
 
-            return GetErrorOfNotSucceededRequest(registerResult);
+            return new RegistrationResponse();
         }
 
-        private IEnumerable<object> GetErrorOfNotSucceededRequest(IdentityResult registerResult)
+        public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
-            var errors = new List<object>();
-            errors.AddRange(registerResult.Errors.Select(
-                error => new
-                {
-                    code = error.Code,
-                    message = error.Description
-                })
-                .ToArray());
-            return errors;
-        }
-
-        public async Task<object> GetAuthTokenAsync(LoginRequest loginModel)
-        {
-            var identity = await GetIdentity(loginModel);
-            if (identity == null)
+            User user = await usersRepository.FindByEmailAsync(request.Email);
+            if (user == null)
             {
-                return null;
-            }
-            var accessToken = tokenGenerator.GenerateTokenForClaims(identity.Claims);
-            return new { AccessToken = accessToken };
-        }
-
-        private async Task<ClaimsIdentity> GetIdentity(LoginRequest loginModel)
-        {
-            User user = await usersRepository.FindByEmailAsync(loginModel.Email);
-            if (user != null)
-            {
-                bool passwordIsCorrect = await usersRepository.CheckPasswordAsync(user, loginModel.Password);
-                IList<string> userRoles = await usersRepository.GetRolesAsync(user);
-                if (passwordIsCorrect)
-                {
-                    var userClaims = new[]
-                    {
-                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                        new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
-                    };
-                    return new ClaimsIdentity(userClaims, JwtBearerDefaults.AuthenticationScheme, ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-                }
+                return new LoginResponse("User does not exist!");
             }
 
-            return null;
+            bool passwordIsCorrect = await usersRepository.CheckPasswordAsync(user, request.Password);
+            if (!passwordIsCorrect)
+            {
+                return new LoginResponse("Password is incorrect!");
+            }
+            Claim[] userClaims = await GetAuthTokenClaimsForUserAsync(user);
+
+            var accessToken = tokenGenerator.GenerateTokenForClaims(userClaims);
+            var refreshToken = refreshTokenFactory.GenerateRefreshToken();
+            await usersRepository.CreateRefreshTokenAsync(user, refreshToken);
+
+            return new LoginResponse
+            {
+                Email = user.Email,
+                Token = accessToken,
+                RefreshToken = refreshToken
+            };
         }
 
-        public Task<object> RefreshTokenAsync()
+        private async Task<Claim[]> GetAuthTokenClaimsForUserAsync(User user)
         {
-            throw new NotImplementedException();
+            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
+            var userClaims = new[]
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
+            };
+            return userClaims;
+        }
+
+        public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
+        {
+            User user = await usersRepository.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new TokenRefreshResponse("User does not exist!");
+            }
+
+            RefreshToken token = usersRepository.GetRefreshToken(user, request.RefreshToken);
+            if (token == null)
+            {
+                return new TokenRefreshResponse("Refresh token is not valid!");
+            }
+
+            var newRefreshToken = refreshTokenFactory.GenerateRefreshToken();
+            await usersRepository.DeleteRefreshTokenAsync(user, token);
+            await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
+
+            Claim[] tokenClaims = await GetAuthTokenClaimsForUserAsync(user);
+            string newAccessToken = tokenGenerator.GenerateTokenForClaims(tokenClaims);
+
+            return new TokenRefreshResponse
+            {
+                Token = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
+        public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
+        {
+            User user = await usersRepository.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new TokenRevokeResponse("User does not exist!");
+            }
+
+            RefreshToken refreshToken = usersRepository.GetRefreshToken(user, request.RefreshToken);
+            if (refreshToken == null)
+            {
+                return new TokenRevokeResponse("Refresh token is not valid!");
+            }
+
+            await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
+            return new TokenRevokeResponse();
         }
     }
 }

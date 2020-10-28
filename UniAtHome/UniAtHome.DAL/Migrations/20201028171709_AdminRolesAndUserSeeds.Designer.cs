@@ -10,8 +10,8 @@ using UniAtHome.DAL;
 namespace UniAtHome.DAL.Migrations
 {
     [DbContext(typeof(UniAtHomeDbContext))]
-    [Migration("20201027204343_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201028171709_AdminRolesAndUserSeeds")]
+    partial class AdminRolesAndUserSeeds
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,6 +46,22 @@ namespace UniAtHome.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "2AEFE1C5-C5F0-4399-8FB8-420813567554",
+                            ConcurrencyStamp = "322249d1-712d-47be-8a2f-45d8736a9aa0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "99DA7670-5471-414F-834E-9B3A6B6C8F6F",
+                            ConcurrencyStamp = "b15d645b-42ce-448c-9070-ae202f7ab2f5",
+                            Name = "UniversityAdmin",
+                            NormalizedName = "UNIVERSITYADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -131,6 +147,13 @@ namespace UniAtHome.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "00CA41A9-C962-4230-937E-D5F54772C062",
+                            RoleId = "2AEFE1C5-C5F0-4399-8FB8-420813567554"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -243,6 +266,32 @@ namespace UniAtHome.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("UniAtHome.DAL.Entities.Student", b =>
@@ -371,6 +420,24 @@ namespace UniAtHome.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "00CA41A9-C962-4230-937E-D5F54772C062",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "58ad7127-7531-4ac4-aaea-592249f1cd89",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = false,
+                            FirstName = "Admin",
+                            LastName = "Adminovich",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEISHy05Q0/LB3OCBMnnLJqKJI7XWwqPPQVbnjCd7bba3+munRiDZ/oGWTF3oRlRc2Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "790fd498-0d7b-4328-8c7f-d5419b17169c",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -442,6 +509,15 @@ namespace UniAtHome.DAL.Migrations
                     b.HasOne("UniAtHome.DAL.Entities.CourseMember", "CourseMember")
                         .WithMany("Groups")
                         .HasForeignKey("CourseMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("UniAtHome.DAL.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

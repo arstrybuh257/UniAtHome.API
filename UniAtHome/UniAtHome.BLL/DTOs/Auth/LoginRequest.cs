@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UniAtHome.BLL.DTOs.UserRequests
+namespace UniAtHome.BLL.DTOs.Auth
 {
     public sealed class LoginRequest
     {

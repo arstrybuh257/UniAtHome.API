@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UserRequests;
+using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.WebAPI.Models.Users;
 
 namespace UniAtHome.WebAPI.Controllers
 {
@@ -18,29 +19,92 @@ namespace UniAtHome.WebAPI.Controllers
             this.authService = authService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
-        public async Task<object> Register([FromBody] RegistrationRequest registerModel)
+        public async Task<ActionResult> Register([FromBody] RegistrationRequest request)
         {
-            var errors = await authService.TryRegisterAndReturnErrorsAsync(registerModel);
-            if (!errors.Any())
+            var response = await authService.RegisterAsync(request);
+            if (!response.Success)
             {
-                return Ok();
+                return BadRequest(response.Errors);
             }
-            return BadRequest(errors);
+
+            return Ok(response);
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<object> Login([FromBody] LoginRequest loginModel)
+        public async Task<ObjectResult> Login([FromBody] LoginRequest request)
         {
-            var token = await authService.GetAuthTokenAsync(loginModel);
-            if (token == null)
+            var response = await authService.LoginAsync(request);
+            if (!response.Success)
             {
-                return BadRequest("Either email or password is incorrect.");
+                return BadRequest(response.Errors);
+
+            }
+            HttpContext.Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true
+            });
+            return Ok(new LoginApiResponse
+            {
+                Email = response.Email,
+                Token = response.Token
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<ObjectResult> Refresh()
+        {
+            // Not sure whether User.Identity.Name is be parsed after the token expires
+            string userEmail = User.Identity.Name;
+            string refreshToken = HttpContext.Request.Cookies["refreshToken"];
+
+            var request = new TokenRefreshRequest
+            {
+                Email = userEmail,
+                RefreshToken = refreshToken
+            };
+
+            TokenRefreshResponse response = await authService.RefreshTokenAsync(request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Errors);
             }
 
-            return token;
+            HttpContext.Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true
+            });
+            return Ok(new TokenRefreshApiResponse
+            {
+                Token = response.Token
+            });
+        }
+
+        [Authorize]
+        [HttpPost("revoke")]
+        public async Task<ObjectResult> Revoke()
+        {
+            string userEmail = User.Identity.Name;
+            string refreshToken = HttpContext.Request.Cookies["refreshToken"];
+
+            var request = new TokenRevokeRequest
+            {
+                Email = userEmail,
+                RefreshToken = refreshToken
+            };
+
+            var response = await authService.RevokeTokenAsync(request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Errors);
+            }
+
+            return Ok(response);
         }
 
         [Authorize]

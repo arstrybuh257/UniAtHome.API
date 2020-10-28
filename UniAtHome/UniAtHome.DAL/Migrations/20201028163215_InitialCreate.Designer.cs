@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniAtHome.DAL;
 
 namespace UniAtHome.DAL.Migrations
 {
     [DbContext(typeof(UniAtHomeDbContext))]
-    partial class UniAtHomeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201028163215_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,22 +46,6 @@ namespace UniAtHome.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "2AEFE1C5-C5F0-4399-8FB8-420813567554",
-                            ConcurrencyStamp = "2ecdd19c-98b4-4a4c-bec0-827d5c5cda3b",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "99DA7670-5471-414F-834E-9B3A6B6C8F6F",
-                            ConcurrencyStamp = "1171a711-b5a7-4b8c-ba3f-36cbfb2823c0",
-                            Name = "UniversityAdmin",
-                            NormalizedName = "UNIVERSITYADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -145,13 +131,6 @@ namespace UniAtHome.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "00CA41A9-C962-4230-937E-D5F54772C062",
-                            RoleId = "2AEFE1C5-C5F0-4399-8FB8-420813567554"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -418,26 +397,6 @@ namespace UniAtHome.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "00CA41A9-C962-4230-937E-D5F54772C062",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "f37f55d2-6178-47c8-9495-67b7ee378603",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = false,
-                            FirstName = "Admin",
-                            LastName = "Adminovich",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "admin@gmail.com",
-                            NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEL+hSoJh5Ygyq3ysdMLn1XPSd29fB+TbJLri6xmb0tiJ5aH1dFHs8lRvCUSyp7nBHQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "ccdf0fe4-31c1-4a53-abf4-5c892f0412f7",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@gmail.com"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
-namespace UniAtHome.BLL.DTOs.UserRequests
+namespace UniAtHome.BLL.DTOs.Auth
 {
     public sealed class RegistrationRequest
     {
