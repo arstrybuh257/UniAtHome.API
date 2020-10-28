@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Services;
+using UniAtHome.BLL.Util;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
@@ -38,10 +41,17 @@ namespace UniAtHome.WebAPI.Extensions
 
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
+            //Please, configure all required dependencies here (repositories, services)
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<ICourseService, CourseService>();
             services.AddTransient<UsersRepository>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
+
+            services.AddScoped<DbContext, UniAtHomeDbContext>();
+
+            services.AddAutoMapper(typeof(MappingProfile));
 
             return services;
         }
