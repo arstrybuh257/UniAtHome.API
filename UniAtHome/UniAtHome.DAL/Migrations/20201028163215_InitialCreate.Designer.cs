@@ -10,7 +10,7 @@ using UniAtHome.DAL;
 namespace UniAtHome.DAL.Migrations
 {
     [DbContext(typeof(UniAtHomeDbContext))]
-    [Migration("20201027204343_InitialCreate")]
+    [Migration("20201028163215_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,6 +245,32 @@ namespace UniAtHome.DAL.Migrations
                     b.ToTable("Lessons");
                 });
 
+            modelBuilder.Entity("UniAtHome.DAL.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("UniAtHome.DAL.Entities.Student", b =>
                 {
                     b.Property<string>("UserId")
@@ -442,6 +468,15 @@ namespace UniAtHome.DAL.Migrations
                     b.HasOne("UniAtHome.DAL.Entities.CourseMember", "CourseMember")
                         .WithMany("Groups")
                         .HasForeignKey("CourseMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UniAtHome.DAL.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("UniAtHome.DAL.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
