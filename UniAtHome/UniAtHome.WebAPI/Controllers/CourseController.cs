@@ -58,5 +58,18 @@ namespace UniAtHome.WebAPI.Controllers
         public void Delete(int id)
         {
         }
+
+        // GET: api/Course/byname?name=AVPZ
+        [HttpGet("byname")]
+        public async Task<IActionResult> GetCourseByName(string name)
+        {
+            var courses = await this.courseService.GetCoursesByNameAsync(name);
+            if (courses != null)
+            {
+                return Ok(courses);
+            }
+
+            return BadRequest();
+        }
     }
 }
