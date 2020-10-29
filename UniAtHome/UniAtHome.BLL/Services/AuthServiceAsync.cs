@@ -12,18 +12,26 @@ namespace UniAtHome.BLL.Services
 {
     public sealed class AuthServiceAsync : IAuthServiceAsync
     {
-        private UsersRepository usersRepository;
+        private readonly UsersRepository usersRepository;
 
-        private IAuthTokenGenerator tokenGenerator;
+        private readonly IRepository<Teacher> teachersRepository;
 
-        private IRefreshTokenFactory refreshTokenFactory;
+        private readonly IRepository<Student> studentsRepository;
+
+        private readonly IAuthTokenGenerator tokenGenerator;
+
+        private readonly IRefreshTokenFactory refreshTokenFactory;
 
         public AuthServiceAsync(
             UsersRepository usersRepository,
+            IRepository<Teacher> teachersRepository,
+            IRepository<Student> studentsRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = usersRepository;
+            this.teachersRepository = teachersRepository;
+            this.studentsRepository = studentsRepository;
             this.tokenGenerator = tokenGenerator;
             this.refreshTokenFactory = refreshTokenFactory;
         }

@@ -41,7 +41,6 @@ namespace UniAtHome.WebAPI.Extensions
 
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
-            //Please, configure all required dependencies here (repositories, services)
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICourseService, CourseService>();
             services.AddTransient<UsersRepository>();
