@@ -2,12 +2,12 @@
 {
     public static class RoleName
     {
-        public const string Admin = nameof(Admin);
+        public const string ADMIN = "Admin";
 
-        public const string UniversityAdmin = nameof(UniversityAdmin);
+        public const string UNIVERSITY_ADMIN = "UniversityAdmin";
 
-        public const string Teacher = nameof(Teacher);
+        public const string TEACHER = "Teacher";
 
-        public const string Student = nameof(Student);
+        public const string STUDENT = "Student";
     }
 }

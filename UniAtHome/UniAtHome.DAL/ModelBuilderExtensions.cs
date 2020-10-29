@@ -27,29 +27,29 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = ADMIN_ROLE_ID,
-                Name = RoleName.Admin,
-                NormalizedName = RoleName.Admin.ToUpper()
+                Name = RoleName.ADMIN,
+                NormalizedName = RoleName.ADMIN.ToUpper()
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = UNIVERSITY_ADMIN_ROLE_ID,
-                Name = RoleName.UniversityAdmin,
-                NormalizedName = RoleName.UniversityAdmin.ToUpper()
+                Name = RoleName.UNIVERSITY_ADMIN,
+                NormalizedName = RoleName.UNIVERSITY_ADMIN.ToUpper()
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = TEACHER_ROLE_ID,
-                Name = RoleName.Teacher,
-                NormalizedName = RoleName.Teacher.ToUpper()
+                Name = RoleName.TEACHER,
+                NormalizedName = RoleName.TEACHER.ToUpper()
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = STUDENT_ROLE_ID,
-                Name = RoleName.Student,
-                NormalizedName = RoleName.Student.ToUpper()
+                Name = RoleName.STUDENT,
+                NormalizedName = RoleName.STUDENT.ToUpper()
             });
         }
 

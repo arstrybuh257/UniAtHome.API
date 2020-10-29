@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.DAL.Constants;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
@@ -53,6 +54,18 @@ namespace UniAtHome.BLL.Services
             if (!registerResult.Succeeded)
             {
                 return new RegistrationResponse(registerResult.Errors);
+            }
+
+            switch (request.Role)
+            {
+                case RoleName.TEACHER:
+                    await teachersRepository.AddAsync(new Teacher { UserId = user.Id });
+                    await teachersRepository.SaveChangesAsync();
+                    break;
+                case RoleName.STUDENT:
+                    await studentsRepository.AddAsync(new Student { UserId = user.Id });
+                    await studentsRepository.SaveChangesAsync();
+                    break;
             }
 
             return new RegistrationResponse();
