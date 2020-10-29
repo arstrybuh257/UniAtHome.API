@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UniAtHome.DAL.Constants;
 using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.DAL
@@ -26,29 +27,29 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = ADMIN_ROLE_ID,
-                Name = "Admin",
-                NormalizedName = "ADMIN"
+                Name = RoleName.Admin,
+                NormalizedName = RoleName.Admin.ToUpper()
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = UNIVERSITY_ADMIN_ROLE_ID,
-                Name = "UniversityAdmin",
-                NormalizedName = "UNIVERSITYADMIN"
+                Name = RoleName.UniversityAdmin,
+                NormalizedName = RoleName.UniversityAdmin.ToUpper()
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = TEACHER_ROLE_ID,
-                Name = "Teacher",
-                NormalizedName = "TEACHER"
+                Name = RoleName.Teacher,
+                NormalizedName = RoleName.Teacher.ToUpper()
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
             {
                 Id = STUDENT_ROLE_ID,
-                Name = "Student",
-                NormalizedName = "STUDENT"
+                Name = RoleName.Student,
+                NormalizedName = RoleName.Student.ToUpper()
             });
         }
 
