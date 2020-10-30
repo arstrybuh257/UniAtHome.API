@@ -17,12 +17,6 @@ namespace UniAtHome.WebAPI.Controllers
             this.courseService = courseService;
         }
 
-        [HttpGet]
-        public IEnumerable<string> GetAllUserCourses()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET: api/Course/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourseById(int id)
@@ -60,7 +54,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         // GET: api/Course/byname?name=AVPZ
-        [HttpGet("byname")]
+        [HttpGet]
         public async Task<IActionResult> GetCourseByName(string name)
         {
             var courses = await this.courseService.GetCoursesByNameAsync(name);
