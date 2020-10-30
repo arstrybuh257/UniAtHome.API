@@ -4,6 +4,6 @@ namespace UniAtHome.BLL.DTOs.Students
 {
     public sealed class StudentsCoursesResponse
     {
-        public IEnumerable<int> CoursesIds { get; set; }
+        public IEnumerable<CourseDTO> Courses { get; set; }
     }
 }
