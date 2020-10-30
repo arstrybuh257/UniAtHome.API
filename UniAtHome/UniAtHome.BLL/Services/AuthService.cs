@@ -5,13 +5,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Models;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
 {
-    public abstract class AuthService
+    public class AuthService
     {
         private readonly UsersRepository usersRepository;
 
@@ -29,7 +30,7 @@ namespace UniAtHome.BLL.Services
             this.refreshTokenFactory = refreshTokenFactory;
         }
 
-        public async Task<IdentityResult> RegisterAsync(RegistrationRequest request)
+        public async Task<RegisterResult> RegisterAsync(RegistrationRequest request)
         {
             var user = new User
             {
@@ -39,29 +40,18 @@ namespace UniAtHome.BLL.Services
                 Email = request.Email,
             };
 
-            var registerResult = await usersRepository.TryCreateAsync(
-                user: user,
-                password: request.Password,
-                role: request.Role);
+            var registerResult = new RegisterResult(
+                await usersRepository.TryCreateAsync(
+                    user: user,
+                    password: request.Password,
+                    role: request.Role));
 
-            //if (!registerResult.Succeeded)
-            //{
-            //    return new RegistrationResponse(registerResult.Errors);
-            //}
+            if (registerResult.IdentityResult.Succeeded)
+            {
+                registerResult.UserId = user.Id;
+            }
 
-            //switch (request.Role)
-            //{
-            //    case RoleName.TEACHER:
-            //        await teachersRepository.AddAsync(new Teacher { UserId = user.Id });
-            //        await teachersRepository.SaveChangesAsync();
-            //        break;
-            //    case RoleName.STUDENT:
-            //        await studentsRepository.AddAsync(new Student { UserId = user.Id });
-            //        await studentsRepository.SaveChangesAsync();
-            //        break;
-            //}
-
-            //return new RegistrationResponse();
+            return registerResult;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -89,17 +79,6 @@ namespace UniAtHome.BLL.Services
                 Token = accessToken,
                 RefreshToken = refreshToken
             };
-        }
-
-        private async Task<Claim[]> GetAuthTokenClaimsForUserAsync(User user)
-        {
-            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
-            var userClaims = new[]
-            {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
-            };
-            return userClaims;
         }
 
         public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
@@ -146,6 +125,17 @@ namespace UniAtHome.BLL.Services
 
             await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
             return new TokenRevokeResponse();
+        }
+
+        private async Task<Claim[]> GetAuthTokenClaimsForUserAsync(User user)
+        {
+            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
+            var userClaims = new[]
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
+            };
+            return userClaims;
         }
     }
 }
