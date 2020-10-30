@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -56,7 +57,11 @@ namespace UniAtHome.WebAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            var corsUrls = new List<string>();
+            Configuration.GetSection("AllowedHosts").Bind(corsUrls);
+            app.UseCors(builder => builder.WithOrigins(corsUrls.ToArray())
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {
