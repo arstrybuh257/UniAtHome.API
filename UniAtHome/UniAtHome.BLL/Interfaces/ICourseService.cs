@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs;
 
 namespace UniAtHome.BLL.Interfaces
@@ -8,5 +9,7 @@ namespace UniAtHome.BLL.Interfaces
         Task<CourseDTO> GetCourseByIdAsync(int id);
 
         Task AddCourseAsync(CourseDTO course);
+
+        Task<IEnumerable<CourseDTO>> GetCoursesByNameAsync(string name);
     }
 }

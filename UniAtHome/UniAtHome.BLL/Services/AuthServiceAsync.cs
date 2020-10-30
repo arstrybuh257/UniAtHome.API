@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.DAL.Constants;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
@@ -12,18 +13,26 @@ namespace UniAtHome.BLL.Services
 {
     public sealed class AuthServiceAsync : IAuthServiceAsync
     {
-        private UsersRepository usersRepository;
+        private readonly UsersRepository usersRepository;
 
-        private IAuthTokenGenerator tokenGenerator;
+        private readonly IRepository<Teacher> teachersRepository;
 
-        private IRefreshTokenFactory refreshTokenFactory;
+        private readonly IRepository<Student> studentsRepository;
+
+        private readonly IAuthTokenGenerator tokenGenerator;
+
+        private readonly IRefreshTokenFactory refreshTokenFactory;
 
         public AuthServiceAsync(
             UsersRepository usersRepository,
+            IRepository<Teacher> teachersRepository,
+            IRepository<Student> studentsRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = usersRepository;
+            this.teachersRepository = teachersRepository;
+            this.studentsRepository = studentsRepository;
             this.tokenGenerator = tokenGenerator;
             this.refreshTokenFactory = refreshTokenFactory;
         }
@@ -45,6 +54,18 @@ namespace UniAtHome.BLL.Services
             if (!registerResult.Succeeded)
             {
                 return new RegistrationResponse(registerResult.Errors);
+            }
+
+            switch (request.Role)
+            {
+                case RoleName.TEACHER:
+                    await teachersRepository.AddAsync(new Teacher { UserId = user.Id });
+                    await teachersRepository.SaveChangesAsync();
+                    break;
+                case RoleName.STUDENT:
+                    await studentsRepository.AddAsync(new Student { UserId = user.Id });
+                    await studentsRepository.SaveChangesAsync();
+                    break;
             }
 
             return new RegistrationResponse();

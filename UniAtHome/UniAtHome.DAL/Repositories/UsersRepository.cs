@@ -9,7 +9,7 @@ using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.DAL.Repositories
 {
-    public sealed class UsersRepository
+    public class UsersRepository
     {
         private readonly DbContext context;
 
