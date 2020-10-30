@@ -25,6 +25,7 @@ namespace UniAtHome.WebAPI
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<DbContext, UniAtHomeDbContext>();
 
+            services.AddCors();
             services.AddIdentityConfiguration();
             services.RegisterIoC();
 
@@ -54,6 +55,8 @@ namespace UniAtHome.WebAPI
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            app.UseCors(builder => builder.AllowAnyOrigin());
 
             app.UseEndpoints(endpoints =>
             {
