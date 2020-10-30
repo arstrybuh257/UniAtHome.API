@@ -36,7 +36,7 @@ namespace UniAtHome.WebAPI
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -62,6 +62,8 @@ namespace UniAtHome.WebAPI
             {
                 endpoints.MapControllers();
             });
+
+            context.Database.Migrate();
         }
     }
 }
