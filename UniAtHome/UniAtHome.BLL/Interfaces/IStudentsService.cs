@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.Students;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using UniAtHome.BLL.DTOs;
 
 namespace UniAtHome.BLL.Interfaces
 {
     public interface IStudentsService
     {
-        Task<StudentsCoursesResponse> GetStudentsCoursesAsync(StudentsCoursesRequest request);
+        Task<IEnumerable<CourseDTO>> GetStudentsCoursesAsync(string studentEmail);
     }
 }
