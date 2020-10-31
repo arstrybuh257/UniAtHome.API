@@ -27,7 +27,11 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ObjectResult> GetCoursesForTeacher(string email)
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = email };
-            return Ok(await teacherService.GetTeahersCoursesAsync(coursesRequest));
+            GetCoursesResponse response = new GetCoursesResponse
+            {
+                Courses = mapper.Map<IEnumerable<CourseResponseModel>>(await teacherService.GetTeahersCoursesAsync(coursesRequest))
+            };
+            return Ok(response);
         }
 
         [HttpGet("courses")]
