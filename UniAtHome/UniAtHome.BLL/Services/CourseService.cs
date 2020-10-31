@@ -39,6 +39,19 @@ namespace UniAtHome.BLL.Services
             await courseRepository.SaveChangesAsync();
         }
 
+        public async Task<bool> DeleteCourseAsync(int id)
+        {
+            var course = await courseRepository.GetByIdAsync(id);
+            if (course != null)
+            {
+                courseRepository.Remove(course);
+                await courseRepository.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<IEnumerable<CourseDTO>> GetCoursesByNameAsync(string name)
         {
             var courses = await courseRepository.Find(

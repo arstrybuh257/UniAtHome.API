@@ -50,5 +50,18 @@ namespace UniAtHome.WebAPI.Controllers
 
             return BadRequest();
         }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourse(int id)
+        {
+            //temporary
+            if (await courseService.DeleteCourseAsync(id))
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
     }
 }
