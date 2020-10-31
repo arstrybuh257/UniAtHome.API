@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20201027204343_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201028161428_InitialCreate.cs" />
     <Compile Remove="Migrations\20201028161428_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201031162848_ReferenceFromLessonToCourse.cs" />
+    <Compile Remove="Migrations\20201031162848_ReferenceFromLessonToCourse.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

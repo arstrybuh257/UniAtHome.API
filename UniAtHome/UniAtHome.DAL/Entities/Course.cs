@@ -13,5 +13,7 @@ namespace UniAtHome.DAL.Entities
         public string Description { get; set; }
 
         public List<CourseMember> CourseMembers { get; set; }
+        public List<Lesson> Lessons { get; set; }
+
     }
 }

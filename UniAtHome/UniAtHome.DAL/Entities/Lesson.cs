@@ -8,6 +8,10 @@ namespace UniAtHome.DAL.Entities
 
         public string Description { get; set; }
 
+        public int CourseId { get; set; }
+
+        public Course Course { get; set; }
+
         public List<Timetable> Timetables { get; set; }
     }
 }
