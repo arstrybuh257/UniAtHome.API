@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs;
+using UniAtHome.BLL.DTOs.Lesson;
 
 namespace UniAtHome.BLL.Interfaces
 {
@@ -8,11 +9,12 @@ namespace UniAtHome.BLL.Interfaces
     {
         Task<LessonDTO> GetLessonByIdAsync(int id);
 
-        Task AddLessonAsync(LessonDTO lesson);
-
         Task<IEnumerable<LessonDTO>> GetLessonsByCourseIdAsync(int id);
 
         //temporary returning boolean
         Task<bool> DeleteLessonAsync(int id);
+
+        //temporary returning boolean
+        Task<bool> AddLessonAsync(CreateLessonDTO createLessonDTO);
     }
 }
