@@ -8,9 +8,9 @@ namespace UniAtHome.BLL.Interfaces
     {
         Task<LessonDTO> GetLessonByIdAsync(int id);
 
-        Task AddLessonAsync(LessonDTO course);
+        Task AddLessonAsync(LessonDTO lesson);
 
-        Task<IEnumerable<LessonDTO>> GetLessonsByCourseIdAsync(string name);
+        Task<IEnumerable<LessonDTO>> GetLessonsByCourseIdAsync(int id);
 
         //temporary returning boolean
         Task<bool> DeleteLessonAsync(int id);

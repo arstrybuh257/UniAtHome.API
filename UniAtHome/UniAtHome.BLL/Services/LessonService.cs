@@ -22,23 +22,34 @@ namespace UniAtHome.BLL.Services
 
         public async Task<LessonDTO> GetLessonByIdAsync(int id)
         {
-            return await this.lessonRepository.GetByIdAsync(id);
+            return mapper.Map<LessonDTO>(await lessonRepository.GetByIdAsync(id));
         }
 
-        public Task AddLessonAsync(LessonDTO course)
+        public async Task AddLessonAsync(LessonDTO lessonDto)
         {
-
+            //TODO: check if category exists or handle error
+            var lesson = mapper.Map<Lesson>(lessonDto);
+            await lessonRepository.AddAsync(lesson);
         }
 
-        public Task<IEnumerable<LessonDTO>> GetLessonsByCourseIdAsync(string name)
+        public async Task<IEnumerable<LessonDTO>> GetLessonsByCourseIdAsync(int id)
         {
-
+            var lessons = await lessonRepository.Find(l => l.CourseId == id);
+            return mapper.Map<IEnumerable<LessonDTO>>(lessons);
         }
 
         //temporary returning boolean
-        public Task<bool> DeleteLessonAsync(int id)
+        public async Task<bool> DeleteLessonAsync(int id)
         {
+            var lesson = await lessonRepository.GetByIdAsync(id);
+            if (lesson != null)
+            {
+                lessonRepository.Remove(lesson);
+                await lessonRepository.SaveChangesAsync();
+                return true;
+            }
 
+            return false;
         }
     }
 }
