@@ -10,7 +10,7 @@ namespace UniAtHome.BLL.DTOs
 
         public string Description { get; set; }
 
-        public string TeacherId { get; set; }
+        public string TeacherEmail { get; set; }
 
         public DateTime Added { get; set; }
     }

@@ -106,19 +106,5 @@ namespace UniAtHome.WebAPI.Controllers
 
             return Ok(response);
         }
-
-        [Authorize]
-        [HttpGet("check")]
-        public ActionResult<string> CheckAuthorization()
-        {
-            return Ok();
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("checkAdmin")]
-        public ActionResult<string> CheckAdmin()
-        {
-            return Ok();
-        }
     }
 }
