@@ -6,7 +6,7 @@ using UniAtHome.BLL.DTOs.Students;
 
 namespace UniAtHome.BLL.Interfaces
 {
-    public interface IStudentsService
+    public interface IStudentService
     {
         Task<IEnumerable<CourseDTO>> GetStudentsCoursesAsync(StudentsCoursesRequest coursesRequest);
 

@@ -43,11 +43,11 @@ namespace UniAtHome.WebAPI.Extensions
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ICourseService, CourseService>();
-            services.AddTransient<UsersRepository>();
+            services.AddTransient<UserRepository>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
-            services.AddTransient<IStudentsService, StudentsService>();
+            services.AddTransient<IStudentService, StudentService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 

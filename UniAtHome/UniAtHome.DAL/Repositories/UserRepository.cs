@@ -9,7 +9,7 @@ using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.DAL.Repositories
 {
-    public class UsersRepository
+    public class UserRepository
     {
         private readonly DbContext context;
 
@@ -17,7 +17,7 @@ namespace UniAtHome.DAL.Repositories
 
         private readonly int refreshTokenLifetime;
 
-        public UsersRepository(
+        public UserRepository(
             DbContext context,
             UserManager<User> userManager, 
             IConfiguration config)

@@ -12,7 +12,7 @@ using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
 {
-    public class StudentsService : AuthService, IStudentsService
+    public class StudentService : AuthService, IStudentService
     {
         private readonly IRepository<Student> studentRepository;
 
@@ -20,8 +20,8 @@ namespace UniAtHome.BLL.Services
 
         private readonly IMapper mapper;
 
-        public StudentsService(
-            UsersRepository usersRepository,
+        public StudentService(
+            UserRepository usersRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory,
             IRepository<Student> studentRepository, 

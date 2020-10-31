@@ -20,7 +20,7 @@ namespace UniAtHome.BLL.Services
         private readonly IMapper mapper;
 
         public TeacherService(
-            UsersRepository usersRepository,
+            UserRepository usersRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory,
             IRepository<Teacher> teacherRepository,
