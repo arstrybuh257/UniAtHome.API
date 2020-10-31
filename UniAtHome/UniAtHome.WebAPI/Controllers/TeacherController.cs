@@ -20,14 +20,14 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ObjectResult> GetCoursesForTeacher(string email)
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = email };
-            return Ok(await this.teacherService.GetTeahersCoursesAsync(coursesRequest));
+            return Ok(await teacherService.GetTeahersCoursesAsync(coursesRequest));
         }
 
         [HttpGet("courses")]
         public async Task<ObjectResult> GetCoursesForUser()
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = User.Identity.Name };
-            return Ok(await this.teacherService.GetTeahersCoursesAsync(coursesRequest));
+            return Ok(await teacherService.GetTeahersCoursesAsync(coursesRequest));
         }
     }
 }

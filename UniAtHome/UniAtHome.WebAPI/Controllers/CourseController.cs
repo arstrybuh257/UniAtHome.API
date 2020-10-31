@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.WebAPI.Extensions;
+using UniAtHome.WebAPI.Models.Requests;
 
 namespace UniAtHome.WebAPI.Controllers
 {
@@ -11,17 +14,19 @@ namespace UniAtHome.WebAPI.Controllers
     public class CourseController : ControllerBase
     {
         private ICourseService courseService;
+        private IMapper mapper;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(ICourseService courseService, IMapper mapper)
         {
             this.courseService = courseService;
+            this.mapper = mapper;
         }
 
         // GET: api/Course/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourseById(int id)
         {
-            var course = await this.courseService.GetCourseByIdAsync(id);
+            var course = await courseService.GetCourseByIdAsync(id);
             if (course != null)
             {
                 return Ok(course);
@@ -32,35 +37,15 @@ namespace UniAtHome.WebAPI.Controllers
 
         // POST: api/Course
         [HttpPost]
-        public async Task<IActionResult> CreateCourse([FromBody] CourseDTO course)
+        [Authorize]
+        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseRequest request)
         {
-            if (course != null && ModelState.IsValid)
+            if (request != null && ModelState.IsValid)
             {
-                await this.courseService.AddCourseAsync(course);
+                var courseDto = mapper.Map<CreateCourseRequest, CourseDTO>(request);
+                courseDto.TeacherEmail = User.Identity.Name;
+                await courseService.AddCourseAsync(courseDto);
                 return Ok();
-            }
-
-            return BadRequest();
-        }
-
-        [HttpPut("{id}")]
-        public void UpdateCourse(int id, [FromBody] string value)
-        {
-        }
-
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-
-        // GET: api/Course/byname?name=AVPZ
-        [HttpGet]
-        public async Task<IActionResult> GetCourseByName(string name)
-        {
-            var courses = await this.courseService.GetCoursesByNameAsync(name);
-            if (courses != null)
-            {
-                return Ok(courses);
             }
 
             return BadRequest();

@@ -34,27 +34,27 @@ namespace UniAtHome.DAL.Repositories
 
         public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
         {
-            return await this.context.Set<T>().Where(predicate).AsNoTracking().ToListAsync();
+            return await context.Set<T>().Where(predicate).AsNoTracking().ToListAsync();
         }
 
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
-            await this.context.Set<T>().AddRangeAsync(entities);
+            await context.Set<T>().AddRangeAsync(entities);
         }
 
         public void Remove(T entity)
         {
-            this.context.Set<T>().Remove(entity);
+            context.Set<T>().Remove(entity);
         }
 
         public void RemoveRange(IEnumerable<T> entities)
         {
-            this.context.Set<T>().RemoveRange(entities);
+            context.Set<T>().RemoveRange(entities);
         }
 
         public void Update(T entity)
         {
-            this.context.Set<T>().Update(entity);
+            context.Set<T>().Update(entity);
         }
     }
 }
