@@ -11,6 +11,7 @@ namespace UniAtHome.BLL.Util
         {
             CreateMap<Course, CourseDTO>().ReverseMap();
             CreateMap<CreateCourseRequest, CourseDTO>();
+            CreateMap<Lesson, LessonDTO>().ReverseMap();
         }
     }
 }
