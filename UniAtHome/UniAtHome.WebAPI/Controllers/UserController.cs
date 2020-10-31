@@ -9,7 +9,7 @@ using UniAtHome.WebAPI.Models.Users;
 namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize]
     public class UserController : ControllerBase
     {
         private readonly IAuthServiceAsync authService;
