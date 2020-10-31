@@ -35,6 +35,18 @@ namespace UniAtHome.WebAPI.Controllers
             return BadRequest();
         }
 
+        [HttpGet("{courseId}")]
+        public async Task<IActionResult> GetLessonsByCourseId(int courseId)
+        {
+            var lessons = await lessonService.GetLessonsByCourseIdAsync(id);
+            if (lessons != null)
+            {
+                return Ok(lessons);
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateLesson([FromBody] CreateLessonRequest request)
@@ -48,6 +60,19 @@ namespace UniAtHome.WebAPI.Controllers
                 };
 
                 await lessonService.AddLessonAsync(createLessonDTO);
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLesson(int id)
+        {
+            //temporary
+            if (await lessonService.DeleteLessonAsync(id))
+            {
                 return Ok();
             }
 
