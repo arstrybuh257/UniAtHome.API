@@ -48,6 +48,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
             services.AddTransient<IStudentService, StudentService>();
+            services.AddTransient<ITeacherService, TeacherService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 
