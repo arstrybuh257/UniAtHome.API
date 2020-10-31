@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Lesson;
@@ -25,6 +21,18 @@ namespace UniAtHome.WebAPI.Controllers
         {
             this.lessonService = lessonService;
             this.mapper = mapper;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetLessonById(int id)
+        {
+            var lesson = await lessonService.GetLessonByIdAsync(id);
+            if (lesson != null)
+            {
+                return Ok(lesson);
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
