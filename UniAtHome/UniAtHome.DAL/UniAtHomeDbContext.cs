@@ -94,7 +94,7 @@ namespace UniAtHome.DAL
 
             //Lesson
             modelBuilder.Entity<Lesson>().HasKey(l=>l.Id);
-            modelBuilder.Entity<Lesson>().Property(l=>l.Name).IsRequired().HasMaxLength(200);
+            modelBuilder.Entity<Lesson>().Property(l=>l.Title).IsRequired().HasMaxLength(200);
             modelBuilder.Entity<Lesson>().Property(l => l.Description).HasMaxLength(2000);
             modelBuilder.Entity<Lesson>()
                 .HasMany(l=>l.Timetables)

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.Interfaces;
-using UniAtHome.WebAPI.Extensions;
 using UniAtHome.WebAPI.Models.Requests;
 
 namespace UniAtHome.WebAPI.Controllers

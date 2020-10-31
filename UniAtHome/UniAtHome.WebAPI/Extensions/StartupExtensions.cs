@@ -8,11 +8,11 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Services;
-using UniAtHome.BLL.Util;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
+using UniAtHome.WebAPI.Configuration;
 
 namespace UniAtHome.WebAPI.Extensions
 {
@@ -42,13 +42,16 @@ namespace UniAtHome.WebAPI.Extensions
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<ICourseService, CourseService>();
             services.AddTransient<UserRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
+
+            services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<ITeacherService, TeacherService>();
+            services.AddTransient<ILessonService, LessonService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 
