@@ -68,7 +68,7 @@ namespace UniAtHome.WebAPI
                 endpoints.MapControllers();
             });
 
-            //context.Database.Migrate();
+            context.Database.Migrate();
         }
     }
 }

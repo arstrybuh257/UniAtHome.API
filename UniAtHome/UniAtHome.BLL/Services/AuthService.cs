@@ -14,14 +14,14 @@ namespace UniAtHome.BLL.Services
 {
     public class AuthService
     {
-        private readonly UsersRepository usersRepository;
+        private readonly UserRepository usersRepository;
 
         private readonly IAuthTokenGenerator tokenGenerator;
 
         private readonly IRefreshTokenFactory refreshTokenFactory;
 
         public AuthService(
-            UsersRepository usersRepository,
+            UserRepository usersRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory)
         {

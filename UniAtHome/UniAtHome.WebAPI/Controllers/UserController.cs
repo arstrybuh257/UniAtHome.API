@@ -10,11 +10,11 @@ namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IAuthServiceAsync authService;
 
-        public UsersController(IAuthServiceAsync authService)
+        public UserController(IAuthServiceAsync authService)
         {
             this.authService = authService;
         }
