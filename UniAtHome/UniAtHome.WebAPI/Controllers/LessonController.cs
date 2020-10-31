@@ -10,7 +10,7 @@ using UniAtHome.WebAPI.Models.Requests;
 namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize]
     public class LessonController : ControllerBase
     {
         private ILessonService lessonService;

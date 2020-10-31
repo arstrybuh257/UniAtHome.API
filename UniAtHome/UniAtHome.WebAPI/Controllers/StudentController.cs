@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs.Students;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Responses;
 using UniAtHome.WebAPI.Models.Responses.Course;
 
 namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[ApiController, Authorize]
-    [ApiController]
+    [ApiController, Authorize]
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService studentsService;
@@ -26,6 +26,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpGet("courses/{email}")]
+        [Authorize(Roles = RoleName.ADMIN)]
         public async Task<ObjectResult> GetCoursesForStudent(string email)
         {
             var coursesRequest = new StudentsCoursesRequest { StudentEmail = email };
@@ -37,6 +38,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpGet("courses")]
+        [Authorize(Roles = RoleName.STUDENT)]
         public async Task<ObjectResult> GetCoursesForUser()
         {
             var coursesRequest = new StudentsCoursesRequest { StudentEmail = User.Identity.Name };

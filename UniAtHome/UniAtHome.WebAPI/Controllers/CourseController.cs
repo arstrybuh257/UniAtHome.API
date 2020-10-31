@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Requests;
 
 namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize]
     public class CourseController : ControllerBase
     {
         private ICourseService courseService;
@@ -36,7 +37,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         // POST: api/Course
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = RoleName.TEACHER)]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseRequest request)
         {
             if (request != null && ModelState.IsValid)
@@ -50,8 +51,8 @@ namespace UniAtHome.WebAPI.Controllers
             return BadRequest();
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
+        [Authorize(Roles = RoleName.TEACHER)]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             //temporary
