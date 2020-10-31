@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UniAtHome.BLL.DTOs.Students;
 using UniAtHome.BLL.Interfaces;
 
 namespace UniAtHome.WebAPI.Controllers
@@ -19,13 +20,15 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpGet("courses/{email}")]
         public async Task<ObjectResult> GetCoursesForStudent(string email)
         {
-            return Ok(await studentsService.GetStudentsCoursesAsync(email));
+            var coursesRequest = new StudentsCoursesRequest { StudentEmail = email };
+            return Ok(await studentsService.GetStudentsCoursesAsync(coursesRequest));
         }
 
         [HttpGet("courses")]
         public async Task<ObjectResult> GetCoursesForUser()
         {
-            return Ok(await studentsService.GetStudentsCoursesAsync(User.Identity.Name));
+            var coursesRequest = new StudentsCoursesRequest { StudentEmail = User.Identity.Name };
+            return Ok(await studentsService.GetStudentsCoursesAsync(coursesRequest));
         }
     }
 }
