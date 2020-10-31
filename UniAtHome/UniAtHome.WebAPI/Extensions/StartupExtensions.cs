@@ -8,11 +8,11 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Services;
-using UniAtHome.BLL.Util;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
+using UniAtHome.WebAPI.Configuration;
 
 namespace UniAtHome.WebAPI.Extensions
 {
@@ -43,6 +43,7 @@ namespace UniAtHome.WebAPI.Extensions
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<UserRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
 

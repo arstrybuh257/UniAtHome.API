@@ -4,7 +4,7 @@ namespace UniAtHome.DAL.Entities
 {
     public class Lesson : BaseAuditableEntity
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public string Description { get; set; }
 

@@ -14,11 +14,11 @@ namespace UniAtHome.BLL.Services
     {
         private readonly IRepository<Lesson> lessonRepository;
 
-        private readonly  IRepository<Course> courseRepository;
+        private readonly  ICourseRepository courseRepository;
 
         private readonly IMapper mapper;
 
-        public LessonService(IRepository<Lesson> lessonRepository, IRepository<Course> courseRepository, IMapper mapper)
+        public LessonService(IRepository<Lesson> lessonRepository, ICourseRepository courseRepository, IMapper mapper)
         {
             this.lessonRepository = lessonRepository;
             this.courseRepository = courseRepository;
@@ -33,16 +33,15 @@ namespace UniAtHome.BLL.Services
         //temporary returning boolean
         public async Task<bool> AddLessonAsync(CreateLessonDTO createLessonDTO)
         {
-            //TODO: should return erros if category doesn't exist and/or 
+            //TODO: should return errors if category doesn't exist and/or 
             //if the teacher who sent this request can't add lesson to the course they doesn`t belong to
-            var course = await courseRepository.GetByIdAsync(createLessonDTO.Lesson.CourseId);
-            if (course != null && course.CourseMembers.Where(
-                m => m.Teacher.User.Email == createLessonDTO.TeacherEmail).First() != null)
+            var course = await courseRepository.GetCourseByIdAsync(createLessonDTO.Lesson.CourseId);
+            if (course!= null && course.CourseMembers.First(m => m.Teacher.User.Email == createLessonDTO.TeacherEmail) != null)
             {
                 var lesson = mapper.Map<Lesson>(createLessonDTO.Lesson);
                 await lessonRepository.AddAsync(lesson);
+                await lessonRepository.SaveChangesAsync();
                 return true;
-
             }
 
             return false;
