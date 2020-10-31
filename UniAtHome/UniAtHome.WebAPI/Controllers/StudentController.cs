@@ -7,7 +7,8 @@ using UniAtHome.BLL.Interfaces;
 namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController, Authorize]
+    //[ApiController, Authorize]
+    [ApiController]
     public class StudentsController : ControllerBase
     {
         private IStudentService studentsService;
