@@ -22,10 +22,9 @@ namespace UniAtHome.DAL.Repositories
             return await context.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> AddAsync(T item)
+        public async Task AddAsync(T item)
         {
             await context.Set<T>().AddAsync(item);
-            return item;
         }
 
         public async Task SaveChangesAsync()

@@ -14,15 +14,13 @@ namespace UniAtHome.BLL.Services
     public class CourseService: ICourseService
     {
         private readonly IRepository<Course> courseRepository;
-        private readonly IRepository<CourseMember> courseMemberRepository;
         private readonly UserRepository userRepository;
         private readonly IMapper mapper;
 
-        public CourseService(IRepository<Course> courseRepository, IMapper mapper, IRepository<CourseMember> courseMemberRepository, UserRepository userRepository)
+        public CourseService(IRepository<Course> courseRepository, IMapper mapper,  UserRepository userRepository)
         {
             this.courseRepository = courseRepository;
             this.mapper = mapper;
-            this.courseMemberRepository = courseMemberRepository;
             this.userRepository = userRepository;
         }
 
@@ -35,11 +33,10 @@ namespace UniAtHome.BLL.Services
         public async Task AddCourseAsync(CourseDTO courseDto)
         {
             var course = mapper.Map<Course>(courseDto);
-            var newCourse = await courseRepository.AddAsync(course);
-            await courseRepository.SaveChangesAsync();
             var teacherId = (await userRepository.FindByEmailAsync(courseDto.TeacherEmail)).Id;
-            await courseMemberRepository.AddAsync(new CourseMember(teacherId, newCourse.Id));
-            await courseMemberRepository.SaveChangesAsync();
+            course.CourseMembers.Add(new CourseMember() { TeacherId = teacherId });
+            await courseRepository.AddAsync(course);
+            await courseRepository.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<CourseDTO>> GetCoursesByNameAsync(string name)

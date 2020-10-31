@@ -7,7 +7,7 @@ namespace UniAtHome.DAL.Interfaces
 {
     public interface IRepository<T> where T: class
     {
-        Task<T> AddAsync(T item);
+        Task AddAsync(T item);
 
         Task AddRangeAsync(IEnumerable<T> entities);
 
