@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Auth;
+using UniAtHome.BLL.DTOs.Teacher;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
@@ -11,7 +12,7 @@ using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
 {
-    public class TeacherService: AuthService
+    public class TeacherService: AuthService, ITeacherService
     {
         private readonly IRepository<Teacher> teacherRepository;
 
@@ -32,8 +33,10 @@ namespace UniAtHome.BLL.Services
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<CourseDTO>> GetTeahersCoursesAsync(string teacherEmail)
+        public async Task<IEnumerable<CourseDTO>> GetTeahersCoursesAsync(TeachersCoursesRequest coursesRequest)
         {
+            var teacherEmail = coursesRequest.TeacherEmail;
+
             var courses = await courseRepository.Find(
                 course => course.CourseMembers.Any(
                     members => members.Teacher.User.Email == teacherEmail));
