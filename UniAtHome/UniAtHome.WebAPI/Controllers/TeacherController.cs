@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs.Teacher;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.WebAPI.Models.Responses;
+using UniAtHome.WebAPI.Models.Responses.Course;
 
 namespace UniAtHome.WebAPI.Controllers
 {
@@ -9,11 +13,14 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController]
     public class TeacherController : ControllerBase
     {
-        private ITeacherService teacherService;
+        private readonly ITeacherService teacherService;
 
-        public TeacherController(ITeacherService teacherService)
+        private readonly IMapper mapper;
+
+        public TeacherController(ITeacherService teacherService, IMapper mapper)
         {
             this.teacherService = teacherService;
+            this.mapper = mapper;
         }
 
         [HttpGet("courses/{email}")]
@@ -27,7 +34,10 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ObjectResult> GetCoursesForUser()
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = User.Identity.Name };
-            return Ok(await teacherService.GetTeahersCoursesAsync(coursesRequest));
+            GetCoursesResponse response = new GetCoursesResponse { 
+                Courses = mapper.Map<IEnumerable<CourseResponseModel>>(await teacherService.GetTeahersCoursesAsync(coursesRequest))
+            };
+            return Ok(response);
         }
     }
 }

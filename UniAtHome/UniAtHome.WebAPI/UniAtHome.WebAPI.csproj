@@ -22,10 +22,6 @@
     <ProjectReference Include="..\UniAtHome.DAL\UniAtHome.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Responses\" />
-  </ItemGroup>
-
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 
