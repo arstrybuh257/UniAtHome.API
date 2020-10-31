@@ -8,11 +8,11 @@ namespace UniAtHome.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController, Authorize]
-    public class StudentsController : ControllerBase
+    public class StudentController : ControllerBase
     {
         private IStudentsService studentsService;
 
-        public StudentsController(IStudentsService studentsService)
+        public StudentController(IStudentsService studentsService)
         {
             this.studentsService = studentsService;
         }
