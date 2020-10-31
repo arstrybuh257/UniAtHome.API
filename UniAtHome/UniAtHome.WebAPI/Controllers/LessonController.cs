@@ -35,7 +35,7 @@ namespace UniAtHome.WebAPI.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{courseId}")]
+        [HttpGet("courseLessons/{courseId}")]
         public async Task<IActionResult> GetLessonsByCourseId(int courseId)
         {
             var lessons = await lessonService.GetLessonsByCourseIdAsync(courseId);
