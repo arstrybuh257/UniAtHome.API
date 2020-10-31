@@ -67,6 +67,10 @@ namespace UniAtHome.DAL
                 .HasMany(c => c.CourseMembers)
                 .WithOne(cm => cm.Course)
                 .HasForeignKey(cm => cm.CourseId);
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.Lessons)
+                .WithOne(cm => cm.Course)
+                .HasForeignKey(cm => cm.CourseId);
 
             modelBuilder.Entity<CourseMember>().HasKey(cm => cm.Id);
 
@@ -95,7 +99,7 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<Lesson>()
                 .HasMany(l=>l.Timetables)
                 .WithOne(tt=>tt.Lesson)
-                .HasForeignKey(tt=>tt.LessonId);
+                .HasForeignKey(tt=>tt.LessonId).OnDelete(DeleteBehavior.NoAction);
 
             //Timetable
             modelBuilder.Entity<Timetable>().HasKey(tt => new { tt.GroupId, tt.LessonId });
