@@ -14,7 +14,9 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<Course, CourseDTO>().ReverseMap();
             CreateMap<Lesson, LessonDTO>().ReverseMap();
 
-            CreateMap<CreateCourseRequest, CourseDTO>();
+            CreateMap<CreateCourseRequest, CourseDTO>().ForMember(
+                dest => dest.Name,
+                opt => opt.MapFrom(src => src.Title));
             CreateMap<CreateLessonRequest, LessonDTO>();
 
             CreateMap<CourseDTO, CourseResponse>().ForMember(
