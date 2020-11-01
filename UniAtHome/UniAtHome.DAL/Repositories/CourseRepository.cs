@@ -14,6 +14,7 @@ namespace UniAtHome.DAL.Repositories
         public CourseRepository(DbContext context) : base(context)
         {
         }
+
         public async Task<Course> GetCourseByIdAsync(int id)
         {
             return await context.Set<Course>()
@@ -21,6 +22,13 @@ namespace UniAtHome.DAL.Repositories
                 .ThenInclude(m=>m.Teacher)
                 .ThenInclude(t=>t.User)
                 .Where(c=>c.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Course> GetCourseWithLessonsByIdAsync(int id)
+        {
+            return await context.Set<Course>()
+                .Include(c => c.Lessons)
+                .Where(c => c.Id == id).FirstOrDefaultAsync();
         }
     }
 }

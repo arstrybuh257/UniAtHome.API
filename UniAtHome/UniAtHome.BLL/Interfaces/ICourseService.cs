@@ -8,6 +8,8 @@ namespace UniAtHome.BLL.Interfaces
     {
         Task<CourseDTO> GetCourseByIdAsync(int id);
 
+        Task<CourseDTO> GetCourseWithLessonsByIdAsync(int id);
+
         Task AddCourseAsync(CourseDTO course);
 
         Task<IEnumerable<CourseDTO>> GetCoursesByNameAsync(string name);

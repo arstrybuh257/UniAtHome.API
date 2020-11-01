@@ -32,7 +32,7 @@ namespace UniAtHome.WebAPI.Controllers
             var coursesRequest = new StudentsCoursesRequest { StudentEmail = email };
             GetCoursesResponse response = new GetCoursesResponse
             {
-                Courses = mapper.Map<IEnumerable<CourseResponseModel>>(await studentsService.GetStudentsCoursesAsync(coursesRequest))
+                Courses = mapper.Map<IEnumerable<CourseResponse>>(await studentsService.GetStudentsCoursesAsync(coursesRequest))
             };
             return Ok(response);
         }
@@ -44,7 +44,7 @@ namespace UniAtHome.WebAPI.Controllers
             var coursesRequest = new StudentsCoursesRequest { StudentEmail = User.Identity.Name };
             GetCoursesResponse response = new GetCoursesResponse
             {
-                Courses = mapper.Map<IEnumerable<CourseResponseModel>>(await studentsService.GetStudentsCoursesAsync(coursesRequest))
+                Courses = mapper.Map<IEnumerable<CourseResponse>>(await studentsService.GetStudentsCoursesAsync(coursesRequest))
             };
             return Ok(response);
         }

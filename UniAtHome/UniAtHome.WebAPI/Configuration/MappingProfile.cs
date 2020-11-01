@@ -3,6 +3,7 @@ using UniAtHome.BLL.DTOs;
 using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
+using UniAtHome.WebAPI.Models.Responses.Lesson;
 
 namespace UniAtHome.WebAPI.Configuration
 {
@@ -16,7 +17,10 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<CreateCourseRequest, CourseDTO>();
             CreateMap<CreateLessonRequest, LessonDTO>();
 
-            CreateMap<CourseDTO, CourseResponseModel>();
+            CreateMap<CourseDTO, CourseResponse>().ForMember(
+                dest => dest.Title,
+                opt => opt.MapFrom(src => src.Name));
+            CreateMap<LessonDTO, LessonResponse>();
         }
     }
 }
