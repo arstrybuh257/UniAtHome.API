@@ -47,8 +47,10 @@ namespace UniAtHome.WebAPI.Controllers
                     TeacherEmail = User.Identity.Name 
                 };
 
-                await lessonService.AddLessonAsync(createLessonDTO);
-                return Ok();
+                if (await lessonService.AddLessonAsync(createLessonDTO))
+                {
+                    return Ok();
+                }
             }
 
             return BadRequest();
