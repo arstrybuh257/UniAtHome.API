@@ -30,11 +30,8 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ObjectResult> GetCoursesForTeacher(string email)
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = email };
-            GetCoursesResponse response = new GetCoursesResponse
-            {
-                Courses = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest))
-            };
-            return Ok(response);
+            var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest));
+            return Ok(coursesResponse);
         }
 
         [HttpGet("courses")]
@@ -42,10 +39,8 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ObjectResult> GetCoursesForUser()
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = User.Identity.Name };
-            GetCoursesResponse response = new GetCoursesResponse { 
-                Courses = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest))
-            };
-            return Ok(response);
+            var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest));
+            return Ok(coursesResponse);
         }
     }
 }
