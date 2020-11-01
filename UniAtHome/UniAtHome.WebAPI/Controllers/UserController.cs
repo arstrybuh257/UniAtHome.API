@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
@@ -50,8 +51,7 @@ namespace UniAtHome.WebAPI.Controllers
             });
             return Ok(new LoginApiResponse
             {
-                Email = response.Email,
-                Token = response.Token
+                AccessToken = "Bearer " + response.Token
             });
         }
 
@@ -81,7 +81,7 @@ namespace UniAtHome.WebAPI.Controllers
             });
             return Ok(new TokenRefreshApiResponse
             {
-                Token = response.Token
+                AccessToken = "Bearer " + response.Token
             });
         }
 
@@ -105,6 +105,28 @@ namespace UniAtHome.WebAPI.Controllers
             }
 
             return Ok(response);
+        }
+
+        [Authorize, HttpGet("info")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            UserInfoRequestDTO request = new UserInfoRequestDTO
+            {
+                Email = User.Identity.Name
+            };
+            UserInfoResponseDTO response = await authService.GetUserInfoAsync(request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Errors.First().Message);
+            }
+
+            return Ok(new UserInfoApiResponse
+            {
+                Email = response.Email,
+                FirstName = response.FirstName,
+                LastName = response.LastName,
+                Role = response.Role
+            });
         }
 
         [Authorize]

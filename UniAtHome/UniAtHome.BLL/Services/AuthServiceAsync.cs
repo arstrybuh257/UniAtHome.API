@@ -165,5 +165,23 @@ namespace UniAtHome.BLL.Services
             await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
             return new TokenRevokeResponse();
         }
+
+        public async Task<UserInfoResponseDTO> GetUserInfoAsync(UserInfoRequestDTO request)
+        {
+            var user = await usersRepository.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new UserInfoResponseDTO("User not found!");
+            }
+
+            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
+            return new UserInfoResponseDTO
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = userRoles.FirstOrDefault()
+            };
+        }
     }
 }
