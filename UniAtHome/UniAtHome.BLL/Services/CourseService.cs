@@ -13,11 +13,11 @@ namespace UniAtHome.BLL.Services
 {
     public class CourseService: ICourseService
     {
-        private readonly IRepository<Course> courseRepository;
+        private readonly ICourseRepository courseRepository;
         private readonly UserRepository userRepository;
         private readonly IMapper mapper;
 
-        public CourseService(IRepository<Course> courseRepository, IMapper mapper,  UserRepository userRepository)
+        public CourseService(ICourseRepository courseRepository, IMapper mapper,  UserRepository userRepository)
         {
             this.courseRepository = courseRepository;
             this.mapper = mapper;
@@ -27,6 +27,12 @@ namespace UniAtHome.BLL.Services
         public async Task<CourseDTO> GetCourseByIdAsync(int id)
         {
             var course = await courseRepository.GetByIdAsync(id);
+            return mapper.Map<CourseDTO>(course);
+        }
+
+        public async Task<CourseDTO> GetCourseWithLessonsByIdAsync(int id)
+        {
+            var course = await courseRepository.GetCourseWithLessonsByIdAsync(id);
             return mapper.Map<CourseDTO>(course);
         }
 

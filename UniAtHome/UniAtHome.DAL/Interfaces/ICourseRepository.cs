@@ -7,6 +7,6 @@ namespace UniAtHome.DAL.Interfaces
     {
         Task<Course> GetCourseByIdAsync(int id);
 
-        Task<Course> GetCourseByWithLessonsIdAsync(int id);
+        Task<Course> GetCourseWithLessonsByIdAsync(int id);
     }
 }

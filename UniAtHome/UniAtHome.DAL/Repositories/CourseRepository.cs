@@ -24,7 +24,7 @@ namespace UniAtHome.DAL.Repositories
                 .Where(c=>c.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<Course> GetCourseByWithLessonsIdAsync(int id)
+        public async Task<Course> GetCourseWithLessonsByIdAsync(int id)
         {
             return await context.Set<Course>()
                 .Include(c => c.Lessons)
