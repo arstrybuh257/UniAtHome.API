@@ -28,7 +28,8 @@ namespace UniAtHome.BLL.Services
                 ValidAudience = fromAppsettings.ValidAudience,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.ASCII.GetBytes(fromAppsettings.SigningKey))
+                    Encoding.ASCII.GetBytes(fromAppsettings.SigningKey)),
+                ClockSkew = TimeSpan.Zero
             };
             tokenLifetimeMinutes = fromAppsettings.TokenLifetimeMinutes;
         }
