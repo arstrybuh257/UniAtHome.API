@@ -6,5 +6,7 @@ namespace UniAtHome.DAL.Interfaces
     public interface ICourseRepository : IRepository<Course>
     {
         Task<Course> GetCourseByIdAsync(int id);
+
+        Task<Course> GetCourseByWithLessonsIdAsync(int id);
     }
 }
