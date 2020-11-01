@@ -5,6 +5,6 @@ namespace UniAtHome.WebAPI.Models.Responses
 {
     public class GetCoursesResponse
     {
-        public IEnumerable<CourseResponseModel> Courses { get; set; }
+        public IEnumerable<CourseResponse> Courses { get; set; }
     }
 }

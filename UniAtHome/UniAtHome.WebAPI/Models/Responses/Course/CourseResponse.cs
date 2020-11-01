@@ -2,11 +2,11 @@
 
 namespace UniAtHome.WebAPI.Models.Responses.Course
 {
-    public class CourseResponseModel
+    public class CourseResponse
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public string Description { get; set; }
 

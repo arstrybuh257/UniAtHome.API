@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,8 @@ using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Requests;
+using UniAtHome.WebAPI.Models.Responses.Course;
+using UniAtHome.WebAPI.Models.Responses.Lesson;
 
 namespace UniAtHome.WebAPI.Controllers
 {
@@ -30,6 +33,25 @@ namespace UniAtHome.WebAPI.Controllers
             if (course != null)
             {
                 return Ok(course);
+            }
+
+            return BadRequest();
+        }
+
+        // GET: api/Course/5
+        [HttpGet("{id}/Lessons")]
+        public async Task<IActionResult> GetCourseWithLessonsById(int id)
+        {
+            var course = await courseService.GetCourseWithLessonsByIdAsync(id);
+            if (course != null)
+            {
+                CourseWithLessonsResponse response = new CourseWithLessonsResponse
+                {
+                    Course = mapper.Map<CourseResponse>(course),
+                    ListLessons = mapper.Map<IEnumerable<LessonResponse>>(course.Lessons)
+                };
+
+                return Ok(response);
             }
 
             return BadRequest();
