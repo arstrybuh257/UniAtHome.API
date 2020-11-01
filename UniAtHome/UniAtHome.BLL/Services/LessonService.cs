@@ -36,7 +36,7 @@ namespace UniAtHome.BLL.Services
             //TODO: should return errors if category doesn't exist and/or 
             //if the teacher who sent this request can't add lesson to the course they doesn`t belong to
             var course = await courseRepository.GetCourseByIdAsync(createLessonDTO.Lesson.CourseId);
-            if (course!= null && course.CourseMembers.First(m => m.Teacher.User.Email == createLessonDTO.TeacherEmail) != null)
+            if (course!= null && course.CourseMembers.FirstOrDefault(m => m.Teacher.User.Email == createLessonDTO.TeacherEmail) != null)
             {
                 var lesson = mapper.Map<Lesson>(createLessonDTO.Lesson);
                 await lessonRepository.AddAsync(lesson);
