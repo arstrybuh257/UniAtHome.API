@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
@@ -58,13 +59,12 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpPost("refresh")]
         public async Task<ObjectResult> Refresh()
         {
-            // Not sure whether User.Identity.Name is be parsed after the token expires
-            string userEmail = User.Identity.Name;
+            bool hasToken = HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues tokenHeader);
+            string token = tokenHeader.ToString().Substring("Bearer ".Length);
             string refreshToken = HttpContext.Request.Cookies["refreshToken"];
-
             var request = new TokenRefreshRequest
             {
-                Email = userEmail,
+                AuthToken = token,
                 RefreshToken = refreshToken
             };
 
