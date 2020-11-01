@@ -82,7 +82,7 @@ namespace UniAtHome.BLL.Services
 
         public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
         {
-            User user = await usersRepository.FindByEmailAsync(request.Email);
+            User user = await usersRepository.FindByEmailAsync(request.AuthToken);
             if (user == null)
             {
                 return new TokenRefreshResponse("User does not exist!");

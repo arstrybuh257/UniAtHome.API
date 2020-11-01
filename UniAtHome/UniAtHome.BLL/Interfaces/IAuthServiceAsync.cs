@@ -12,5 +12,7 @@ namespace UniAtHome.BLL.Interfaces
         Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request);
 
         Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request);
+
+        Task<UserInfoResponseDTO> GetUserInfoAsync(UserInfoRequestDTO request);
     }
 }

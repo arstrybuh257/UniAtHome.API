@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Interfaces;
@@ -49,8 +51,7 @@ namespace UniAtHome.WebAPI.Controllers
             });
             return Ok(new LoginApiResponse
             {
-                Email = response.Email,
-                Token = response.Token
+                AccessToken = "Bearer " + response.Token
             });
         }
 
@@ -58,13 +59,12 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpPost("refresh")]
         public async Task<ObjectResult> Refresh()
         {
-            // Not sure whether User.Identity.Name is be parsed after the token expires
-            string userEmail = User.Identity.Name;
+            bool hasToken = HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues tokenHeader);
+            string token = tokenHeader.ToString().Substring("Bearer ".Length);
             string refreshToken = HttpContext.Request.Cookies["refreshToken"];
-
             var request = new TokenRefreshRequest
             {
-                Email = userEmail,
+                AuthToken = token,
                 RefreshToken = refreshToken
             };
 
@@ -81,7 +81,7 @@ namespace UniAtHome.WebAPI.Controllers
             });
             return Ok(new TokenRefreshApiResponse
             {
-                Token = response.Token
+                AccessToken = "Bearer " + response.Token
             });
         }
 
@@ -105,6 +105,28 @@ namespace UniAtHome.WebAPI.Controllers
             }
 
             return Ok(response);
+        }
+
+        [Authorize, HttpGet("info")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            UserInfoRequestDTO request = new UserInfoRequestDTO
+            {
+                Email = User.Identity.Name
+            };
+            UserInfoResponseDTO response = await authService.GetUserInfoAsync(request);
+            if (!response.Success)
+            {
+                return BadRequest(response.Errors.First().Message);
+            }
+
+            return Ok(new UserInfoApiResponse
+            {
+                Email = response.Email,
+                FirstName = response.FirstName,
+                LastName = response.LastName,
+                Role = response.Role
+            });
         }
 
         [Authorize]

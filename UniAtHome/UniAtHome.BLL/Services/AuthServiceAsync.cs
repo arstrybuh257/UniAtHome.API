@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -111,7 +112,8 @@ namespace UniAtHome.BLL.Services
 
         public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
         {
-            User user = await usersRepository.FindByEmailAsync(request.Email);
+            string userEmail = GetEmailOfAuthorizationToken(request);
+            User user = await usersRepository.FindByEmailAsync(userEmail);
             if (user == null)
             {
                 return new TokenRefreshResponse("User does not exist!");
@@ -137,6 +139,15 @@ namespace UniAtHome.BLL.Services
             };
         }
 
+        private static string GetEmailOfAuthorizationToken(TokenRefreshRequest request)
+        {
+            return new JwtSecurityTokenHandler()
+                .ReadJwtToken(request.AuthToken)
+                .Claims
+                .FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultNameClaimType)
+                .Value;
+        }
+
         public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
         {
             User user = await usersRepository.FindByEmailAsync(request.Email);
@@ -153,6 +164,24 @@ namespace UniAtHome.BLL.Services
 
             await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
             return new TokenRevokeResponse();
+        }
+
+        public async Task<UserInfoResponseDTO> GetUserInfoAsync(UserInfoRequestDTO request)
+        {
+            var user = await usersRepository.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new UserInfoResponseDTO("User not found!");
+            }
+
+            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
+            return new UserInfoResponseDTO
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = userRoles.FirstOrDefault()
+            };
         }
     }
 }
