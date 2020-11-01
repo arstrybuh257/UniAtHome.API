@@ -8,6 +8,9 @@
 
         public string Description { get; set; }
 
+        //TODO: Create enum for stroing lesson types
+        public int TypeLesson { get; set; } = 0;
+
         public int CourseId { get; set; }
     }
 }
