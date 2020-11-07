@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UniAtHome.DAL;
+using UniAtHome.WebAPI.Extensions;
 
 namespace UniAtHome.WebAPI
 {
@@ -15,14 +19,25 @@ namespace UniAtHome.WebAPI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<UniAtHomeDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<DbContext, UniAtHomeDbContext>();
+
+            services.AddCors();
+            services.AddIdentityConfiguration();
+            services.RegisterIoC();
+
+            services.AddJwtTokenAuthentication(Configuration);
+
+            services.SwaggerConfiguration();
+
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -33,12 +48,27 @@ namespace UniAtHome.WebAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            var corsUrls = new List<string>();
+            Configuration.GetSection("AllowedHosts").Bind(corsUrls);
+            app.UseCors(builder => builder.WithOrigins(corsUrls.ToArray())
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            context.Database.Migrate();
         }
     }
 }
