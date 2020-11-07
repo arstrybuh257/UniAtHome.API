@@ -59,7 +59,8 @@ namespace UniAtHome.DAL
                 .HasOne(a => a.University)
                 .WithMany(un => un.UniversityAdmins)
                 .HasForeignKey(s => s.UniversityId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Student
             modelBuilder.Entity<Student>().HasKey(s => s.UserId);
@@ -74,7 +75,8 @@ namespace UniAtHome.DAL
                 .HasOne(s => s.University)
                 .WithMany(un => un.Students)
                 .HasForeignKey(s => s.UniversityId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Teacher
             modelBuilder.Entity<Teacher>().HasKey(t => t.UserId);
@@ -89,7 +91,8 @@ namespace UniAtHome.DAL
                 .HasOne(t => t.University)
                 .WithMany(un => un.Teachers)
                 .HasForeignKey(t => t.UniversityId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Course
             modelBuilder.Entity<Course>().HasKey(ct => ct.Id);
@@ -107,7 +110,8 @@ namespace UniAtHome.DAL
                 .HasOne(c => c.University)
                 .WithMany(un => un.Courses)
                 .HasForeignKey(c => c.UniversityId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Course member
             modelBuilder.Entity<CourseMember>().HasKey(cm => cm.Id);
