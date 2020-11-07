@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace UniAtHome.DAL.Entities
+﻿namespace UniAtHome.DAL.Entities
 {
-    public class Student
+    public class UniversityAdmin
     {
         public string UserId { get; set; }
 
@@ -11,7 +9,5 @@ namespace UniAtHome.DAL.Entities
         public User User { get; set; }
 
         public University University { get; set; }
-
-        public List<StudentGroup> StudentGroups { get; set; }
     }
 }

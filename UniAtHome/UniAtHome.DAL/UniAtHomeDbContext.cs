@@ -17,6 +17,10 @@ namespace UniAtHome.DAL
 
         public DbSet<Student> Students { get; set; }
 
+        public DbSet<UniversityAdmin> UniversityAdmins { get; set; }
+
+        public DbSet<University> Universities { get; set; }
+
         public DbSet<StudentGroup> StudentGroups { get; set; }
 
         public DbSet<Timetable> Timetables { get; set; }
@@ -39,6 +43,24 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<User>().Property(u => u.FirstName).IsRequired().HasMaxLength(30);
             modelBuilder.Entity<User>().Property(u => u.LastName).IsRequired().HasMaxLength(30);
 
+            // University
+            modelBuilder.Entity<University>().HasKey(un => un.Id);
+            modelBuilder.Entity<University>()
+                .Property(un => un.Name)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            // University admin
+            modelBuilder.Entity<UniversityAdmin>().HasKey(a => a.UserId);
+            modelBuilder.Entity<UniversityAdmin>()
+                .HasOne(a => a.User)
+                .WithOne();
+            modelBuilder.Entity<UniversityAdmin>()
+                .HasOne(a => a.University)
+                .WithMany(un => un.UniversityAdmins)
+                .HasForeignKey(s => s.UniversityId)
+                .IsRequired();
+
             //Student
             modelBuilder.Entity<Student>().HasKey(s => s.UserId);
             modelBuilder.Entity<Student>()
@@ -47,17 +69,27 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<Student>()
                 .HasMany(s => s.StudentGroups)
                 .WithOne(sg => sg.Student)
-                .HasForeignKey(sg=>sg.StudentId);
+                .HasForeignKey(sg => sg.StudentId);
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.University)
+                .WithMany(un => un.Students)
+                .HasForeignKey(s => s.UniversityId)
+                .IsRequired();
 
             //Teacher
             modelBuilder.Entity<Teacher>().HasKey(t => t.UserId);
             modelBuilder.Entity<Teacher>()
-                .HasOne(t=>t.User)
+                .HasOne(t => t.User)
                 .WithOne();
             modelBuilder.Entity<Teacher>()
-                .HasMany(t=>t.CourseMembers)
-                .WithOne(cm=>cm.Teacher)
-                .HasForeignKey(cm=>cm.TeacherId);
+                .HasMany(t => t.CourseMembers)
+                .WithOne(cm => cm.Teacher)
+                .HasForeignKey(cm => cm.TeacherId);
+            modelBuilder.Entity<Teacher>()
+                .HasOne(t => t.University)
+                .WithMany(un => un.Teachers)
+                .HasForeignKey(t => t.UniversityId)
+                .IsRequired();
 
             //Course
             modelBuilder.Entity<Course>().HasKey(ct => ct.Id);
@@ -71,35 +103,41 @@ namespace UniAtHome.DAL
                 .HasMany(c => c.Lessons)
                 .WithOne(cm => cm.Course)
                 .HasForeignKey(cm => cm.CourseId);
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.University)
+                .WithMany(un => un.Courses)
+                .HasForeignKey(c => c.UniversityId)
+                .IsRequired();
 
+            // Course member
             modelBuilder.Entity<CourseMember>().HasKey(cm => cm.Id);
 
             //Group
             modelBuilder.Entity<Group>().HasKey(g => g.Id);
             modelBuilder.Entity<Group>()
-                .HasMany(g=>g.StudentGroups)
-                .WithOne(sg=>sg.Group)
-                .HasForeignKey(sg=>sg.GroupId);
+                .HasMany(g => g.StudentGroups)
+                .WithOne(sg => sg.Group)
+                .HasForeignKey(sg => sg.GroupId);
             modelBuilder.Entity<Group>()
-                .HasMany(g=>g.Timetables)
-                .WithOne(tt=>tt.Group)
-                .HasForeignKey(tt=>tt.GroupId);
+                .HasMany(g => g.Timetables)
+                .WithOne(tt => tt.Group)
+                .HasForeignKey(tt => tt.GroupId);
             modelBuilder.Entity<Group>()
-                .HasOne(g=>g.CourseMember)
-                .WithMany(cm=>cm.Groups)
-                .HasForeignKey(g=>g.CourseMemberId);
+                .HasOne(g => g.CourseMember)
+                .WithMany(cm => cm.Groups)
+                .HasForeignKey(g => g.CourseMemberId);
 
             //StudentGroup
-            modelBuilder.Entity<StudentGroup>().HasKey(sg=>new{sg.StudentId, sg.GroupId});
+            modelBuilder.Entity<StudentGroup>().HasKey(sg => new { sg.StudentId, sg.GroupId });
 
             //Lesson
-            modelBuilder.Entity<Lesson>().HasKey(l=>l.Id);
-            modelBuilder.Entity<Lesson>().Property(l=>l.Title).IsRequired().HasMaxLength(200);
+            modelBuilder.Entity<Lesson>().HasKey(l => l.Id);
+            modelBuilder.Entity<Lesson>().Property(l => l.Title).IsRequired().HasMaxLength(200);
             modelBuilder.Entity<Lesson>().Property(l => l.Description).HasMaxLength(2000);
             modelBuilder.Entity<Lesson>()
-                .HasMany(l=>l.Timetables)
-                .WithOne(tt=>tt.Lesson)
-                .HasForeignKey(tt=>tt.LessonId).OnDelete(DeleteBehavior.NoAction);
+                .HasMany(l => l.Timetables)
+                .WithOne(tt => tt.Lesson)
+                .HasForeignKey(tt => tt.LessonId).OnDelete(DeleteBehavior.NoAction);
 
             //Timetable
             modelBuilder.Entity<Timetable>().HasKey(tt => new { tt.GroupId, tt.LessonId });

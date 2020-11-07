@@ -6,7 +6,11 @@ namespace UniAtHome.DAL.Entities
     {
         public string UserId { get; set; }
 
+        public int UniversityId { get; set; }
+
         public User User { get; set; }
+
+        public University University { get; set; }
 
         public List<CourseMember> CourseMembers { get; set; }
     }
