@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20201028161428_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201031162848_ReferenceFromLessonToCourse.cs" />
     <Compile Remove="Migrations\20201031162848_ReferenceFromLessonToCourse.Designer.cs" />
+    <Compile Remove="Migrations\20201107114018_UniversityEnity.cs" />
+    <Compile Remove="Migrations\20201107114018_UniversityEnity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
