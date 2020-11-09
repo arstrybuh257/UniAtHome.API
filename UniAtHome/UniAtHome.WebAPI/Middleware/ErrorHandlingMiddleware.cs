@@ -53,11 +53,11 @@ namespace UniAtHome.WebAPI.Middleware
             if (env.IsEnvironment("Development"))
             {
                 stackTrace = exception.StackTrace;
-                result = JsonSerializer.Serialize(new { message, stackTrace });
+                result = JsonSerializer.Serialize(new { message, status, stackTrace });
             }
             else
             {
-                result = JsonSerializer.Serialize(new { message });
+                result = JsonSerializer.Serialize(new { message, status });
             }
 
             context.Response.ContentType = "application/json";
