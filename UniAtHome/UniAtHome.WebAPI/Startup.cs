@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UniAtHome.DAL;
 using UniAtHome.WebAPI.Extensions;
+using UniAtHome.WebAPI.Middleware;
 
 namespace UniAtHome.WebAPI
 {
@@ -43,6 +44,8 @@ namespace UniAtHome.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseHttpsRedirection();
 
