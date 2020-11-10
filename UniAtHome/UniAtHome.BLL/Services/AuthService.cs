@@ -125,7 +125,7 @@ namespace UniAtHome.BLL.Services
             }
 
             var newRefreshToken = refreshTokenFactory.GenerateRefreshToken();
-            await usersRepository.DeleteRefreshTokenAsync(user, token);
+            await usersRepository.DeleteRefreshTokenAsync(token);
             await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
 
             Claim[] tokenClaims = await GetAuthTokenClaimsForUserAsync(user);
@@ -162,7 +162,7 @@ namespace UniAtHome.BLL.Services
                 throw new ForbiddenException("Refresh token is not valid!");
             }
 
-            await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
+            await usersRepository.DeleteRefreshTokenAsync(refreshToken);
         }
 
         public async Task<UserInfoResponseDTO> GetUserInfoAsync(string email)

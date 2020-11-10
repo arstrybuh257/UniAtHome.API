@@ -70,7 +70,7 @@ namespace UniAtHome.DAL.Repositories
                 .FirstOrDefault(token => token.UserId == user.Id && token.Token == refreshToken);
         }
 
-        public async Task DeleteRefreshTokenAsync(User user, RefreshToken refreshToken)
+        public async Task DeleteRefreshTokenAsync(RefreshToken refreshToken)
         {
             context.Set<RefreshToken>().Remove(refreshToken);
             await context.SaveChangesAsync(); // I'm not sure when and where to put it 
