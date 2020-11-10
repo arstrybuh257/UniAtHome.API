@@ -1,6 +1,6 @@
 ﻿namespace UniAtHome.BLL.DTOs.Auth
 {
-    public sealed class TokenRevokeRequest
+    public sealed class TokenRevokeDTO
     {
         public string Email { get; set; }
 

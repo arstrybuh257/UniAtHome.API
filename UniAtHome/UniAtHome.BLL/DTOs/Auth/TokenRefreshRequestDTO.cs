@@ -1,6 +1,6 @@
 ﻿namespace UniAtHome.BLL.DTOs.Auth
 {
-    public sealed class TokenRefreshRequest
+    public sealed class TokenRefreshRequestDTO
     {
         public string AuthToken { get; set; }
 

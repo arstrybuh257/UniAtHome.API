@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UniAtHome.BLL.DTOs.Auth
 {
-    public sealed class RegistrationRequest
+    public sealed class RegistrationDTO
     {
         [Required]
         public string FirstName { get; set; }
