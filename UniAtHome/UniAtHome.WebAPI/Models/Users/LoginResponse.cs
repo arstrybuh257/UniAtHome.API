@@ -1,6 +1,6 @@
 ﻿namespace UniAtHome.WebAPI.Models.Users
 {
-    public sealed class TokenRefreshApiResponse
+    public sealed class LoginResponse
     {
         public string AccessToken { get; set; }
     }

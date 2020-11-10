@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Users;
 
 namespace UniAtHome.WebAPI.Controllers
@@ -17,16 +19,68 @@ namespace UniAtHome.WebAPI.Controllers
     {
         private readonly IAuthService authService;
 
-        public UserController(IAuthService authService)
+        private readonly IUniversityService universityService;
+
+        private readonly IMapper mapper;
+
+        public UserController(IAuthService authService, IUniversityService universityService, IMapper mapper)
         {
             this.authService = authService;
+            this.universityService = universityService;
+            this.mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] RegistrationDTO request)
+        [Authorize(Roles = RoleName.ADMIN)]
+        [HttpPost("registerAdmin")]
+        public async Task<ActionResult> RegisterAdmin([FromBody] AdminRegistrationRequest request)
         {
-            await authService.RegisterAsync(request);
+            var dto = mapper.Map<AdminRegistrationDTO>(request);
+            await authService.RegisterAdminAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
+        [HttpPost("registerUniversityAdmin")]
+        public async Task<ActionResult> RegisterUniversityAdmin([FromBody] UniversityAdminRegistrationRequest request)
+        {
+            if (!await User.HasUniversityAdminOrHigherAccessToUniversity(request.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights!");
+            }
+
+            var dto = mapper.Map<UniversityAdminRegistrationDTO>(request);
+            await authService.RegisterUniversityAdminAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
+        [HttpPost("registerTeacher")]
+        public async Task<ActionResult> RegisterTeacher([FromBody] TeacherRegistrationRequest request)
+        {
+            if (!await User.HasUniversityAdminOrHigherAccessToUniversity(request.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights!");
+            }
+
+            var dto = mapper.Map<TeacherRegistrationDTO>(request);
+            await authService.RegisterTeacherAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
+        [HttpPost("registerStudent")]
+        public async Task<ActionResult> RegisterStudent([FromBody] StudentRegistrationRequest request)
+        {
+            if (!await User.HasUniversityAdminOrHigherAccessToUniversity(request.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights!");
+            }
+
+            var dto = mapper.Map<StudentRegistrationDTO>(request);
+            await authService.RegisterStudentAsync(dto);
 
             return Ok();
         }
@@ -42,7 +96,7 @@ namespace UniAtHome.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true
             });
-            return Ok(new LoginApiResponse
+            return Ok(new LoginResponse
             {
                 AccessToken = "Bearer " + response.Token
             });
@@ -73,7 +127,7 @@ namespace UniAtHome.WebAPI.Controllers
                 HttpOnly = true,
                 Secure = true
             });
-            return Ok(new TokenRefreshApiResponse
+            return Ok(new TokenRefreshResponse
             {
                 AccessToken = "Bearer " + response.Token
             });
@@ -103,7 +157,7 @@ namespace UniAtHome.WebAPI.Controllers
             string email = User.Identity.Name;
             UserInfoResponseDTO response = await authService.GetUserInfoAsync(email);
 
-            return Ok(new UserInfoApiResponse
+            return Ok(new UserInfoResponse
             {
                 Email = response.Email,
                 FirstName = response.FirstName,
