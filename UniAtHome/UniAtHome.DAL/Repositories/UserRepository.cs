@@ -27,14 +27,15 @@ namespace UniAtHome.DAL.Repositories
             this.refreshTokenLifetime = config.GetValue<int>("RefreshTokenLifetimeMinutes");
         }
 
-        public async Task<IdentityResult> TryCreateAsync(User user, string password, string role)
+        public async Task<IdentityResult> TryCreateAsync(User user, string password)
         {
             var addingResult = await userManager.CreateAsync(user, password);
-            if (addingResult.Succeeded)
-            {
-                await userManager.AddToRoleAsync(user, role);
-            }
             return addingResult;
+        }
+
+        public async Task AddUserToRole(User user, string role)
+        {
+            await userManager.AddToRoleAsync(user, role);
         }
 
         public Task<bool> CheckPasswordAsync(User user, string password)

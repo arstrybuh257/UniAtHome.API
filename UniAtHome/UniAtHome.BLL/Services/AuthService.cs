@@ -17,6 +17,10 @@ namespace UniAtHome.BLL.Services
     {
         private readonly UserRepository usersRepository;
 
+        private readonly IRepository<University> universityRepository;
+
+        private readonly IRepository<UniversityAdmin> universityAdminRepository;
+
         private readonly IRepository<Teacher> teachersRepository;
 
         private readonly IRepository<Student> studentsRepository;
@@ -27,19 +31,85 @@ namespace UniAtHome.BLL.Services
 
         public AuthService(
             UserRepository usersRepository,
+            IRepository<University> universityRepository,
+            IRepository<UniversityAdmin> universityAdminRepository,
             IRepository<Teacher> teachersRepository,
             IRepository<Student> studentsRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = usersRepository;
+            this.universityAdminRepository = universityAdminRepository;
             this.teachersRepository = teachersRepository;
             this.studentsRepository = studentsRepository;
+            this.universityRepository = universityRepository;
             this.tokenGenerator = tokenGenerator;
             this.refreshTokenFactory = refreshTokenFactory;
         }
 
-        public async Task RegisterAsync(RegistrationDTO request)
+        #region Registration
+
+        public async Task RegisterAdminAsync(AdminRegistrationDTO request)
+        {
+            User adminUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRole(adminUser, RoleName.ADMIN);
+        }
+
+        public async Task RegisterUniversityAdminAsync(UniversityAdminRegistrationDTO request)
+        {
+            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            if (university == null)
+            {
+                throw new BadRequestException("University doesn't exist!");
+            }
+
+            User universityAdminUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRole(universityAdminUser, RoleName.UNIVERSITY_ADMIN);
+            await universityAdminRepository.AddAsync(new UniversityAdmin
+            {
+                UserId = universityAdminUser.Id,
+                UniversityId = request.UniversityId
+            });
+            await universityAdminRepository.SaveChangesAsync();
+        }
+
+        public async Task RegisterTeacherAsync(TeacherRegistrationDTO request)
+        {
+            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            if (university == null)
+            {
+                throw new BadRequestException("University doesn't exist!");
+            }
+
+            User teacherUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRole(teacherUser, RoleName.TEACHER);
+            await teachersRepository.AddAsync(new Teacher
+            {
+                UserId = teacherUser.Id,
+                UniversityId = request.UniversityId
+            });
+            await teachersRepository.SaveChangesAsync();
+        }
+
+        public async Task RegisterStudentAsync(StudentRegistrationDTO request)
+        {
+            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            if (university == null)
+            {
+                throw new BadRequestException("University doesn't exist!");
+            }
+
+            User studentUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRole(studentUser, RoleName.STUDENT);
+            await studentsRepository.AddAsync(new Student
+            {
+                UserId = studentUser.Id,
+                UniversityId = request.UniversityId
+            });
+            await studentsRepository.SaveChangesAsync();
+        }
+
+        private async Task<User> RegisterAsync(RegistrationDTO request)
         {
             var user = new User
             {
@@ -50,26 +120,17 @@ namespace UniAtHome.BLL.Services
             };
             var registerResult = await usersRepository.TryCreateAsync(
                 user: user,
-                password: request.Password,
-                role: request.Role);
+                password: request.Password);
 
             if (!registerResult.Succeeded)
             {
                 throw new BadRequestException(registerResult.Errors.First().Description);
             }
 
-            switch (request.Role)
-            {
-                case RoleName.TEACHER:
-                    await teachersRepository.AddAsync(new Teacher { UserId = user.Id });
-                    await teachersRepository.SaveChangesAsync();
-                    break;
-                case RoleName.STUDENT:
-                    await studentsRepository.AddAsync(new Student { UserId = user.Id });
-                    await studentsRepository.SaveChangesAsync();
-                    break;
-            }
+            return user;
         }
+
+        #endregion
 
         public async Task<LoginResponseDTO> LoginAsync(LoginRequestDTO request)
         {

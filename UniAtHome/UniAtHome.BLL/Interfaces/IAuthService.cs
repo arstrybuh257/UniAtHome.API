@@ -5,7 +5,13 @@ namespace UniAtHome.BLL.Interfaces
 {
     public interface IAuthService
     {
-        Task RegisterAsync(RegistrationDTO request);
+        Task RegisterAdminAsync(AdminRegistrationDTO request);
+
+        Task RegisterUniversityAdminAsync(UniversityAdminRegistrationDTO request);
+
+        Task RegisterTeacherAsync(TeacherRegistrationDTO request);
+
+        Task RegisterStudentAsync(StudentRegistrationDTO request);
 
         Task<LoginResponseDTO> LoginAsync(LoginRequestDTO request);
 
