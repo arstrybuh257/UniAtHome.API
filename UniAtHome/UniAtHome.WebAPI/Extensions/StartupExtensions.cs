@@ -54,6 +54,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<ITeacherService, TeacherService>();
             services.AddTransient<ILessonService, LessonService>();
+            services.AddTransient<IUniversityService, UniversityService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 

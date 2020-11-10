@@ -33,7 +33,7 @@ namespace UniAtHome.DAL.Repositories
             return addingResult;
         }
 
-        public async Task AddUserToRole(User user, string role)
+        public async Task AddUserToRoleAsync(User user, string role)
         {
             await userManager.AddToRoleAsync(user, role);
         }

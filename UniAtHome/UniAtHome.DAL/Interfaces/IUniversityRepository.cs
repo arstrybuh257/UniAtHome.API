@@ -5,10 +5,10 @@ namespace UniAtHome.DAL.Interfaces
 {
     public interface IUniversityRepository : IRepository<University>
     {
-        Task<bool> HasUniversityAdmin(int unversityId, string userId);
+        Task<bool> HasUniversityAdminAsync(int universityId, string userName);
 
-        Task<bool> HasTeacher(int unversityId, string userId);
+        Task<bool> HasTeacherAsync(int universityId, string userName);
 
-        Task<bool> HasStudent(int unversityId, string userId);
+        Task<bool> HasStudentAsync(int universityId, string userName);
     }
 }

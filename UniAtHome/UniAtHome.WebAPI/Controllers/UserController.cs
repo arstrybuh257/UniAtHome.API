@@ -44,7 +44,7 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpPost("registerUniversityAdmin")]
         public async Task<ActionResult> RegisterUniversityAdmin([FromBody] UniversityAdminRegistrationRequest request)
         {
-            if (!await User.HasUniversityAdminOrHigherAccessToUniversity(request.UniversityId, universityService))
+            if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
                 throw new ForbiddenException("Don't have rights!");
             }
@@ -59,7 +59,7 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpPost("registerTeacher")]
         public async Task<ActionResult> RegisterTeacher([FromBody] TeacherRegistrationRequest request)
         {
-            if (!await User.HasUniversityAdminOrHigherAccessToUniversity(request.UniversityId, universityService))
+            if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
                 throw new ForbiddenException("Don't have rights!");
             }
@@ -74,7 +74,7 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpPost("registerStudent")]
         public async Task<ActionResult> RegisterStudent([FromBody] StudentRegistrationRequest request)
         {
-            if (!await User.HasUniversityAdminOrHigherAccessToUniversity(request.UniversityId, universityService))
+            if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
                 throw new ForbiddenException("Don't have rights!");
             }

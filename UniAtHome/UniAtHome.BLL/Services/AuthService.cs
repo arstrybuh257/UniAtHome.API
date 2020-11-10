@@ -52,7 +52,7 @@ namespace UniAtHome.BLL.Services
         public async Task RegisterAdminAsync(AdminRegistrationDTO request)
         {
             User adminUser = await RegisterAsync(request);
-            await usersRepository.AddUserToRole(adminUser, RoleName.ADMIN);
+            await usersRepository.AddUserToRoleAsync(adminUser, RoleName.ADMIN);
         }
 
         public async Task RegisterUniversityAdminAsync(UniversityAdminRegistrationDTO request)
@@ -64,7 +64,7 @@ namespace UniAtHome.BLL.Services
             }
 
             User universityAdminUser = await RegisterAsync(request);
-            await usersRepository.AddUserToRole(universityAdminUser, RoleName.UNIVERSITY_ADMIN);
+            await usersRepository.AddUserToRoleAsync(universityAdminUser, RoleName.UNIVERSITY_ADMIN);
             await universityAdminRepository.AddAsync(new UniversityAdmin
             {
                 UserId = universityAdminUser.Id,
@@ -82,7 +82,7 @@ namespace UniAtHome.BLL.Services
             }
 
             User teacherUser = await RegisterAsync(request);
-            await usersRepository.AddUserToRole(teacherUser, RoleName.TEACHER);
+            await usersRepository.AddUserToRoleAsync(teacherUser, RoleName.TEACHER);
             await teachersRepository.AddAsync(new Teacher
             {
                 UserId = teacherUser.Id,
@@ -100,7 +100,7 @@ namespace UniAtHome.BLL.Services
             }
 
             User studentUser = await RegisterAsync(request);
-            await usersRepository.AddUserToRole(studentUser, RoleName.STUDENT);
+            await usersRepository.AddUserToRoleAsync(studentUser, RoleName.STUDENT);
             await studentsRepository.AddAsync(new Student
             {
                 UserId = studentUser.Id,
