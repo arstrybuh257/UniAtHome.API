@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs;
-using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.DTOs.Students;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
-using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
 {
-    public class StudentService : AuthService, IStudentService
+    public class StudentService : IStudentService
     {
         private readonly IRepository<Student> studentRepository;
 
@@ -21,12 +19,9 @@ namespace UniAtHome.BLL.Services
         private readonly IMapper mapper;
 
         public StudentService(
-            UserRepository usersRepository,
-            IAuthTokenGenerator tokenGenerator,
-            IRefreshTokenFactory refreshTokenFactory,
             IRepository<Student> studentRepository, 
             IRepository<Course> coursesRepository, 
-            IMapper mapper): base(usersRepository, tokenGenerator, refreshTokenFactory)
+            IMapper mapper)
         {
             this.studentRepository = studentRepository;
             this.coursesRepository = coursesRepository;
@@ -44,20 +39,6 @@ namespace UniAtHome.BLL.Services
                             studentGroup => studentGroup.Student.User.Email == studentEmail))));
 
             return this.mapper.Map<IEnumerable<CourseDTO>>(courses);
-        }
-
-        public async Task<RegistrationResponse> RegisterStudentAsync(RegistrationRequest request)
-        {
-            var regiserResult = await this.RegisterAsync(request);
-
-            if (!regiserResult.IdentityResult.Succeeded)
-            {
-                return new RegistrationResponse(regiserResult.IdentityResult.Errors);
-            }
-
-            await this.studentRepository.AddAsync(new Student { UserId = regiserResult.UserId });
-            await this.studentRepository.SaveChangesAsync();
-            return new RegistrationResponse();
         }
     }
 }
