@@ -8,5 +8,9 @@ namespace UniAtHome.BLL.Interfaces
     public interface ITeacherService
     {
         Task<IEnumerable<CourseDTO>> GetTeahersCoursesAsync(TeachersCoursesRequest coursesRequest);
+
+        Task<TeacherInfoDTO> GetTeacherInfoAsync(string id);
+
+        Task<TeacherInfoDTO> GetTeacherInfoByEmailAsync(string email);
     }
 }

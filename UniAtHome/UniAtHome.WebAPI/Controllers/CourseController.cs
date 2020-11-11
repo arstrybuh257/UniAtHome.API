@@ -26,16 +26,19 @@ namespace UniAtHome.WebAPI.Controllers
 
         private readonly IUniversityService universityService;
 
+        private readonly ITeacherService teacherService;
+
         public CourseController(
             ICourseService courseService, 
             IMapper mapper, 
-            IUniversityService universityService)
+            IUniversityService universityService, 
+            ITeacherService teacherService)
         {
             this.courseService = courseService;
             this.mapper = mapper;
             this.universityService = universityService;
+            this.teacherService = teacherService;
         }
-
 
         // GET: api/Course/5
         [HttpGet("{id}")]
@@ -78,6 +81,8 @@ namespace UniAtHome.WebAPI.Controllers
             {
                 var courseDto = mapper.Map<CreateCourseRequest, CourseDTO>(request);
                 courseDto.TeacherEmail = User.Identity.Name;
+                courseDto.UniversityId = (await teacherService
+                    .GetTeacherInfoByEmailAsync(User.Identity.Name)).UniversityId;
                 await courseService.AddCourseAsync(courseDto);
                 return Ok();
             }

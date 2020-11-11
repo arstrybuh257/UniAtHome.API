@@ -13,7 +13,9 @@ namespace UniAtHome.DAL.Repositories
 
         public async Task<Teacher> GetByIdAsync(string id)
         {
-            return await context.Set<Teacher>().FirstOrDefaultAsync(t => t.UserId == id);
+            return await context.Set<Teacher>()
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.UserId == id);
         }
     }
 }

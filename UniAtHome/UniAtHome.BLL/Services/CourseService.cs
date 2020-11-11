@@ -51,7 +51,11 @@ namespace UniAtHome.BLL.Services
         {
             var course = mapper.Map<Course>(courseDto);
             var teacherId = (await userRepository.FindByEmailAsync(courseDto.TeacherEmail)).Id;
-            course.CourseMembers.Add(new CourseMember() { TeacherId = teacherId });
+            course.CourseMembers.Add(
+                new CourseMember()
+                {
+                    TeacherId = teacherId
+                });
             await courseRepository.AddAsync(course);
             await courseRepository.SaveChangesAsync();
         }
