@@ -28,8 +28,15 @@ namespace UniAtHome.DAL.Repositories
         public async Task RemoveCourseMemberAsync(int courseId, string teacherId)
         {
             CourseMember binding = await context.Set<CourseMember>()
-                .FirstOrDefaultAsync(b => b.TeacherId == teacherId && b.CourseId == courseId);
+                .FirstAsync(b => b.TeacherId == teacherId && b.CourseId == courseId);
             context.Set<CourseMember>().Remove(binding);
+        }
+
+        public async Task<int> GetCourseMemberIdAsync(int courseId, string teacherId)
+        {
+            var courseMember = await context.Set<CourseMember>()
+                .FirstAsync(cm => cm.CourseId == courseId && cm.TeacherId == teacherId);
+            return courseMember.Id;
         }
 
         public IEnumerable<Teacher> GetCourseTeachers(int courseId)
@@ -37,6 +44,7 @@ namespace UniAtHome.DAL.Repositories
             return context.Set<CourseMember>()
                 .Where(c => c.CourseId == courseId)
                 .Select(c => c.Teacher)
+                .Include(t => t.User)
                 .AsNoTracking()
                 .ToArray();
         }

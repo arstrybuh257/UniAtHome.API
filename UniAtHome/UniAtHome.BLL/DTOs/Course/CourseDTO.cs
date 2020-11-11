@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UniAtHome.BLL.DTOs
+namespace UniAtHome.BLL.DTOs.Course
 {
     public class CourseDTO
     {

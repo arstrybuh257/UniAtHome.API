@@ -46,6 +46,8 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IUniversityRepository, UniversityRepository>();
             services.AddScoped<IRepository<UniversityAdmin>, Repository<UniversityAdmin>>();
+            services.AddScoped<IRepository<Student>, StudentRepository>();
+            services.AddScoped<IRepository<Group>, GroupRepository>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
 

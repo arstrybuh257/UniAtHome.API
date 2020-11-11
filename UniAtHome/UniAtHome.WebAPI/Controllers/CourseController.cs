@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs;
+using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Requests;
