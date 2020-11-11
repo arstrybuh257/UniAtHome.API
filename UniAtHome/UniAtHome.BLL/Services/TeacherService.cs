@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs;
+using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.DTOs.Teacher;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;

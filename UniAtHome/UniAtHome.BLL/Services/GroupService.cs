@@ -1,19 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Group;
 using UniAtHome.BLL.Exceptions;
+using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 
 namespace UniAtHome.BLL.Services
 {
-    public sealed class GroupService
+    public sealed class GroupService : IGroupService
     {
         private readonly ICourseRepository courseRepository;
 
-        private IGroupRepository groupRepository;
+        private readonly IGroupRepository groupRepository;
 
         public GroupService(ICourseRepository courseRepository, IGroupRepository groupRepository)
         {

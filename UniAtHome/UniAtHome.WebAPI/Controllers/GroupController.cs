@@ -14,14 +14,14 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController, Authorize]
     public class GroupController : ControllerBase
     {
-        private readonly GroupService groupService;
+        private readonly IGroupService groupService;
 
         private readonly IUniversityService universityService;
 
         private readonly ICourseService courseService;
 
         public GroupController(
-            GroupService groupService,
+            IGroupService groupService,
             IUniversityService universityService,
             ICourseService courseService)
         {
