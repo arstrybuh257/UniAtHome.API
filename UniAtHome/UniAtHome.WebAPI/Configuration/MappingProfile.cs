@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using UniAtHome.BLL.DTOs;
+using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
+using UniAtHome.WebAPI.Models.Users;
 
 namespace UniAtHome.WebAPI.Configuration
 {
@@ -23,6 +25,11 @@ namespace UniAtHome.WebAPI.Configuration
                 dest => dest.Title,
                 opt => opt.MapFrom(src => src.Name));
             CreateMap<LessonDTO, LessonResponse>();
+
+            CreateMap<AdminRegistrationRequest, AdminRegistrationDTO>();
+            CreateMap<UniversityAdminRegistrationRequest, UniversityAdminRegistrationDTO>();
+            CreateMap<StudentRegistrationRequest, StudentRegistrationDTO>();
+            CreateMap<TeacherRegistrationRequest, TeacherRegistrationDTO>();
         }
     }
 }

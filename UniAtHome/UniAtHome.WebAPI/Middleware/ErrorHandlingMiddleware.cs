@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using UniAtHome.BLL.Exceptions;
 
 namespace UniAtHome.WebAPI.Middleware
 {
@@ -33,26 +32,15 @@ namespace UniAtHome.WebAPI.Middleware
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception, IWebHostEnvironment env)
         {
-            HttpStatusCode status;
-            string message;
-            var stackTrace = String.Empty;
+            int status = 
+                (exception as CustomHttpException)?.StatusCode ?? (int)HttpStatusCode.InternalServerError;
 
-            //Here you can handle your exceptions like this:
-
-            //var exceptionType = exception.GetType();
-            //if (exceptionType == typeof(CryptographicException))
-            //{
-            //    message = exception.Message;
-            //    status = HttpStatusCode.NotFound;
-            //}
-            //else
-            status = HttpStatusCode.InternalServerError;
-            message = exception.Message;
+            string message = exception.Message;
             string result;
 
             if (env.IsEnvironment("Development"))
             {
-                stackTrace = exception.StackTrace;
+                string stackTrace = exception.StackTrace;
                 result = JsonSerializer.Serialize(new { message, status, stackTrace });
             }
             else
@@ -61,7 +49,7 @@ namespace UniAtHome.WebAPI.Middleware
             }
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)status;
+            context.Response.StatusCode = status;
             return context.Response.WriteAsync(result);
         }
     }

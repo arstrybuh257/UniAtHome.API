@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
+using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Users;
 
 namespace UniAtHome.WebAPI.Controllers
@@ -14,42 +17,86 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController, Authorize]
     public class UserController : ControllerBase
     {
-        private readonly IAuthServiceAsync authService;
+        private readonly IAuthService authService;
 
-        public UserController(IAuthServiceAsync authService)
+        private readonly IUniversityService universityService;
+
+        private readonly IMapper mapper;
+
+        public UserController(IAuthService authService, IUniversityService universityService, IMapper mapper)
         {
             this.authService = authService;
+            this.universityService = universityService;
+            this.mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] RegistrationRequest request)
+        [Authorize(Roles = RoleName.ADMIN)]
+        [HttpPost("registerAdmin")]
+        public async Task<ActionResult> RegisterAdmin([FromBody] AdminRegistrationRequest request)
         {
-            var response = await authService.RegisterAsync(request);
-            if (!response.Success)
+            var dto = mapper.Map<AdminRegistrationDTO>(request);
+            await authService.RegisterAdminAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
+        [HttpPost("registerUniversityAdmin")]
+        public async Task<ActionResult> RegisterUniversityAdmin([FromBody] UniversityAdminRegistrationRequest request)
+        {
+            if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
-                return BadRequest(response.Errors);
+                throw new ForbiddenException("Don't have rights!");
             }
 
-            return Ok(response);
+            var dto = mapper.Map<UniversityAdminRegistrationDTO>(request);
+            await authService.RegisterUniversityAdminAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
+        [HttpPost("registerTeacher")]
+        public async Task<ActionResult> RegisterTeacher([FromBody] TeacherRegistrationRequest request)
+        {
+            if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights!");
+            }
+
+            var dto = mapper.Map<TeacherRegistrationDTO>(request);
+            await authService.RegisterTeacherAsync(dto);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
+        [HttpPost("registerStudent")]
+        public async Task<ActionResult> RegisterStudent([FromBody] StudentRegistrationRequest request)
+        {
+            if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights!");
+            }
+
+            var dto = mapper.Map<StudentRegistrationDTO>(request);
+            await authService.RegisterStudentAsync(dto);
+
+            return Ok();
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ObjectResult> Login([FromBody] LoginRequest request)
+        public async Task<ObjectResult> Login([FromBody] LoginRequestDTO request)
         {
             var response = await authService.LoginAsync(request);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
 
-            }
             HttpContext.Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true
             });
-            return Ok(new LoginApiResponse
+            return Ok(new LoginResponse
             {
                 AccessToken = "Bearer " + response.Token
             });
@@ -60,26 +107,27 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ObjectResult> Refresh()
         {
             bool hasToken = HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues tokenHeader);
+            if (!hasToken)
+            {
+                throw new BadRequestException("Provide the expired token in the Athorization header!");
+            }
+
             string token = tokenHeader.ToString().Substring("Bearer ".Length);
             string refreshToken = HttpContext.Request.Cookies["refreshToken"];
-            var request = new TokenRefreshRequest
+            var request = new TokenRefreshRequestDTO
             {
                 AuthToken = token,
                 RefreshToken = refreshToken
             };
 
-            TokenRefreshResponse response = await authService.RefreshTokenAsync(request);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
-            }
+            TokenRefreshResponseDTO response = await authService.RefreshTokenAsync(request);
 
             HttpContext.Response.Cookies.Append("refreshToken", response.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true
             });
-            return Ok(new TokenRefreshApiResponse
+            return Ok(new TokenRefreshResponse
             {
                 AccessToken = "Bearer " + response.Token
             });
@@ -87,40 +135,29 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize]
         [HttpPost("revoke")]
-        public async Task<ObjectResult> Revoke()
+        public async Task<IActionResult> Revoke()
         {
             string userEmail = User.Identity.Name;
             string refreshToken = HttpContext.Request.Cookies["refreshToken"];
 
-            var request = new TokenRevokeRequest
+            var request = new TokenRevokeDTO
             {
                 Email = userEmail,
                 RefreshToken = refreshToken
             };
 
-            var response = await authService.RevokeTokenAsync(request);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors);
-            }
+            await authService.RevokeTokenAsync(request);
 
-            return Ok(response);
+            return Ok();
         }
 
         [Authorize, HttpGet("info")]
         public async Task<IActionResult> GetUserInfo()
         {
-            UserInfoRequestDTO request = new UserInfoRequestDTO
-            {
-                Email = User.Identity.Name
-            };
-            UserInfoResponseDTO response = await authService.GetUserInfoAsync(request);
-            if (!response.Success)
-            {
-                return BadRequest(response.Errors.First().Message);
-            }
+            string email = User.Identity.Name;
+            UserInfoResponseDTO response = await authService.GetUserInfoAsync(email);
 
-            return Ok(new UserInfoApiResponse
+            return Ok(new UserInfoResponse
             {
                 Email = response.Email,
                 FirstName = response.FirstName,

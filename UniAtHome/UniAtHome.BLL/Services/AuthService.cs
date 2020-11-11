@@ -1,19 +1,29 @@
 ﻿using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
+using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
-using UniAtHome.BLL.Models;
+using UniAtHome.DAL.Constants;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
 {
-    public class AuthService
+    public sealed class AuthService : IAuthService
     {
         private readonly UserRepository usersRepository;
+
+        private readonly IRepository<University> universityRepository;
+
+        private readonly IRepository<UniversityAdmin> universityAdminRepository;
+
+        private readonly IRepository<Teacher> teachersRepository;
+
+        private readonly IRepository<Student> studentsRepository;
 
         private readonly IAuthTokenGenerator tokenGenerator;
 
@@ -21,15 +31,85 @@ namespace UniAtHome.BLL.Services
 
         public AuthService(
             UserRepository usersRepository,
+            IRepository<University> universityRepository,
+            IRepository<UniversityAdmin> universityAdminRepository,
+            IRepository<Teacher> teachersRepository,
+            IRepository<Student> studentsRepository,
             IAuthTokenGenerator tokenGenerator,
             IRefreshTokenFactory refreshTokenFactory)
         {
             this.usersRepository = usersRepository;
+            this.universityAdminRepository = universityAdminRepository;
+            this.teachersRepository = teachersRepository;
+            this.studentsRepository = studentsRepository;
+            this.universityRepository = universityRepository;
             this.tokenGenerator = tokenGenerator;
             this.refreshTokenFactory = refreshTokenFactory;
         }
 
-        public async Task<RegisterResult> RegisterAsync(RegistrationRequest request)
+        #region Registration
+
+        public async Task RegisterAdminAsync(AdminRegistrationDTO request)
+        {
+            User adminUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRoleAsync(adminUser, RoleName.ADMIN);
+        }
+
+        public async Task RegisterUniversityAdminAsync(UniversityAdminRegistrationDTO request)
+        {
+            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            if (university == null)
+            {
+                throw new BadRequestException("University doesn't exist!");
+            }
+
+            User universityAdminUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRoleAsync(universityAdminUser, RoleName.UNIVERSITY_ADMIN);
+            await universityAdminRepository.AddAsync(new UniversityAdmin
+            {
+                UserId = universityAdminUser.Id,
+                UniversityId = request.UniversityId
+            });
+            await universityAdminRepository.SaveChangesAsync();
+        }
+
+        public async Task RegisterTeacherAsync(TeacherRegistrationDTO request)
+        {
+            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            if (university == null)
+            {
+                throw new BadRequestException("University doesn't exist!");
+            }
+
+            User teacherUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRoleAsync(teacherUser, RoleName.TEACHER);
+            await teachersRepository.AddAsync(new Teacher
+            {
+                UserId = teacherUser.Id,
+                UniversityId = request.UniversityId
+            });
+            await teachersRepository.SaveChangesAsync();
+        }
+
+        public async Task RegisterStudentAsync(StudentRegistrationDTO request)
+        {
+            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            if (university == null)
+            {
+                throw new BadRequestException("University doesn't exist!");
+            }
+
+            User studentUser = await RegisterAsync(request);
+            await usersRepository.AddUserToRoleAsync(studentUser, RoleName.STUDENT);
+            await studentsRepository.AddAsync(new Student
+            {
+                UserId = studentUser.Id,
+                UniversityId = request.UniversityId
+            });
+            await studentsRepository.SaveChangesAsync();
+        }
+
+        private async Task<User> RegisterAsync(RegistrationDTO request)
         {
             var user = new User
             {
@@ -38,33 +118,32 @@ namespace UniAtHome.BLL.Services
                 LastName = request.LastName,
                 Email = request.Email,
             };
+            var registerResult = await usersRepository.TryCreateAsync(
+                user: user,
+                password: request.Password);
 
-            var registerResult = new RegisterResult(
-                await usersRepository.TryCreateAsync(
-                    user: user,
-                    password: request.Password,
-                    role: request.Role));
-
-            if (registerResult.IdentityResult.Succeeded)
+            if (!registerResult.Succeeded)
             {
-                registerResult.UserId = user.Id;
+                throw new BadRequestException(registerResult.Errors.First().Description);
             }
 
-            return registerResult;
+            return user;
         }
 
-        public async Task<LoginResponse> LoginAsync(LoginRequest request)
+        #endregion
+
+        public async Task<LoginResponseDTO> LoginAsync(LoginRequestDTO request)
         {
             User user = await usersRepository.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                return new LoginResponse("User does not exist!");
+                throw new BadRequestException("User does not exist!");
             }
 
             bool passwordIsCorrect = await usersRepository.CheckPasswordAsync(user, request.Password);
             if (!passwordIsCorrect)
             {
-                return new LoginResponse("Password is incorrect!");
+                throw new ForbiddenException("Password is incorrect!");
             }
             Claim[] userClaims = await GetAuthTokenClaimsForUserAsync(user);
 
@@ -72,58 +151,12 @@ namespace UniAtHome.BLL.Services
             var refreshToken = refreshTokenFactory.GenerateRefreshToken();
             await usersRepository.CreateRefreshTokenAsync(user, refreshToken);
 
-            return new LoginResponse
+            return new LoginResponseDTO
             {
                 Email = user.Email,
                 Token = accessToken,
                 RefreshToken = refreshToken
             };
-        }
-
-        public async Task<TokenRefreshResponse> RefreshTokenAsync(TokenRefreshRequest request)
-        {
-            User user = await usersRepository.FindByEmailAsync(request.AuthToken);
-            if (user == null)
-            {
-                return new TokenRefreshResponse("User does not exist!");
-            }
-
-            RefreshToken token = usersRepository.GetRefreshToken(user, request.RefreshToken);
-            if (token == null)
-            {
-                return new TokenRefreshResponse("Refresh token is not valid!");
-            }
-
-            var newRefreshToken = refreshTokenFactory.GenerateRefreshToken();
-            await usersRepository.DeleteRefreshTokenAsync(user, token);
-            await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
-
-            Claim[] tokenClaims = await GetAuthTokenClaimsForUserAsync(user);
-            string newAccessToken = tokenGenerator.GenerateTokenForClaims(tokenClaims);
-
-            return new TokenRefreshResponse
-            {
-                Token = newAccessToken,
-                RefreshToken = newRefreshToken
-            };
-        }
-
-        public async Task<TokenRevokeResponse> RevokeTokenAsync(TokenRevokeRequest request)
-        {
-            User user = await usersRepository.FindByEmailAsync(request.Email);
-            if (user == null)
-            {
-                return new TokenRevokeResponse("User does not exist!");
-            }
-
-            RefreshToken refreshToken = usersRepository.GetRefreshToken(user, request.RefreshToken);
-            if (refreshToken == null)
-            {
-                return new TokenRevokeResponse("Refresh token is not valid!");
-            }
-
-            await usersRepository.DeleteRefreshTokenAsync(user, refreshToken);
-            return new TokenRevokeResponse();
         }
 
         private async Task<Claim[]> GetAuthTokenClaimsForUserAsync(User user)
@@ -135,6 +168,80 @@ namespace UniAtHome.BLL.Services
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, userRoles.FirstOrDefault())
             };
             return userClaims;
+        }
+
+        public async Task<TokenRefreshResponseDTO> RefreshTokenAsync(TokenRefreshRequestDTO request)
+        {
+            string userEmail = GetEmailOfAuthorizationToken(request);
+            User user = await usersRepository.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new BadRequestException("User does not exist!");
+            }
+
+            RefreshToken token = usersRepository.GetRefreshToken(user, request.RefreshToken);
+            if (token == null)
+            {
+                throw new ForbiddenException("Refresh token is not valid!");
+            }
+
+            var newRefreshToken = refreshTokenFactory.GenerateRefreshToken();
+            await usersRepository.DeleteRefreshTokenAsync(token);
+            await usersRepository.CreateRefreshTokenAsync(user, newRefreshToken);
+
+            Claim[] tokenClaims = await GetAuthTokenClaimsForUserAsync(user);
+            string newAccessToken = tokenGenerator.GenerateTokenForClaims(tokenClaims);
+
+            return new TokenRefreshResponseDTO
+            {
+                Token = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
+        private static string GetEmailOfAuthorizationToken(TokenRefreshRequestDTO request)
+        {
+            return new JwtSecurityTokenHandler()
+                .ReadJwtToken(request.AuthToken)
+                .Claims
+                .FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultNameClaimType)
+                .Value;
+        }
+
+
+        public async Task RevokeTokenAsync(TokenRevokeDTO request)
+        {
+            User user = await usersRepository.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new BadRequestException("User does not exist!");
+            }
+
+            RefreshToken refreshToken = usersRepository.GetRefreshToken(user, request.RefreshToken);
+            if (refreshToken == null)
+            {
+                throw new ForbiddenException("Refresh token is not valid!");
+            }
+
+            await usersRepository.DeleteRefreshTokenAsync(refreshToken);
+        }
+
+        public async Task<UserInfoResponseDTO> GetUserInfoAsync(string email)
+        {
+            var user = await usersRepository.FindByEmailAsync(email);
+            if (user == null)
+            {
+                throw new NotFoundException("User not found!");
+            }
+
+            IList<string> userRoles = await usersRepository.GetRolesAsync(user);
+            return new UserInfoResponseDTO
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Role = userRoles.FirstOrDefault()
+            };
         }
     }
 }

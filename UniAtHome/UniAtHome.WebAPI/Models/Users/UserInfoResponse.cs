@@ -1,6 +1,6 @@
-﻿namespace UniAtHome.BLL.DTOs.Auth
+﻿namespace UniAtHome.WebAPI.Models.Users
 {
-    public sealed class UserInfoResponseDTO
+    public sealed class UserInfoResponse
     {
         public string Email { get; set; }
 

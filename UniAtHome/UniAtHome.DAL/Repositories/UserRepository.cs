@@ -27,14 +27,15 @@ namespace UniAtHome.DAL.Repositories
             this.refreshTokenLifetime = config.GetValue<int>("RefreshTokenLifetimeMinutes");
         }
 
-        public async Task<IdentityResult> TryCreateAsync(User user, string password, string role)
+        public async Task<IdentityResult> TryCreateAsync(User user, string password)
         {
             var addingResult = await userManager.CreateAsync(user, password);
-            if (addingResult.Succeeded)
-            {
-                await userManager.AddToRoleAsync(user, role);
-            }
             return addingResult;
+        }
+
+        public async Task AddUserToRoleAsync(User user, string role)
+        {
+            await userManager.AddToRoleAsync(user, role);
         }
 
         public Task<bool> CheckPasswordAsync(User user, string password)
@@ -70,7 +71,7 @@ namespace UniAtHome.DAL.Repositories
                 .FirstOrDefault(token => token.UserId == user.Id && token.Token == refreshToken);
         }
 
-        public async Task DeleteRefreshTokenAsync(User user, RefreshToken refreshToken)
+        public async Task DeleteRefreshTokenAsync(RefreshToken refreshToken)
         {
             context.Set<RefreshToken>().Remove(refreshToken);
             await context.SaveChangesAsync(); // I'm not sure when and where to put it 

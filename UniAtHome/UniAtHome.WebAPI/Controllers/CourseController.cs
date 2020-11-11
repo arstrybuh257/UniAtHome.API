@@ -16,8 +16,9 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController, Authorize]
     public class CourseController : ControllerBase
     {
-        private ICourseService courseService;
-        private IMapper mapper;
+        private readonly ICourseService courseService;
+
+        private readonly IMapper mapper;
 
         public CourseController(ICourseService courseService, IMapper mapper)
         {
