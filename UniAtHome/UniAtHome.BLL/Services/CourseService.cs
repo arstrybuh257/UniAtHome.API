@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
@@ -34,6 +33,47 @@ namespace UniAtHome.BLL.Services
             this.userRepository = userRepository;
             this.teacherRepository = teacherRepository;
             this.mapper = mapper;
+        }
+
+        public async Task<CourseDTO> GetCourseByIdAsync(int id)
+        {
+            var course = await courseRepository.GetByIdAsync(id);
+            return mapper.Map<CourseDTO>(course);
+        }
+
+        public async Task<CourseDTO> GetCourseWithLessonsByIdAsync(int id)
+        {
+            var course = await courseRepository.GetCourseWithLessonsByIdAsync(id);
+            return mapper.Map<CourseDTO>(course);
+        }
+
+        public async Task AddCourseAsync(CourseDTO courseDto)
+        {
+            var course = mapper.Map<Course>(courseDto);
+            var teacherId = (await userRepository.FindByEmailAsync(courseDto.TeacherEmail)).Id;
+            course.CourseMembers.Add(new CourseMember() { TeacherId = teacherId });
+            await courseRepository.AddAsync(course);
+            await courseRepository.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteCourseAsync(int id)
+        {
+            var course = await courseRepository.GetByIdAsync(id);
+            if (course != null)
+            {
+                courseRepository.Remove(course);
+                await courseRepository.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<IEnumerable<CourseDTO>> GetCoursesByNameAsync(string name)
+        {
+            var courses = await courseRepository.Find(
+                course => EF.Functions.Like(course.Name, $"%{name}%"));
+            return courses.Select(course => mapper.Map<CourseDTO>(course));
         }
 
         public async Task AddCourseMemberAsync(int courseId, string teacherId)
@@ -89,47 +129,6 @@ namespace UniAtHome.BLL.Services
                     Id = g.Id,
                     Name = g.Name
                 });
-        }
-
-        public async Task<CourseDTO> GetCourseByIdAsync(int id)
-        {
-            var course = await courseRepository.GetByIdAsync(id);
-            return mapper.Map<CourseDTO>(course);
-        }
-
-        public async Task<CourseDTO> GetCourseWithLessonsByIdAsync(int id)
-        {
-            var course = await courseRepository.GetCourseWithLessonsByIdAsync(id);
-            return mapper.Map<CourseDTO>(course);
-        }
-
-        public async Task AddCourseAsync(CourseDTO courseDto)
-        {
-            var course = mapper.Map<Course>(courseDto);
-            var teacherId = (await userRepository.FindByEmailAsync(courseDto.TeacherEmail)).Id;
-            course.CourseMembers.Add(new CourseMember() { TeacherId = teacherId });
-            await courseRepository.AddAsync(course);
-            await courseRepository.SaveChangesAsync();
-        }
-
-        public async Task<bool> DeleteCourseAsync(int id)
-        {
-            var course = await courseRepository.GetByIdAsync(id);
-            if (course != null)
-            {
-                courseRepository.Remove(course);
-                await courseRepository.SaveChangesAsync();
-                return true;
-            }
-
-            return false;
-        }
-
-        public async Task<IEnumerable<CourseDTO>> GetCoursesByNameAsync(string name)
-        {
-            var courses = await courseRepository.Find(
-                course => EF.Functions.Like(course.Name, $"%{name}%"));
-            return courses.Select(course => mapper.Map<CourseDTO>(course));
         }
     }
 }

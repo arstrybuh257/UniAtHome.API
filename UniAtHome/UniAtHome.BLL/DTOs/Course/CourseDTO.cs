@@ -15,6 +15,8 @@ namespace UniAtHome.BLL.DTOs.Course
 
         public DateTime Added { get; set; }
 
+        public int UniversityId { get; set; }
+
         public IEnumerable<LessonDTO> Lessons { get; set; } = new List<LessonDTO>();
     }
 }

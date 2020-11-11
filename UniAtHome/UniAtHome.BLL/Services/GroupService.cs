@@ -21,7 +21,7 @@ namespace UniAtHome.BLL.Services
             this.groupRepository = groupRepository;
         }
 
-        public async Task<int> AddGroupAsync(GroupDTO dto)
+        public async Task<int> AddGroupAsync(CreateGroupDTO dto)
         {
             var existingGroup = groupRepository
                 .Find(group => group.Name == dto.Name
@@ -64,15 +64,27 @@ namespace UniAtHome.BLL.Services
             await groupRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<StudentDTO> GetGroupStudents(int groupId)
+        public async Task<GroupInfoDTO> GetGroupInfo(int groupId)
         {
-            return groupRepository.GetGroupStudents(groupId)
+            Group group = await groupRepository.GetByIdAsync(groupId);
+            if (group == null)
+            {
+                throw new NotFoundException("Group doesn't exist!");
+            }
+            var students = groupRepository.GetGroupStudents(groupId)
                 .Select(st => new StudentDTO
                 {
                     Id = st.UserId,
                     FirstName = st.User.FirstName,
                     LastName = st.User.LastName
                 });
+
+            return new GroupInfoDTO
+            {
+                Id = groupId,
+                Name = group.Name,
+                Students = students
+            };
         }
     }
 }

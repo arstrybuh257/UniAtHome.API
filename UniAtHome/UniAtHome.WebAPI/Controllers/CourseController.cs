@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Course;
+using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Constants;
+using UniAtHome.WebAPI.Models.Course;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
@@ -21,11 +24,18 @@ namespace UniAtHome.WebAPI.Controllers
 
         private readonly IMapper mapper;
 
-        public CourseController(ICourseService courseService, IMapper mapper)
+        private readonly IUniversityService universityService;
+
+        public CourseController(
+            ICourseService courseService, 
+            IMapper mapper, 
+            IUniversityService universityService)
         {
             this.courseService = courseService;
             this.mapper = mapper;
+            this.universityService = universityService;
         }
+
 
         // GET: api/Course/5
         [HttpGet("{id}")]
@@ -86,6 +96,52 @@ namespace UniAtHome.WebAPI.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpPost("addTeacher")]
+        public async Task<IActionResult> AddTeacherAsync([FromBody] AddTeacherRequest request)
+        {
+            CourseDTO course = await courseService.GetCourseByIdAsync(request.CourseId);
+            if (course == null)
+            {
+                throw new BadRequestException("Course doesn't exist");
+            }
+            if (!await User.IsUniversityTeacherOrHigherAsync(course.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights to access the course!");
+            }
+
+            await courseService.AddCourseMemberAsync(request.CourseId, request.TeacherId);
+            return Ok();
+        }
+
+        [HttpPost("removeTeacher")]
+        public async Task<IActionResult> RemoveTeacherAsync([FromBody] RemoveTeacherRequest request)
+        {
+            CourseDTO course = await courseService.GetCourseByIdAsync(request.CourseId);
+            if (course == null)
+            {
+                throw new BadRequestException("Course doesn't exist");
+            }
+            if (!await User.IsUniversityTeacherOrHigherAsync(course.UniversityId, universityService))
+            {
+                throw new ForbiddenException("Don't have rights to access the course!");
+            }
+
+            await courseService.RemoveCourseMemberAsync(request.CourseId, request.TeacherId);
+            return Ok();
+        }
+
+        [HttpGet("{id}/teachers")]
+        public IActionResult GetAllTeachers(int id)
+        {
+            IEnumerable<CourseMemberDTO> teachers = courseService.GetCourseMembers(id);
+            return Ok(teachers.Select(t => new
+            {
+                t.Id,
+                t.FirstName,
+                t.LastName
+            }));
         }
     }
 }

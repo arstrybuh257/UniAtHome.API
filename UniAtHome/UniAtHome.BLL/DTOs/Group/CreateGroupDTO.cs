@@ -1,9 +1,7 @@
 ﻿namespace UniAtHome.BLL.DTOs.Group
 {
-    public class GroupDTO
+    public class CreateGroupDTO
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public int CourseId { get; set; }
