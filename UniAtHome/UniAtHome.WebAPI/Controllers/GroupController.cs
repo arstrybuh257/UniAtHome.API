@@ -46,11 +46,14 @@ namespace UniAtHome.WebAPI.Controllers
             var dto = new CreateGroupDTO
             {
                 CourseId = request.CourseId,
-                TeacherId = request.TeacherId,
+                TeacherEmail = request.TeacherEmail,
                 Name = request.GroupName
             };
-            await groupService.AddGroupAsync(dto);
-            return Ok();
+            int id = await groupService.AddGroupAsync(dto);
+            return Ok(new
+            {
+                id
+            });
         }
 
         [HttpDelete("{id}")]
@@ -73,7 +76,7 @@ namespace UniAtHome.WebAPI.Controllers
                 Students = group.Students
                     .Select(s => new
                     {
-                        s.Id,
+                        s.Email,
                         s.FirstName,
                         s.LastName
                     })
@@ -84,7 +87,7 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<IActionResult> AddStudentToGroup([FromBody] AddStudentToGroupRequest request)
         {
             // TODO: Add access validation, again
-            await groupService.AddStudentToGroupAsync(request.GroupId, request.StudentId);
+            await groupService.AddStudentToGroupAsync(request.GroupId, request.StudentEmail);
             return Ok();
         }
 
@@ -92,7 +95,7 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<IActionResult> RemoveStudentFromGroup([FromBody] RemoveStudentFromGroupRequest request)
         {
             // TODO: Add access validation, and again
-            await groupService.RemoveStudentFromGroup(request.GroupId, request.StudentId);
+            await groupService.RemoveStudentFromGroup(request.GroupId, request.StudentEmail);
             return Ok();
         }
     }

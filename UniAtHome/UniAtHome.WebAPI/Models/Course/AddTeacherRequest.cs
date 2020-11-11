@@ -1,9 +1,13 @@
-﻿namespace UniAtHome.WebAPI.Models.Course
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UniAtHome.WebAPI.Models.Course
 {
     public class AddTeacherRequest
     {
+        [Required]
         public int CourseId { get; set; }
 
-        public string TeacherId { get; set; }
+        [Required]
+        public string TeacherEmail { get; set; }
     }
 }

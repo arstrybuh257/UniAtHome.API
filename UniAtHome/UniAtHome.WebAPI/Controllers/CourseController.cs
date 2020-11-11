@@ -116,7 +116,7 @@ namespace UniAtHome.WebAPI.Controllers
                 throw new ForbiddenException("Don't have rights to access the course!");
             }
 
-            await courseService.AddCourseMemberAsync(request.CourseId, request.TeacherId);
+            await courseService.AddCourseMemberAsync(request.CourseId, request.TeacherEmail);
             return Ok();
         }
 
@@ -143,7 +143,7 @@ namespace UniAtHome.WebAPI.Controllers
             IEnumerable<CourseMemberDTO> teachers = courseService.GetCourseMembers(id);
             return Ok(teachers.Select(t => new
             {
-                t.Id,
+                t.Email,
                 t.FirstName,
                 t.LastName
             }));

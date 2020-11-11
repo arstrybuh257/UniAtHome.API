@@ -17,9 +17,9 @@ namespace UniAtHome.BLL.Interfaces
         //temporary returning boolean
         Task<bool> DeleteCourseAsync(int id);
 
-        Task AddCourseMemberAsync(int courseId, string teacherId);
+        Task AddCourseMemberAsync(int courseId, string teacherEmail);
 
-        Task RemoveCourseMemberAsync(int courseId, string teacherId);
+        Task RemoveCourseMemberAsync(int courseId, string teacherEmail);
 
         IEnumerable<CourseMemberDTO> GetCourseMembers(int id);
 

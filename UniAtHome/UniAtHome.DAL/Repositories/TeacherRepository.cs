@@ -11,6 +11,13 @@ namespace UniAtHome.DAL.Repositories
         {
         }
 
+        public async Task<Teacher> GetByEmailAsync(string email)
+        {
+            return await context.Set<Teacher>()
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.User.Email == email);
+        }
+
         public async Task<Teacher> GetByIdAsync(string id)
         {
             return await context.Set<Teacher>()

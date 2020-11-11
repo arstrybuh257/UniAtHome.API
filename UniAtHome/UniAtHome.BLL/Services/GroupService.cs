@@ -14,26 +14,33 @@ namespace UniAtHome.BLL.Services
 
         private readonly IGroupRepository groupRepository;
 
-        public GroupService(ICourseRepository courseRepository, IGroupRepository groupRepository)
+        private readonly ITeacherRepository teacherRepository;
+
+        public GroupService(
+            ICourseRepository courseRepository, 
+            IGroupRepository groupRepository,
+            ITeacherRepository teacherRepository)
         {
             this.courseRepository = courseRepository;
             this.groupRepository = groupRepository;
+            this.teacherRepository = teacherRepository;
         }
 
         public async Task<int> AddGroupAsync(CreateGroupDTO dto)
         {
-            var existingGroup = groupRepository
+            Group existingGroup = (await groupRepository
                 .Find(group => group.Name == dto.Name
-                && group.CourseMember.CourseId == dto.CourseId);
+                && group.CourseMember.CourseId == dto.CourseId))
+                .FirstOrDefault();
             if (existingGroup != null)
             {
                 throw new BadRequestException("Group already exists!");
             }
-
+            var teacher = await teacherRepository.GetByEmailAsync(dto.TeacherEmail);
             Group group = new Group
             {
                 Name = dto.Name,
-                CourseMemberId = await courseRepository.GetCourseMemberIdAsync(dto.CourseId, dto.TeacherId)
+                CourseMemberId = await courseRepository.GetCourseMemberIdAsync(dto.CourseId, teacher.UserId)
             };
             await groupRepository.AddAsync(group);
             await groupRepository.SaveChangesAsync();
@@ -73,7 +80,7 @@ namespace UniAtHome.BLL.Services
             var students = groupRepository.GetGroupStudents(groupId)
                 .Select(st => new StudentDTO
                 {
-                    Id = st.UserId,
+                    Email = st.User.Email,
                     FirstName = st.User.FirstName,
                     LastName = st.User.LastName
                 });

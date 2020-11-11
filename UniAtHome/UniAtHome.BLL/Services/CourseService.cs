@@ -80,32 +80,33 @@ namespace UniAtHome.BLL.Services
             return courses.Select(course => mapper.Map<CourseDTO>(course));
         }
 
-        public async Task AddCourseMemberAsync(int courseId, string teacherId)
+        public async Task AddCourseMemberAsync(int courseId, string teacherEmail)
         {
             bool teacherIsAlreadyAdded = courseRepository
                 .GetCourseTeachers(courseId)
-                .Any(t => t.UserId == teacherId);
+                .Any(t => t.User.Email == teacherEmail);
             if (teacherIsAlreadyAdded)
             {
                 throw new BadRequestException("The teacher is already added!");
             }
 
-            Teacher teacher = await teacherRepository.GetByIdAsync(teacherId);
+            Teacher teacher = await teacherRepository.GetByEmailAsync(teacherEmail);
             Course course = await courseRepository.GetByIdAsync(courseId);
             if (teacher.UniversityId != course.UniversityId)
             {
                 throw new BadRequestException("Teacher of another university can't be added to this course!");
             }
 
-            await courseRepository.AddCourseMemberAsync(courseId, teacherId);
+            await courseRepository.AddCourseMemberAsync(courseId, teacher.UserId);
             await courseRepository.SaveChangesAsync();
         }
 
-        public async Task RemoveCourseMemberAsync(int courseId, string teacherId)
+        public async Task RemoveCourseMemberAsync(int courseId, string teacherEmail)
         {
             try
             {
-                await courseRepository.RemoveCourseMemberAsync(courseId, teacherId);
+                Teacher teacher = await teacherRepository.GetByEmailAsync(teacherEmail);
+                await courseRepository.RemoveCourseMemberAsync(courseId, teacher.UserId);
                 await courseRepository.SaveChangesAsync();
             }
             catch (InvalidOperationException)
@@ -119,9 +120,9 @@ namespace UniAtHome.BLL.Services
             return courseRepository.GetCourseTeachers(id)
                 .Select(t => new CourseMemberDTO
                 {
-                    Id = t.UserId,
                     FirstName = t.User.FirstName,
-                    LastName = t.User.LastName
+                    LastName = t.User.LastName,
+                    Email = t.User.Email
                 });
         }
 
