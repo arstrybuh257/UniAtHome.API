@@ -19,14 +19,14 @@ namespace UniAtHome.BLL.Services
 
         private readonly UserRepository userRepository;
 
-        private readonly TeacherRepository teacherRepository;
+        private readonly ITeacherRepository teacherRepository;
 
         private readonly IMapper mapper;
 
         public CourseService(
             ICourseRepository courseRepository,
             UserRepository userRepository,
-            TeacherRepository teacherRepository,
+            ITeacherRepository teacherRepository,
             IMapper mapper)
         {
             this.courseRepository = courseRepository;

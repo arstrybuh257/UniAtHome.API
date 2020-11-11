@@ -5,7 +5,7 @@ using UniAtHome.DAL.Interfaces;
 
 namespace UniAtHome.DAL.Repositories
 {
-    public sealed class TeacherRepository : Repository<Teacher>, IRepository<Teacher>
+    public sealed class TeacherRepository : Repository<Teacher>, ITeacherRepository
     {
         public TeacherRepository(DbContext context) : base(context)
         {
