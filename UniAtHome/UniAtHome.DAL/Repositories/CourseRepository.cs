@@ -15,6 +15,41 @@ namespace UniAtHome.DAL.Repositories
         {
         }
 
+        public async Task AddCourseMemberAsync(int courseId, string teacherId)
+        {
+            CourseMember binding = new CourseMember
+            {
+                CourseId = courseId,
+                TeacherId = teacherId
+            };
+            await context.Set<CourseMember>().AddAsync(binding);
+        }
+
+        public async Task RemoveCourseMemberAsync(int courseId, string teacherId)
+        {
+            CourseMember binding = await context.Set<CourseMember>()
+                .FirstOrDefaultAsync(b => b.TeacherId == teacherId && b.CourseId == courseId);
+            context.Set<CourseMember>().Remove(binding);
+        }
+
+        public IEnumerable<Teacher> GetCourseTeachers(int courseId)
+        {
+            return context.Set<CourseMember>()
+                .Where(c => c.CourseId == courseId)
+                .Select(c => c.Teacher)
+                .AsNoTracking()
+                .ToArray();
+        }
+
+        public IEnumerable<Group> GetCourseGroups(int courseId)
+        {
+            return context.Set<CourseMember>()
+                .Where(c => c.CourseId == courseId)
+                .SelectMany(c => c.Groups)
+                .AsNoTracking()
+                .ToArray();
+        }
+
         public async Task<Course> GetCourseByIdAsync(int id)
         {
             return await context.Set<Course>()
