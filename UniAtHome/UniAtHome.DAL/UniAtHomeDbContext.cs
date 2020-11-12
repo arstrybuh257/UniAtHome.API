@@ -33,6 +33,8 @@ namespace UniAtHome.DAL
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+        public DbSet<UniversityCreateRequest> UniversityCreateRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -159,6 +161,15 @@ namespace UniAtHome.DAL
                 .HasForeignKey(rt => rt.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // University create requests
+            modelBuilder.Entity<UniversityCreateRequest>().HasKey(r => r.Id);
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.UniversityName).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Email).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.SubmitterFirstName).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.SubmitterLastName).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Comment).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Submitted).IsRequired();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
