@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Auth;
+using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;

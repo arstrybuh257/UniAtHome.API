@@ -119,6 +119,9 @@ namespace UniAtHome.DAL
             //Group
             modelBuilder.Entity<Group>().HasKey(g => g.Id);
             modelBuilder.Entity<Group>()
+                .Property(g => g.Name)
+                .IsRequired();
+            modelBuilder.Entity<Group>()
                 .HasMany(g => g.StudentGroups)
                 .WithOne(sg => sg.Group)
                 .HasForeignKey(sg => sg.GroupId);

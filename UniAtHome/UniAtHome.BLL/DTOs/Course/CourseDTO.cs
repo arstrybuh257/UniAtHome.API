@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UniAtHome.BLL.DTOs
+namespace UniAtHome.BLL.DTOs.Course
 {
     public class CourseDTO
     {
@@ -14,6 +14,8 @@ namespace UniAtHome.BLL.DTOs
         public string TeacherEmail { get; set; }
 
         public DateTime Added { get; set; }
+
+        public int UniversityId { get; set; }
 
         public IEnumerable<LessonDTO> Lessons { get; set; } = new List<LessonDTO>();
     }
