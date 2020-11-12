@@ -30,7 +30,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateGroup([FromBody] GroupCreateRequest request)
+        public async Task<IActionResult> CreateGroupAsync([FromBody] GroupCreateRequest request)
         {
             var course = await courseService.GetCourseByIdAsync(request.CourseId);
             if (course == null)
@@ -56,7 +56,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteGroup(int id)
+        public async Task<IActionResult> DeleteGroupAsync(int id)
         {
             // TODO: Add access validation
             await groupService.DeleteGroupAsync(id);
@@ -64,9 +64,9 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetInfo(int id)
+        public async Task<IActionResult> GetInfoAsync(int id)
         {
-            GroupInfoDTO group = await groupService.GetGroupInfo(id);
+            GroupInfoDTO group = await groupService.GetGroupInfoAsync(id);
 
             return Ok(new
             {
@@ -83,7 +83,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpPost("addStudent")]
-        public async Task<IActionResult> AddStudentToGroup([FromBody] AddStudentToGroupRequest request)
+        public async Task<IActionResult> AddStudentToGroupAsync([FromBody] AddStudentToGroupRequest request)
         {
             // TODO: Add access validation, again
             await groupService.AddStudentToGroupAsync(request.GroupId, request.StudentEmail);
@@ -91,10 +91,10 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpPost("removeStudent")]
-        public async Task<IActionResult> RemoveStudentFromGroup([FromBody] RemoveStudentFromGroupRequest request)
+        public async Task<IActionResult> RemoveStudentFromGroupAsync([FromBody] RemoveStudentFromGroupRequest request)
         {
             // TODO: Add access validation, and again
-            await groupService.RemoveStudentFromGroup(request.GroupId, request.StudentEmail);
+            await groupService.RemoveStudentFromGroupAsync(request.GroupId, request.StudentEmail);
             return Ok();
         }
     }

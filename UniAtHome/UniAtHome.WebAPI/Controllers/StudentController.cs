@@ -36,7 +36,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpGet("courses")]
         [Authorize(Roles = RoleName.STUDENT)]
-        public async Task<ObjectResult> GetCoursesForUser()
+        public async Task<ObjectResult> GetCoursesForUserAsync()
         {
             var coursesRequest = new StudentsCoursesRequest { StudentEmail = User.Identity.Name };
             var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await studentsService.GetStudentsCoursesAsync(coursesRequest));

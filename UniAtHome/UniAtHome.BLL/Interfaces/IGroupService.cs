@@ -11,8 +11,8 @@ namespace UniAtHome.BLL.Interfaces
 
         Task DeleteGroupAsync(int groupId);
 
-        Task<GroupInfoDTO> GetGroupInfo(int groupId);
+        Task<GroupInfoDTO> GetGroupInfoAsync(int groupId);
 
-        Task RemoveStudentFromGroup(int groupId, string studentId);
+        Task RemoveStudentFromGroupAsync(int groupId, string studentId);
     }
 }

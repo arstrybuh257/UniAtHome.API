@@ -18,7 +18,7 @@ namespace UniAtHome.WebAPI.Middleware
             this.next = next;
         }
 
-        public async Task Invoke(HttpContext context, IWebHostEnvironment env)
+        public async Task InvokeAsync(HttpContext context, IWebHostEnvironment env)
         {
             try
             {
