@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UniAtHome.BLL.DTOs;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
@@ -16,6 +15,7 @@ using UniAtHome.WebAPI.Models.Responses.Lesson;
 
 namespace UniAtHome.WebAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController, Authorize]
     public class CourseController : ControllerBase
