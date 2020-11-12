@@ -31,6 +31,7 @@ namespace UniAtHome.BLL.Services
                 Submitted = DateTime.Now
             };
             await requestsRepository.AddAsync(createRequest);
+            await requestsRepository.SaveChangesAsync();
         }
 
         public async Task ApproveRequestAsync(int id)
@@ -43,6 +44,7 @@ namespace UniAtHome.BLL.Services
             // TODO: other actions 
 
             requestsRepository.Remove(request);
+            await requestsRepository.SaveChangesAsync();
         }
 
         public async Task DeclineRequestAsync(int id)
@@ -55,6 +57,7 @@ namespace UniAtHome.BLL.Services
             // TODO: other actions like sending "F*ck you via email"
 
             requestsRepository.Remove(request);
+            await requestsRepository.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<UniversityRequestDTO>> GetAllRequestsAsync()
