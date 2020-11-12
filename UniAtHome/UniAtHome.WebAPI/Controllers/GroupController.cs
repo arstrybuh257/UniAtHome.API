@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Group;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
-using UniAtHome.BLL.Services;
 using UniAtHome.WebAPI.Models.Group;
 
 namespace UniAtHome.WebAPI.Controllers
