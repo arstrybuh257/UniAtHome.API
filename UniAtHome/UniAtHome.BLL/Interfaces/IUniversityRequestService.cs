@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UniversityCreation;
+using UniAtHome.BLL.DTOs.UniversityRequest;
 
 namespace UniAtHome.BLL.Interfaces
 {
-    public interface IUniversityCreationService
+    public interface IUniversityRequestService
     {
         Task AddRequestAsync(UniversityCreateDTO creationInfo);
 

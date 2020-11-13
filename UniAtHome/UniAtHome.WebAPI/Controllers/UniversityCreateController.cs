@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.UniversityCreation;
+using UniAtHome.BLL.DTOs.UniversityRequest;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.WebAPI.Models.UniversityCreation;
 
@@ -11,11 +11,11 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController]
     public class UniversityCreateController : ControllerBase
     {
-        private readonly IUniversityCreationService universityCreationService;
+        private readonly IUniversityRequestService universityCreationService;
 
         private readonly IMapper mapper;
 
-        public UniversityCreateController(IUniversityCreationService universityCreationService, IMapper mapper)
+        public UniversityCreateController(IUniversityRequestService universityCreationService, IMapper mapper)
         {
             this.universityCreationService = universityCreationService;
             this.mapper = mapper;
