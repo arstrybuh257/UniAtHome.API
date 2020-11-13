@@ -56,8 +56,9 @@ namespace UniAtHome.BLL.Services
                 throw new BadRequestException("Creation request doesn't exist!");
             }
 
+            UniversityRequestDTO registerDto = mapper.Map<UniversityRequestDTO>(request);
             UniversityCreationResultDTO result = await universityRegistrationService
-                .CreateUniversityAsync(mapper.Map<UniversityRequestDTO>(request));
+                .CreateUniversityAsync(registerDto);
 
             // TODO: load html letter template and fill it in
             await emailService.SendAsync(
@@ -70,7 +71,7 @@ namespace UniAtHome.BLL.Services
             await requestsRepository.SaveChangesAsync();
         }
 
-        public async Task DeclineRequestAsync(int id)
+        public async Task RejectRequestAsync(int id)
         {
             UniversityCreateRequest request = await requestsRepository.GetByIdAsync(id);
             if (request == null)

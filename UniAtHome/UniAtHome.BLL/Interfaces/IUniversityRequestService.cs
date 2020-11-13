@@ -12,6 +12,6 @@ namespace UniAtHome.BLL.Interfaces
 
         Task ApproveRequestAsync(int id);
 
-        Task DeclineRequestAsync(int id);
+        Task RejectRequestAsync(int id);
     }
 }

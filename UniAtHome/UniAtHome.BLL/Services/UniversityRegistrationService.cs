@@ -32,6 +32,7 @@ namespace UniAtHome.BLL.Services
                 Name = createRequestDTO.UniversityName,
             };
             await universityRepository.AddAsync(university);
+            await universityRepository.SaveChangesAsync();
 
             UniversityAdminRegistrationDTO adminRegisterRequest = new UniversityAdminRegistrationDTO
             {
@@ -42,8 +43,6 @@ namespace UniAtHome.BLL.Services
                 UniversityId = university.Id
             };
             await authService.RegisterUniversityAdminAsync(adminRegisterRequest);
-
-            await universityRepository.SaveChangesAsync();
 
             return new UniversityCreationResultDTO
             {
