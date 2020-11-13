@@ -63,7 +63,7 @@ namespace UniAtHome.BLL.Services
             await emailService.SendAsync(
                 receiver: result.AdminEmail,
                 subject: $"{result.UniversityName} registration",
-                bodyHtml: "Your university is registered! Use these credentials to sign in to the systen:" +
+                bodyHtml: "Your university is registered! Use these credentials to sign in to the system:" +
                           $"<br>Email: {result.AdminEmail}<br>Password: {result.AdminPassword}");
 
             requestsRepository.Remove(request);
