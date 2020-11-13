@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UniAtHome.BLL.DTOs;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
@@ -16,6 +15,7 @@ using UniAtHome.WebAPI.Models.Responses.Lesson;
 
 namespace UniAtHome.WebAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController, Authorize]
     public class CourseController : ControllerBase
@@ -42,7 +42,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         // GET: api/Course/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCourseById(int id)
+        public async Task<IActionResult> GetCourseByIdAsync(int id)
         {
             var course = await courseService.GetCourseByIdAsync(id);
             if (course != null)
@@ -55,7 +55,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         // GET: api/Course/5
         [HttpGet("{id}/Lessons")]
-        public async Task<IActionResult> GetCourseWithLessonsById(int id)
+        public async Task<IActionResult> GetCourseWithLessonsByIdAsync(int id)
         {
             var course = await courseService.GetCourseWithLessonsByIdAsync(id);
             if (course != null)
@@ -75,7 +75,7 @@ namespace UniAtHome.WebAPI.Controllers
         // POST: api/Course
         [HttpPost]
         [Authorize(Roles = RoleName.TEACHER)]
-        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseRequest request)
+        public async Task<IActionResult> CreateCourseAsync([FromBody] CreateCourseRequest request)
         {
             if (request != null && ModelState.IsValid)
             {
@@ -92,7 +92,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = RoleName.TEACHER)]
-        public async Task<IActionResult> DeleteCourse(int id)
+        public async Task<IActionResult> DeleteCourseAsync(int id)
         {
             //temporary
             if (await courseService.DeleteCourseAsync(id))

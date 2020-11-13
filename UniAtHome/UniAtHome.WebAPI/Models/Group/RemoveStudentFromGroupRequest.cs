@@ -1,4 +1,4 @@
-﻿namespace UniAtHome.BLL.DTOs.Group
+﻿namespace UniAtHome.WebAPI.Models.Group
 {
     public class RemoveStudentFromGroupRequest
     {

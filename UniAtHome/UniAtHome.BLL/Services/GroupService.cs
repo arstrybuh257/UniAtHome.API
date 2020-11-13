@@ -64,13 +64,13 @@ namespace UniAtHome.BLL.Services
             await groupRepository.SaveChangesAsync();
         }
 
-        public async Task RemoveStudentFromGroup(int groupId, string studentId)
+        public async Task RemoveStudentFromGroupAsync(int groupId, string studentId)
         {
             await groupRepository.RemoveStudentFromGroupAsync(groupId, studentId);
             await groupRepository.SaveChangesAsync();
         }
 
-        public async Task<GroupInfoDTO> GetGroupInfo(int groupId)
+        public async Task<GroupInfoDTO> GetGroupInfoAsync(int groupId)
         {
             Group group = await groupRepository.GetByIdAsync(groupId);
             if (group == null)

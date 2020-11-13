@@ -32,7 +32,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize(Roles = RoleName.ADMIN)]
         [HttpPost("registerAdmin")]
-        public async Task<ActionResult> RegisterAdmin([FromBody] AdminRegistrationRequest request)
+        public async Task<ActionResult> RegisterAdminAsync([FromBody] AdminRegistrationRequest request)
         {
             var dto = mapper.Map<AdminRegistrationDTO>(request);
             await authService.RegisterAdminAsync(dto);
@@ -42,7 +42,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
         [HttpPost("registerUniversityAdmin")]
-        public async Task<ActionResult> RegisterUniversityAdmin([FromBody] UniversityAdminRegistrationRequest request)
+        public async Task<ActionResult> RegisterUniversityAdminAsync([FromBody] UniversityAdminRegistrationRequest request)
         {
             if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
@@ -57,7 +57,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
         [HttpPost("registerTeacher")]
-        public async Task<ActionResult> RegisterTeacher([FromBody] TeacherRegistrationRequest request)
+        public async Task<ActionResult> RegisterTeacherAsync([FromBody] TeacherRegistrationRequest request)
         {
             if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
@@ -72,7 +72,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize(Roles = RoleName.ADMIN + "," + RoleName.UNIVERSITY_ADMIN)]
         [HttpPost("registerStudent")]
-        public async Task<ActionResult> RegisterStudent([FromBody] StudentRegistrationRequest request)
+        public async Task<ActionResult> RegisterStudentAsync([FromBody] StudentRegistrationRequest request)
         {
             if (!await User.IsUniversityAdminOrHigherAsync(request.UniversityId, universityService))
             {
@@ -87,7 +87,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ObjectResult> Login([FromBody] LoginRequestDTO request)
+        public async Task<ObjectResult> LoginAsync([FromBody] LoginRequestDTO request)
         {
             var response = await authService.LoginAsync(request);
 
@@ -104,7 +104,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("refresh")]
-        public async Task<ObjectResult> Refresh()
+        public async Task<ObjectResult> RefreshAsync()
         {
             bool hasToken = HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues tokenHeader);
             if (!hasToken)
@@ -135,7 +135,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize]
         [HttpPost("revoke")]
-        public async Task<IActionResult> Revoke()
+        public async Task<IActionResult> RevokeAsync()
         {
             string userEmail = User.Identity.Name;
             string refreshToken = HttpContext.Request.Cookies["refreshToken"];
@@ -152,7 +152,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [Authorize, HttpGet("info")]
-        public async Task<IActionResult> GetUserInfo()
+        public async Task<IActionResult> GetUserInfoAsync()
         {
             string email = User.Identity.Name;
             UserInfoResponseDTO response = await authService.GetUserInfoAsync(email);

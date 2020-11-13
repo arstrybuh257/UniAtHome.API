@@ -24,7 +24,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetLessonById(int id)
+        public async Task<IActionResult> GetLessonByIdAsync(int id)
         {
             var lesson = await lessonService.GetLessonByIdAsync(id);
             if (lesson != null)
@@ -37,7 +37,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateLesson([FromBody] CreateLessonRequest request)
+        public async Task<IActionResult> CreateLessonAsync([FromBody] CreateLessonRequest request)
         {
             if (request != null && ModelState.IsValid)
             {
@@ -58,7 +58,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLesson(int id)
+        public async Task<IActionResult> DeleteLessonAsync(int id)
         {
             //temporary
             if (await lessonService.DeleteLessonAsync(id))
