@@ -22,5 +22,7 @@ namespace UniAtHome.DAL.Interfaces
         Task SaveChangesAsync();
 
         void Update(T entity);
+
+        public Task<IEnumerable<T>> GetAllAsync();
     }
 }
