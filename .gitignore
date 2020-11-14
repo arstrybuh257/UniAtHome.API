@@ -5,6 +5,7 @@
 
 # UniAtHome.Web specific files
 appsettings.Production.json
+confidsettings.json
 
 # User-specific files
 *.rsuser
