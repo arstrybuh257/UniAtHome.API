@@ -32,6 +32,11 @@ namespace UniAtHome.DAL.Repositories
             await context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await context.Set<T>().AsNoTracking().ToListAsync();
+        }
+
         public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
         {
             return await context.Set<T>().Where(predicate).AsNoTracking().ToListAsync();

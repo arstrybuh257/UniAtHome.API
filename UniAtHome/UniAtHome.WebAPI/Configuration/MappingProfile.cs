@@ -2,6 +2,7 @@
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.DTOs.Course;
+using UniAtHome.BLL.DTOs.University;
 using UniAtHome.BLL.DTOs.UniversityRequest;
 using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
@@ -36,6 +37,8 @@ namespace UniAtHome.WebAPI.Configuration
 
             CreateMap<UniversitySubmitRequest, UniversityCreateDTO>();
             CreateMap<UniversityCreateRequest, UniversityRequestDTO>();
+
+            CreateMap<University, UniversityDTO>();
         }
     }
 }
