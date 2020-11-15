@@ -1,18 +1,22 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Options;
 
 namespace UniAtHome.BLL.Services
 {
-    public class FileStorageService 
+    public class FileStorageService : IFileStorageService
     {
         private readonly Cloudinary cloudinary;
 
-        public FileStorageService(StorageServiceConfig config)
+        public FileStorageService(IOptions<StorageServiceConfig> options)
         {
+            var config = options.Value;
             var account = new Account(config.CloudName, config.ApiKey, config.ApiSecret);
-            cloudinary = new Cloudinary(account);
+            this.cloudinary = new Cloudinary(account);
         }
 
         /// <returns>Path to file or null if there is some error</returns>
@@ -20,7 +24,7 @@ namespace UniAtHome.BLL.Services
         {
             if (image != null)
             {
-                var uploadResult = await cloudinary.UploadAsync(new ImageUploadParams()
+                var uploadResult = await this.cloudinary.UploadAsync(new ImageUploadParams()
                 {
                     File = new FileDescription(image.FileName, image.OpenReadStream()),
                     PublicId = identifier
