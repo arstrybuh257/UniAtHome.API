@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniAtHome.DAL;
 
 namespace UniAtHome.DAL.Migrations
 {
     [DbContext(typeof(UniAtHomeDbContext))]
-    partial class UniAtHomeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201115183031_UniversityEntityWasChanged")]
+    partial class UniversityEntityWasChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,28 +51,28 @@ namespace UniAtHome.DAL.Migrations
                         new
                         {
                             Id = "2AEFE1C5-C5F0-4399-8FB8-420813567554",
-                            ConcurrencyStamp = "09bde4ec-96ff-4b79-8490-691f654362bb",
+                            ConcurrencyStamp = "86cef86f-46df-4957-90e4-611d5c43d2c7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "99DA7670-5471-414F-834E-9B3A6B6C8F6F",
-                            ConcurrencyStamp = "9824fed2-8438-4185-91b1-d7db3819e3ad",
+                            ConcurrencyStamp = "ae78b7ee-6765-4c2e-b736-e0fd9b23884f",
                             Name = "UniversityAdmin",
                             NormalizedName = "UNIVERSITYADMIN"
                         },
                         new
                         {
                             Id = "828A3B02-77C0-45C1-8E97-6ED57711E577",
-                            ConcurrencyStamp = "ad325ab8-714a-4300-8038-3fda61bb3dd3",
+                            ConcurrencyStamp = "e9bf21ac-3047-4a82-82dd-be613492cf81",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
                             Id = "422EEB6A-3031-4B66-ABA8-0F85AFC07C3C",
-                            ConcurrencyStamp = "ac4a65ac-9b7f-4a8c-ab4a-397d88ee6efe",
+                            ConcurrencyStamp = "6453c66d-6c8b-4606-bf3b-4f335e8f06ca",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -485,9 +487,6 @@ namespace UniAtHome.DAL.Migrations
                     b.Property<int>("Country")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfCreation")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -594,7 +593,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "00CA41A9-C962-4230-937E-D5F54772C062",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3b324a9e-1b93-4224-a742-0aa7524820db",
+                            ConcurrencyStamp = "f426e9a3-8086-4c07-bfa4-1af5945db38b",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -602,9 +601,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKxebW38ih/rm1wWGx0ANimPnzESJKGo+wdcyar/SuGltie69fiP9est1tm5VMBnRQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMjGvr1kRKtCWdkqzGOtRLnv/MG3jqFK6qCdY8PelZEgJqg1a7/YY3YLq35KXT/UjQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "501471f4-001d-494b-a8f0-66d066022188",
+                            SecurityStamp = "c584f5d3-99df-4212-8a79-19e111060676",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -612,7 +611,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "BFCC8BAB-AD20-4F70-9CD9-D2003FAE6F09",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "025b94be-44a7-4de6-a733-1c3f60254591",
+                            ConcurrencyStamp = "1edae2f9-da72-4d0c-95a7-2d723766fe94",
                             Email = "uadmin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Vladimir",
@@ -620,9 +619,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "uadmin@gmail.com",
                             NormalizedUserName = "uadmin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGH3rolzQNAUMzPrs4gl5HnlYvUquNphuudPn7rKDz2ygvpnrJ7eXEQmHdmqthEZjw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOqxyjw210jXGf3CVybvaQWvCjVTympB6AQinfgpgxVreqlUpcBOsNo7GXYFBdXZQw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a77e8e80-bbc8-439b-a719-ec1fc852492c",
+                            SecurityStamp = "41836bbd-b498-46ef-8568-345da9add493",
                             TwoFactorEnabled = false,
                             UserName = "uadmin@gmail.com"
                         },
@@ -630,7 +629,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "E8D13331-62AB-463E-A283-6493B68A3622",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e51c49d-b822-4e37-aeba-74a0fd35f607",
+                            ConcurrencyStamp = "129b2864-f550-49ac-bf5a-cbb10edd7ee6",
                             Email = "ihor.juice@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Ihor",
@@ -638,9 +637,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ihor.juice@gmail.com",
                             NormalizedUserName = "ihor.juice@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKy0cqNSyCY18UFr3Hl66eoyRbzeFUuj5FcEPrqnON1JzbaTxq5rw1kuV1VxgiTjwQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEP5u8++F5pT4C2uzW7qCkulekgGlB11sJsqcvLfDIlAD9ZZFiCs8aBkoiy59vg+c2A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "77a5ce88-e542-48d5-896a-71ba15ced9a4",
+                            SecurityStamp = "cdf6fb7f-b5ad-485d-b43d-f4ebf8a5d53e",
                             TwoFactorEnabled = false,
                             UserName = "ihor.juice@gmail.com"
                         },
@@ -648,7 +647,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "E3A6BF34-A57D-4709-97CC-6AD1B2B3985B",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "17e59a4e-1811-4981-a7e9-62d2512596f7",
+                            ConcurrencyStamp = "d652761b-5758-4900-9855-d45c231142d2",
                             Email = "slava.ivanov@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Slava",
@@ -656,9 +655,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "slava.ivanov@gmail.com",
                             NormalizedUserName = "slava.ivanov@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAELkZB/P6TIkW69pQjEcwj/fWwbShfr0RGWzlBX9TOJ1RFfCuQxU8TeT7S7dTkCWT4g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEExW3o4CmtGSoKgPpQDQg2cIDX8UeMYgBmJ2QLAAPy43oGBXiGBfE7wY8W9g4X/vCQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "313d348f-8c46-41b4-b752-7bdf7310dd2c",
+                            SecurityStamp = "b4341e50-16c1-434f-9042-6a1184fac189",
                             TwoFactorEnabled = false,
                             UserName = "slava.ivanov@gmail.com"
                         });

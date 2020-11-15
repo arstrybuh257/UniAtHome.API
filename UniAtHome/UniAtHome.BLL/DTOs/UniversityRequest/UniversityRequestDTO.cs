@@ -15,7 +15,7 @@ namespace UniAtHome.BLL.DTOs.UniversityRequest
         public string Email { get; set; }
 
         public string Comment { get; set; }
-
+        public DateTime DateOfCreation { get; set; }
         public DateTime Submitted { get; set; }
     }
 }
