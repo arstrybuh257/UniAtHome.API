@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -29,12 +30,13 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<IActionResult> MakeCreationRequestAsync([FromBody] UniversitySubmitRequest request)
         {
             var dto = mapper.Map<UniversityCreateDTO>(request);
+            dto.DateOfCreation = DateTime.Now;
             await universityCreationService.AddRequestAsync(dto);
             return Ok();
         }
 
         [HttpGet, Authorize(Roles = RoleName.ADMIN)]
-        public async Task<IActionResult> GetAllRequestsAsync()
+        public async Task<ActionResult<IEnumerable<UniversityRequestDTO>>> GetAllRequestsAsync()
         {
             IEnumerable<UniversityRequestDTO> requests = await universityCreationService.GetAllRequestsAsync();
             return Ok(requests.Select(r => new
@@ -45,6 +47,7 @@ namespace UniAtHome.WebAPI.Controllers
                 r.SubmitterFirstName,
                 r.SubmitterLastName,
                 r.Comment,
+                r.DateOfCreation
             }));
         }
 

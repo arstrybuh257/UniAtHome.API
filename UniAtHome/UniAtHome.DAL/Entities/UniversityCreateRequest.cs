@@ -5,6 +5,7 @@ namespace UniAtHome.DAL.Entities
     public class UniversityCreateRequest : BaseEntity
     {
         public string UniversityName { get; set; }
+        public string UniversityShortName { get; set; }
 
         public string SubmitterFirstName { get; set; }
 
@@ -13,6 +14,9 @@ namespace UniAtHome.DAL.Entities
         public string Email { get; set; }
 
         public string Comment { get; set; }
+        public string Address { get; set; }
+        public int Country { get; set; }
+        public DateTime DateOfCreation { get; set; }
 
         public DateTime Submitted { get; set; }
     }
