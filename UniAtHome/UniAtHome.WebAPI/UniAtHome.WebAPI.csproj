@@ -22,6 +22,12 @@
     <ProjectReference Include="..\UniAtHome.DAL\UniAtHome.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="confidsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 

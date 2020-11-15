@@ -100,6 +100,7 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<Course>().HasKey(ct => ct.Id);
             modelBuilder.Entity<Course>().Property(c => c.Name).IsRequired().HasMaxLength(200);
             modelBuilder.Entity<Course>().Property(c => c.Description).HasMaxLength(2000);
+            modelBuilder.Entity<Course>().Property(c => c.ImagePath).HasMaxLength(200);
             modelBuilder.Entity<Course>()
                 .HasMany(c => c.CourseMembers)
                 .WithOne(cm => cm.Course)

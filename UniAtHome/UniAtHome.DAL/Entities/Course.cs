@@ -13,6 +13,8 @@ namespace UniAtHome.DAL.Entities
 
         public string Description { get; set; }
 
+        public string ImagePath { get; set; }
+
         public int UniversityId { get; set; }
 
         public University University { get; set; }
