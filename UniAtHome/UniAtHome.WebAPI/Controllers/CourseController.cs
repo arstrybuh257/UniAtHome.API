@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,16 +29,20 @@ namespace UniAtHome.WebAPI.Controllers
 
         private readonly ITeacherService teacherService;
 
+        private readonly IFileStorageService fileStorageService;
+
         public CourseController(
             ICourseService courseService, 
-            IMapper mapper, 
             IUniversityService universityService, 
-            ITeacherService teacherService)
+            ITeacherService teacherService,
+            IFileStorageService fileStorageService,
+            IMapper mapper)
         {
             this.courseService = courseService;
             this.mapper = mapper;
             this.universityService = universityService;
             this.teacherService = teacherService;
+            this.fileStorageService = fileStorageService;
         }
 
         // GET: api/Course/5
@@ -83,6 +88,8 @@ namespace UniAtHome.WebAPI.Controllers
                 courseDto.TeacherEmail = User.Identity.Name;
                 courseDto.UniversityId = (await teacherService
                     .GetTeacherInfoByEmailAsync(User.Identity.Name)).UniversityId;
+                courseDto.ImagePath = request.Image != null ?
+                    await fileStorageService.SaveImageAsync(DateTime.Now + request.Image.FileName, request.Image) : null;
                 await courseService.AddCourseAsync(courseDto);
                 return Ok();
             }
