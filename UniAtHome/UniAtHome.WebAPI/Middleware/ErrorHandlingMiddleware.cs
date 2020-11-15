@@ -35,17 +35,17 @@ namespace UniAtHome.WebAPI.Middleware
             int status = 
                 (exception as CustomHttpException)?.StatusCode ?? (int)HttpStatusCode.InternalServerError;
 
-            string message = exception.Message;
+            string statusText = exception.Message;
             string result;
 
             if (env.IsEnvironment("Development"))
             {
                 string stackTrace = exception.StackTrace;
-                result = JsonSerializer.Serialize(new { message, status, stackTrace });
+                result = JsonSerializer.Serialize(new { statusText, status, stackTrace });
             }
             else
             {
-                result = JsonSerializer.Serialize(new { message, status });
+                result = JsonSerializer.Serialize(new { statusText, status });
             }
 
             context.Response.ContentType = "application/json";
