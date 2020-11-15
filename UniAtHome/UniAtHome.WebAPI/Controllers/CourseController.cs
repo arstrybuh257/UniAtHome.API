@@ -89,7 +89,7 @@ namespace UniAtHome.WebAPI.Controllers
                 courseDto.UniversityId = (await teacherService
                     .GetTeacherInfoByEmailAsync(User.Identity.Name)).UniversityId;
                 courseDto.ImagePath = request.Image != null ?
-                    await fileStorageService.SaveImageAsync(DateTime.Now + request.Image.FileName, request.Image) : null;
+                    await fileStorageService.SaveImageAsync(Guid.NewGuid() + request.Image.FileName, request.Image) : null;
                 await courseService.AddCourseAsync(courseDto);
                 return Ok();
             }
