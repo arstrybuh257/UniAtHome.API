@@ -62,6 +62,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddTransient<ILessonService, LessonService>();
             services.AddTransient<IUniversityService, UniversityService>();
             services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddScoped<IUniversityRequestService, UniversityRequestService>();
             services.AddScoped<IUniversityRegistrationService, UniversityRegistrationService>();
 
