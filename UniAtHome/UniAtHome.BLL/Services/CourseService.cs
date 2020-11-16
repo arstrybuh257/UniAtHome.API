@@ -82,7 +82,7 @@ namespace UniAtHome.BLL.Services
             return courses.Select(course => mapper.Map<CourseDTO>(course));
         }
 
-        public async Task<IEnumerable<CourseDTO>> FindCoursesAsync(UniversityCoursesFilter filter)
+        public async Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(UniversityCoursesFilter filter)
         {
             var courses = await courseRepository.Find(
                 course => course.Name.Contains(filter.SearchText) || filter.SearchText == null && 
@@ -91,8 +91,10 @@ namespace UniAtHome.BLL.Services
             return mapper.Map<IEnumerable<CourseDTO>>(courses);
         }
 
-        public async Task<IEnumerable<CourseDTO>> FindCoursesAsync(UserCoursesFilter filter)
+        public async Task<IEnumerable<CourseDTO>> FindTeacherCoursesAsync(UserCoursesFilter filter)
         {
+            Teacher teacher = await teacherRepository.GetByEmailAsync(filter.UserEmail);
+
             var courses = await courseRepository.Find(
                 course => course.Name.Contains(filter.SearchText) || filter.SearchText == null &&
                     course.UniversityId == );

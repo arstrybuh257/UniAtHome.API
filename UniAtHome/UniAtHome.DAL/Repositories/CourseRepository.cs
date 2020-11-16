@@ -73,5 +73,21 @@ namespace UniAtHome.DAL.Repositories
                 .Include(c => c.Lessons)
                 .Where(c => c.Id == id).FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Course>> FindTeacherCourses(string teacherId)
+        {
+            return await context.Set<Course>()
+                .Include(c => c.CourseMembers)
+                .Where(c => c.CourseMembers.Select(cm => cm.TeacherId).Contains(teacherId))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Course>> FindTeacherCourses(string teacherId, string search)
+        {
+            return await context.Set<Course>()
+                .Include(c => c.CourseMembers)
+                .Where(c => c.CourseMembers.Select(cm => cm.TeacherId).Contains(teacherId) && c.Name.Contains(search))
+                .ToListAsync();
+        }
     }
 }
