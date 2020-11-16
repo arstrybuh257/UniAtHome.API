@@ -5,6 +5,6 @@ namespace UniAtHome.BLL.Interfaces
 {
     public interface IUniversityRegistrationService
     {
-        Task<UniversityCreationResultDTO> CreateUniversityAsync(UniversityRequestDTO createRequestDTO);
+        Task<UniversityCreationResultDTO> CreateUniversityAsync(UniversityCreateRequestViewDTO createRequestDTO);
     }
 }

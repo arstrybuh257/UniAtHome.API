@@ -35,8 +35,16 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<StudentRegistrationRequest, StudentRegistrationDTO>();
             CreateMap<TeacherRegistrationRequest, TeacherRegistrationDTO>();
 
-            CreateMap<UniversitySubmitRequest, UniversityCreateDTO>();
-            CreateMap<UniversityCreateRequest, UniversityRequestDTO>();
+            CreateMap<UniversityCreateRequestRequest, UniversityCreateRequestDTO>();
+            CreateMap<UniversityCreateRequestDTO, UniversityCreateRequest>();
+            CreateMap<UniversityCreateRequest, UniversityCreateRequestViewDTO>();
+            CreateMap<UniversityCreateRequestViewDTO, University>()
+                .ForMember(
+                    university => university.Name,
+                    opt => opt.MapFrom(request => request.UniversityName))
+                .ForMember(
+                    university => university.ShortName,
+                    opt => opt.MapFrom(request => request.UniversityShortName));
 
             CreateMap<University, UniversityDTO>();
         }

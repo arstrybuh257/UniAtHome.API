@@ -2,13 +2,18 @@
 
 namespace UniAtHome.WebAPI.Models.UniversityCreation
 {
-    public sealed class UniversitySubmitRequest
+    public sealed class UniversityCreateRequestRequest
     {
         [Required]
         public string UniversityName { get; set; }
 
         [Required]
         public string UniversityShortName { get; set; }
+
+        public string Address { get; set; }
+
+        [Required]
+        public int Country { get; set; }
 
         [Required]
         public string SubmitterFirstName { get; set; }
@@ -19,10 +24,6 @@ namespace UniAtHome.WebAPI.Models.UniversityCreation
         [Required]
         public string Email { get; set; }
 
-        [Required]
         public string Comment { get; set; }
-        public string Address { get; set; }
-        [Required]
-        public int Country { get; set; }
     }
 }

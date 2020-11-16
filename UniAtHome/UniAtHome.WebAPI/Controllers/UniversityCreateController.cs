@@ -27,18 +27,17 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MakeCreationRequestAsync([FromBody] UniversitySubmitRequest request)
+        public async Task<IActionResult> MakeCreationRequestAsync([FromBody] UniversityCreateRequestRequest request)
         {
-            var dto = mapper.Map<UniversityCreateDTO>(request);
-            dto.DateOfCreation = DateTime.Now;
+            var dto = mapper.Map<UniversityCreateRequestDTO>(request);
             await universityCreationService.AddRequestAsync(dto);
             return Ok();
         }
 
         [HttpGet, Authorize(Roles = RoleName.ADMIN)]
-        public async Task<ActionResult<IEnumerable<UniversityRequestDTO>>> GetAllRequestsAsync()
+        public async Task<ActionResult<IEnumerable<UniversityCreateRequestViewDTO>>> GetAllRequestsAsync()
         {
-            IEnumerable<UniversityRequestDTO> requests = await universityCreationService.GetAllRequestsAsync();
+            IEnumerable<UniversityCreateRequestViewDTO> requests = await universityCreationService.GetAllRequestsAsync();
             return Ok(requests.Select(r => new
             {
                 r.Id,
