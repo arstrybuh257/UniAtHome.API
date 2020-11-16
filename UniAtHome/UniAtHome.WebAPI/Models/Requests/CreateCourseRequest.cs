@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace UniAtHome.WebAPI.Models.Requests
 {
@@ -9,5 +10,7 @@ namespace UniAtHome.WebAPI.Models.Requests
 
         [Required]
         public string Description { get; set; }
+
+        public IFormFile Image { get; set; }
     }
 }
