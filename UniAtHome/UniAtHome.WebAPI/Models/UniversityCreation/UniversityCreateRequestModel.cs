@@ -1,28 +1,27 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
 namespace UniAtHome.WebAPI.Models.UniversityCreation
 {
-    public sealed class UniversitySubmitRequest
+    public class UniversityCreateRequestModel
     {
-        [Required]
+        public int Id { get; set; }
+
         public string UniversityName { get; set; }
 
-        [Required]
         public string UniversityShortName { get; set; }
 
-        [Required]
+        public string Address { get; set; }
+
+        public string Country { get; set; }
+
         public string SubmitterFirstName { get; set; }
 
-        [Required]
         public string SubmitterLastName { get; set; }
 
-        [Required]
         public string Email { get; set; }
 
-        [Required]
         public string Comment { get; set; }
-        public string Address { get; set; }
-        [Required]
-        public int Country { get; set; }
+
+        public DateTime DateOfCreation { get; set; }
     }
 }

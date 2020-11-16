@@ -2,10 +2,17 @@
 
 namespace UniAtHome.BLL.DTOs.UniversityRequest
 {
-    public sealed class UniversityCreateDTO
+    public sealed class UniversityCreateRequestViewDTO
     {
-        public string UniversityShortName { get; set; }
+        public int Id { get; set; }
+        
         public string UniversityName { get; set; }
+
+        public string UniversityShortName { get; set; }
+
+        public string Address { get; set; }
+
+        public string Country { get; set; }
 
         public string SubmitterFirstName { get; set; }
 
@@ -14,8 +21,7 @@ namespace UniAtHome.BLL.DTOs.UniversityRequest
         public string Email { get; set; }
 
         public string Comment { get; set; }
-        public string Address { get; set; }
-        public int Country { get; set; }
+
         public DateTime DateOfCreation { get; set; }
     }
 }

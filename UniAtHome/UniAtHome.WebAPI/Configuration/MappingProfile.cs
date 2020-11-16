@@ -13,7 +13,7 @@ using UniAtHome.WebAPI.Models.Users;
 
 namespace UniAtHome.WebAPI.Configuration
 {
-    public class MappingProfile: Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -35,8 +35,17 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<StudentRegistrationRequest, StudentRegistrationDTO>();
             CreateMap<TeacherRegistrationRequest, TeacherRegistrationDTO>();
 
-            CreateMap<UniversitySubmitRequest, UniversityCreateDTO>();
-            CreateMap<UniversityCreateRequest, UniversityRequestDTO>();
+            CreateMap<UniversityCreateRequestRequest, UniversityCreateRequestDTO>();
+            CreateMap<UniversityCreateRequestDTO, UniversityCreateRequest>();
+            CreateMap<UniversityCreateRequest, UniversityCreateRequestViewDTO>();
+            CreateMap<UniversityCreateRequestViewDTO, University>()
+                .ForMember(
+                    university => university.Name,
+                    opt => opt.MapFrom(request => request.UniversityName))
+                .ForMember(
+                    university => university.ShortName,
+                    opt => opt.MapFrom(request => request.UniversityShortName));
+            CreateMap<UniversityCreateRequestViewDTO, UniversityCreateRequestModel>();
 
             CreateMap<University, UniversityDTO>();
         }

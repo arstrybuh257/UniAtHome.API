@@ -10,7 +10,7 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController]
     public class UniversityController : ControllerBase
     {
-        private IUniversityService universityService;
+        private readonly IUniversityService universityService;
 
         public UniversityController(IUniversityService universityService)
         {
@@ -22,6 +22,5 @@ namespace UniAtHome.WebAPI.Controllers
         {
             return Ok(await universityService.GetUniversities());
         }
-
     }
 }

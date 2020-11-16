@@ -25,7 +25,7 @@ namespace UniAtHome.BLL.Services
             this.passwordGenerator = passwordGenerator;
         }
 
-        public async Task<UniversityCreationResultDTO> CreateUniversityAsync(UniversityRequestDTO createRequestDTO)
+        public async Task<UniversityCreationResultDTO> CreateUniversityAsync(UniversityCreateRequestViewDTO createRequestDTO)
         {
             var university = new University
             {

@@ -17,6 +17,12 @@
     <Compile Remove="Migrations\20201107114018_UniversityEnity.Designer.cs" />
     <Compile Remove="Migrations\20201115205900_AddCourseImageMigration.cs" />
     <Compile Remove="Migrations\20201115205900_AddCourseImageMigration.Designer.cs" />
+    <Compile Remove="Migrations\20201116084304_NewPropertiesOfUniversity.cs" />
+    <Compile Remove="Migrations\20201116084304_NewPropertiesOfUniversity.Designer.cs" />
+    <Compile Remove="Migrations\20201116085323_UniversityNewProperties.cs" />
+    <Compile Remove="Migrations\20201116085323_UniversityNewProperties.Designer.cs" />
+    <Compile Remove="Migrations\20201116085729_UniversityNewProperties.cs" />
+    <Compile Remove="Migrations\20201116085729_UniversityNewProperties.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,9 +6,9 @@ namespace UniAtHome.BLL.Interfaces
 {
     public interface IUniversityRequestService
     {
-        Task AddRequestAsync(UniversityCreateDTO creationInfo);
+        Task AddRequestAsync(UniversityCreateRequestDTO creationInfo);
 
-        Task<IEnumerable<UniversityRequestDTO>> GetAllRequestsAsync();
+        Task<IEnumerable<UniversityCreateRequestViewDTO>> GetAllRequestsAsync();
 
         Task ApproveRequestAsync(int id);
 

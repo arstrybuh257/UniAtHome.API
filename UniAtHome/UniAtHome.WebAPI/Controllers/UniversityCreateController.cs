@@ -1,9 +1,7 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.UniversityRequest;
 using UniAtHome.BLL.Interfaces;
@@ -27,28 +25,19 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MakeCreationRequestAsync([FromBody] UniversitySubmitRequest request)
+        public async Task<IActionResult> MakeCreationRequestAsync([FromBody] UniversityCreateRequestRequest request)
         {
-            var dto = mapper.Map<UniversityCreateDTO>(request);
-            dto.DateOfCreation = DateTime.Now;
+            var dto = mapper.Map<UniversityCreateRequestDTO>(request);
             await universityCreationService.AddRequestAsync(dto);
             return Ok();
         }
 
         [HttpGet, Authorize(Roles = RoleName.ADMIN)]
-        public async Task<ActionResult<IEnumerable<UniversityRequestDTO>>> GetAllRequestsAsync()
+        public async Task<ActionResult<IEnumerable<UniversityCreateRequestViewDTO>>> GetAllRequestsAsync()
         {
-            IEnumerable<UniversityRequestDTO> requests = await universityCreationService.GetAllRequestsAsync();
-            return Ok(requests.Select(r => new
-            {
-                r.Id,
-                r.UniversityName,
-                r.Email,
-                r.SubmitterFirstName,
-                r.SubmitterLastName,
-                r.Comment,
-                r.DateOfCreation
-            }));
+            IEnumerable<UniversityCreateRequestViewDTO> requests = await universityCreationService.GetAllRequestsAsync();
+            IEnumerable<UniversityCreateRequestModel> models = mapper.Map<IEnumerable<UniversityCreateRequestModel>>(requests);
+            return Ok(models);
         }
 
         [HttpPost("approve"), Authorize(Roles = RoleName.ADMIN)]

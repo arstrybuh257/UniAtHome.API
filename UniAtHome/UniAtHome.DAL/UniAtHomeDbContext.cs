@@ -47,10 +47,10 @@ namespace UniAtHome.DAL
 
             // University
             modelBuilder.Entity<University>().HasKey(un => un.Id);
-            modelBuilder.Entity<University>()
-                .Property(un => un.Name)
-                .IsRequired()
-                .HasMaxLength(50);
+            modelBuilder.Entity<University>().Property(un => un.Name).HasMaxLength(200);
+            modelBuilder.Entity<University>().Property(un => un.ShortName).HasMaxLength(20);
+            modelBuilder.Entity<University>().Property(un => un.Address).HasMaxLength(400);
+            modelBuilder.Entity<University>().Property(un => un.Country).HasMaxLength(50);
 
             // University admin
             modelBuilder.Entity<UniversityAdmin>().HasKey(a => a.UserId);
@@ -166,11 +166,14 @@ namespace UniAtHome.DAL
             // University create requests
             modelBuilder.Entity<UniversityCreateRequest>().HasKey(r => r.Id);
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.UniversityName).IsRequired();
-            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Email).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.UniversityShortName).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Address);
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Country).IsRequired();
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.SubmitterFirstName).IsRequired();
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.SubmitterLastName).IsRequired();
-            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Comment).IsRequired();
-            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Submitted).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Email).IsRequired();
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Comment);
+            modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.DateOfCreation).IsRequired();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

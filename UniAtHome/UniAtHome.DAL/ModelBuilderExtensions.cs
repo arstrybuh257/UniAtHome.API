@@ -63,7 +63,10 @@ namespace UniAtHome.DAL
                 .HasData(new University
                 {
                     Id = UNIVERSITY_ID,
-                    Name = "NURE"
+                    Name = "Kharkiv National University of Radio Electronics",
+                    ShortName = "Nure",
+                    Address = "Nauky Ave. 14, Kharkiv",
+                    Country = "Ukraine"
                 });
         }
 

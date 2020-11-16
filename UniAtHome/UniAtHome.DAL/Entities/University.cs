@@ -5,9 +5,12 @@ namespace UniAtHome.DAL.Entities
     public class University : BaseEntity
     {
         public string Name { get; set; }
+
         public string ShortName { get; set; }
+
         public string Address { get; set; }
-        public int Country { get; set; }
+
+        public string Country { get; set; }
 
         public List<UniversityAdmin> UniversityAdmins { get; set; }
 

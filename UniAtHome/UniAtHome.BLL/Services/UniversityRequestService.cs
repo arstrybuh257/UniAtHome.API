@@ -22,9 +22,9 @@ namespace UniAtHome.BLL.Services
         private readonly IMapper mapper;
 
         public UniversityRequestService(
-            IRepository<UniversityCreateRequest> requestsRepository, 
-            IEmailService emailService, 
-            IUniversityRegistrationService universityRegistrationService, 
+            IRepository<UniversityCreateRequest> requestsRepository,
+            IEmailService emailService,
+            IUniversityRegistrationService universityRegistrationService,
             IMapper mapper)
         {
             this.requestsRepository = requestsRepository;
@@ -33,17 +33,10 @@ namespace UniAtHome.BLL.Services
             this.mapper = mapper;
         }
 
-        public async Task AddRequestAsync(UniversityCreateDTO creationInfo)
+        public async Task AddRequestAsync(UniversityCreateRequestDTO creationInfo)
         {
-            var createRequest = new UniversityCreateRequest
-            {
-                UniversityName = creationInfo.UniversityName,
-                SubmitterFirstName = creationInfo.SubmitterFirstName,
-                SubmitterLastName = creationInfo.SubmitterLastName,
-                Email = creationInfo.Email,
-                Comment = creationInfo.Comment,
-                Submitted = DateTime.Now
-            };
+            UniversityCreateRequest createRequest = mapper.Map<UniversityCreateRequest>(creationInfo);
+            createRequest.DateOfCreation = DateTime.Now;
             await requestsRepository.AddAsync(createRequest);
             await requestsRepository.SaveChangesAsync();
         }
@@ -56,7 +49,7 @@ namespace UniAtHome.BLL.Services
                 throw new BadRequestException("Creation request doesn't exist!");
             }
 
-            UniversityRequestDTO registerDto = mapper.Map<UniversityRequestDTO>(request);
+            UniversityCreateRequestViewDTO registerDto = mapper.Map<UniversityCreateRequestViewDTO>(request);
             UniversityCreationResultDTO result = await universityRegistrationService
                 .CreateUniversityAsync(registerDto);
 
@@ -89,19 +82,10 @@ namespace UniAtHome.BLL.Services
             await requestsRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<UniversityRequestDTO>> GetAllRequestsAsync()
+        public async Task<IEnumerable<UniversityCreateRequestViewDTO>> GetAllRequestsAsync()
         {
-            var requests = await requestsRepository.Find(_ => true);
-            return requests.Select(r => new UniversityRequestDTO
-            {
-                Id = r.Id,
-                UniversityName = r.UniversityName,
-                Email = r.Email,
-                Comment = r.Comment,
-                SubmitterFirstName = r.SubmitterFirstName,
-                SubmitterLastName = r.SubmitterLastName,
-                Submitted = r.Submitted,
-            });
+            IEnumerable<UniversityCreateRequest> requests = await requestsRepository.Find(_ => true);
+            return mapper.Map<IEnumerable<UniversityCreateRequestViewDTO>>(requests);
         }
     }
 }
