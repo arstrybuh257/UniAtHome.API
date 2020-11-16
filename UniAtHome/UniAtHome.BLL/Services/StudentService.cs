@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.DTOs.Students;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Models.Filters;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 
@@ -28,12 +29,13 @@ namespace UniAtHome.BLL.Services
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<CourseDTO>> GetStudentsCoursesAsync(StudentsCoursesRequest coursesRequest)
+        public async Task<IEnumerable<CourseDTO>> GetStudentsCoursesAsync(CoursesFilter filter)
         {
-            var studentEmail = coursesRequest.StudentEmail;
+            var studentEmail = filter.UserEmail;
 
             var courses = await coursesRepository.Find(
-                course => course.CourseMembers.Any(
+                course => (filter.SearchText == null || course.Name.Contains(filter.SearchText))
+                && course.CourseMembers.Any(
                     members => members.Groups.Any(
                         group => group.StudentGroups.Any(
                             studentGroup => studentGroup.Student.User.Email == studentEmail))));
