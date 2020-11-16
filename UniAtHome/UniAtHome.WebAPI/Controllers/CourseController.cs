@@ -12,6 +12,7 @@ using UniAtHome.BLL.Models.Filters;
 using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Course;
 using UniAtHome.WebAPI.Models.Requests;
+using UniAtHome.WebAPI.Models.Responses;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
 
@@ -85,6 +86,17 @@ namespace UniAtHome.WebAPI.Controllers
             CoursesFilter filter = mapper.Map<CoursesFilter>(request);
             filter.UserEmail = User.Identity.Name;
             var courses = await courseService.FindUniversityCoursesAsync(filter);
+
+            if (courses != null)
+            {
+                GetCoursesResponse response = new GetCoursesResponse
+                {
+                    Courses = mapper.Map<IEnumerable<CourseResponse>>(courses)
+                };
+
+                return Ok(response);
+            }
+
             return BadRequest();
         }
 

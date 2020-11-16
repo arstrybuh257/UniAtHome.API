@@ -6,5 +6,7 @@ namespace UniAtHome.DAL.Interfaces
     public interface IUniversityAdminRepository : IRepository<UniversityAdmin>
     {
         Task<UniversityAdmin> GetByIdAsync(string id);
+
+        Task<UniversityAdmin> GetByEmailAsync(string email);
     }
 }

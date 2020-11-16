@@ -23,17 +23,25 @@ namespace UniAtHome.BLL.Services
 
         private readonly ITeacherRepository teacherRepository;
 
+        private readonly IStudentRepository studentRepository;
+
+        private readonly IUniversityAdminRepository universityAdminRepository;
+
         private readonly IMapper mapper;
 
         public CourseService(
             ICourseRepository courseRepository,
             UserRepository userRepository,
             ITeacherRepository teacherRepository,
+            IStudentRepository studentRepository,
+            IUniversityAdminRepository universityAdminRepository,
             IMapper mapper)
         {
             this.courseRepository = courseRepository;
             this.userRepository = userRepository;
             this.teacherRepository = teacherRepository;
+            this.studentRepository = studentRepository;
+            this.universityAdminRepository = universityAdminRepository;
             this.mapper = mapper;
         }
 
@@ -84,9 +92,11 @@ namespace UniAtHome.BLL.Services
 
         public async Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(CoursesFilter filter)
         {
+            var admin = await universityAdminRepository.GetByEmailAsync(filter.UserEmail);
+
             var courses = await courseRepository.Find(
-                course => course.Name.Contains(filter.SearchText) || filter.SearchText == null && 
-                    course.UniversityId == filter.UniversityId);
+                course => (course.Name.Contains(filter.SearchText) || filter.SearchText == null) && 
+                    course.UniversityId == admin.UniversityId);
 
             return mapper.Map<IEnumerable<CourseDTO>>(courses);
         }
