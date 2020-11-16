@@ -82,7 +82,7 @@ namespace UniAtHome.BLL.Services
             return courses.Select(course => mapper.Map<CourseDTO>(course));
         }
 
-        public async Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(UniversityCoursesFilter filter)
+        public async Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(CoursesFilter filter)
         {
             var courses = await courseRepository.Find(
                 course => course.Name.Contains(filter.SearchText) || filter.SearchText == null && 
@@ -91,7 +91,7 @@ namespace UniAtHome.BLL.Services
             return mapper.Map<IEnumerable<CourseDTO>>(courses);
         }
 
-        public async Task<IEnumerable<CourseDTO>> FindTeacherCoursesAsync(UserCoursesFilter filter)
+        public async Task<IEnumerable<CourseDTO>> FindTeacherCoursesAsync(CoursesFilter filter)
         {
             Teacher teacher = await teacherRepository.GetByEmailAsync(filter.UserEmail);
             var courses = await courseRepository.FindTeacherCourses(teacher.UserId, filter.SearchText);
@@ -99,7 +99,7 @@ namespace UniAtHome.BLL.Services
             return mapper.Map<IEnumerable<CourseDTO>>(courses);
         }
 
-        public async Task<IEnumerable<CourseDTO>> FindStudentCoursesAsync(UserCoursesFilter filter)
+        public async Task<IEnumerable<CourseDTO>> FindStudentCoursesAsync(CoursesFilter filter)
         {
             var student = await userRepository.FindByEmailAsync(filter.UserEmail);
             var courses = await courseRepository.FindTeacherCourses(student.Id, filter.SearchText);

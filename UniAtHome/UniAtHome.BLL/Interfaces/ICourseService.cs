@@ -26,10 +26,10 @@ namespace UniAtHome.BLL.Interfaces
 
         IEnumerable<GroupDTO> GetCourseGroups(int id);
 
-        Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(UniversityCoursesFilter filter);
+        Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(CoursesFilter filter);
 
-        Task<IEnumerable<CourseDTO>> FindTeacherCoursesAsync(UserCoursesFilter filter);
+        Task<IEnumerable<CourseDTO>> FindTeacherCoursesAsync(CoursesFilter filter);
 
-        Task<IEnumerable<CourseDTO>> FindStudentCoursesAsync(UserCoursesFilter filter);
+        Task<IEnumerable<CourseDTO>> FindStudentCoursesAsync(CoursesFilter filter);
     }
 }
