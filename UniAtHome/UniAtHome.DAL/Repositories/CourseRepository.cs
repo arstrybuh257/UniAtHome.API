@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UniAtHome.DAL.Entities;
@@ -61,10 +60,10 @@ namespace UniAtHome.DAL.Repositories
         public async Task<Course> GetCourseByIdAsync(int id)
         {
             return await context.Set<Course>()
-                .Include(c=>c.CourseMembers)
-                .ThenInclude(m=>m.Teacher)
-                .ThenInclude(t=>t.User)
-                .Where(c=>c.Id == id).FirstOrDefaultAsync();
+                .Include(c => c.CourseMembers)
+                .ThenInclude(m => m.Teacher)
+                .ThenInclude(t => t.User)
+                .Where(c => c.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Course> GetCourseWithLessonsByIdAsync(int id)
@@ -74,20 +73,18 @@ namespace UniAtHome.DAL.Repositories
                 .Where(c => c.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Course>> FindTeacherCourses(string teacherId)
+        public async Task<IEnumerable<Course>> FindTeacherCourses(string teacherId, string search = null)
         {
             return await context.Set<Course>()
                 .Include(c => c.CourseMembers)
-                .Where(c => c.CourseMembers.Select(cm => cm.TeacherId).Contains(teacherId))
+                .Where(c => c.CourseMembers.Select(cm => cm.TeacherId)
+                    .Contains(teacherId) && (search == null || c.Name.Contains(search)))
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Course>> FindTeacherCourses(string teacherId, string search)
+        public async Task<IEnumerable<Course>> FindStudentCourses(string studentId, string search = null)
         {
-            return await context.Set<Course>()
-                .Include(c => c.CourseMembers)
-                .Where(c => c.CourseMembers.Select(cm => cm.TeacherId).Contains(teacherId) && c.Name.Contains(search))
-                .ToListAsync();
+            throw new NotImplementedException();
         }
     }
 }

@@ -20,8 +20,8 @@ namespace UniAtHome.DAL.Interfaces
 
         Task<int> GetCourseMemberIdAsync(int courseId, string teacherId);
 
-        Task<IEnumerable<Course>> FindTeacherCourses(string teacherId);
+        Task<IEnumerable<Course>> FindTeacherCourses(string teacherId, string search = null);
 
-        Task<IEnumerable<Course>> FindTeacherCourses(string teacherId, string search);
+        Task<IEnumerable<Course>> FindStudentCourses(string studentId, string search = null);
     }
 }

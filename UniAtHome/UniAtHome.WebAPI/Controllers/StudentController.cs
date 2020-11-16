@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using UniAtHome.BLL.DTOs.Students;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Constants;
-using UniAtHome.WebAPI.Models.Responses;
 using UniAtHome.WebAPI.Models.Responses.Course;
 
 namespace UniAtHome.WebAPI.Controllers

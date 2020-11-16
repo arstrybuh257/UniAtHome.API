@@ -78,6 +78,7 @@ namespace UniAtHome.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize (Roles = RoleName.UNIVERSITY_ADMIN)]
         public IActionResult GetCourseListAsync(FindCoursesRequest request)
         {
             //var courses = await courseService.

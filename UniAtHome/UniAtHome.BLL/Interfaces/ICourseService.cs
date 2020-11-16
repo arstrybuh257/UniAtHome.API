@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
+using UniAtHome.BLL.Models.Filters;
 
 namespace UniAtHome.BLL.Interfaces
 {
@@ -24,5 +25,11 @@ namespace UniAtHome.BLL.Interfaces
         IEnumerable<CourseMemberDTO> GetCourseMembers(int id);
 
         IEnumerable<GroupDTO> GetCourseGroups(int id);
+
+        Task<IEnumerable<CourseDTO>> FindUniversityCoursesAsync(UniversityCoursesFilter filter);
+
+        Task<IEnumerable<CourseDTO>> FindTeacherCoursesAsync(UserCoursesFilter filter);
+
+        Task<IEnumerable<CourseDTO>> FindStudentCoursesAsync(UserCoursesFilter filter);
     }
 }
