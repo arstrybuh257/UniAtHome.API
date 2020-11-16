@@ -13,7 +13,7 @@ namespace UniAtHome.WebAPI.Models.UniversityCreation
         public string Address { get; set; }
 
         [Required]
-        public int Country { get; set; }
+        public string Country { get; set; }
 
         [Required]
         public string SubmitterFirstName { get; set; }

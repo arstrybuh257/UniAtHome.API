@@ -1,9 +1,7 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.UniversityRequest;
 using UniAtHome.BLL.Interfaces;
@@ -38,16 +36,8 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<ActionResult<IEnumerable<UniversityCreateRequestViewDTO>>> GetAllRequestsAsync()
         {
             IEnumerable<UniversityCreateRequestViewDTO> requests = await universityCreationService.GetAllRequestsAsync();
-            return Ok(requests.Select(r => new
-            {
-                r.Id,
-                r.UniversityName,
-                r.Email,
-                r.SubmitterFirstName,
-                r.SubmitterLastName,
-                r.Comment,
-                r.DateOfCreation
-            }));
+            IEnumerable<UniversityCreateRequestModel> models = mapper.Map<IEnumerable<UniversityCreateRequestModel>>(requests);
+            return Ok(models);
         }
 
         [HttpPost("approve"), Authorize(Roles = RoleName.ADMIN)]

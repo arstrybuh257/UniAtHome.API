@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace UniAtHome.BLL.DTOs.UniversityRequest
+namespace UniAtHome.WebAPI.Models.UniversityCreation
 {
-    public sealed class UniversityCreateRequestViewDTO
+    public class UniversityCreateRequestModel
     {
         public int Id { get; set; }
-        
+
         public string UniversityName { get; set; }
 
         public string UniversityShortName { get; set; }

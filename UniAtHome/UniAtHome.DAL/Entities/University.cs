@@ -10,7 +10,7 @@ namespace UniAtHome.DAL.Entities
 
         public string Address { get; set; }
 
-        public int Country { get; set; }
+        public string Country { get; set; }
 
         public List<UniversityAdmin> UniversityAdmins { get; set; }
 

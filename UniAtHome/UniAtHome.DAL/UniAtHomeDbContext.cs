@@ -47,9 +47,9 @@ namespace UniAtHome.DAL
 
             // University
             modelBuilder.Entity<University>().HasKey(un => un.Id);
-            modelBuilder.Entity<University>().Property(un => un.Name).IsRequired().HasMaxLength(50);
-            modelBuilder.Entity<University>().Property(un => un.ShortName).IsRequired().HasMaxLength(10);
-            modelBuilder.Entity<University>().Property(un => un.Address).HasMaxLength(200);
+            modelBuilder.Entity<University>().Property(un => un.Name).IsRequired().HasMaxLength(200);
+            modelBuilder.Entity<University>().Property(un => un.ShortName).IsRequired().HasMaxLength(20);
+            modelBuilder.Entity<University>().Property(un => un.Address).HasMaxLength(400);
             modelBuilder.Entity<University>().Property(un => un.Country).IsRequired().HasMaxLength(50);
 
             // University admin

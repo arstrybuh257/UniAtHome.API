@@ -18,6 +18,6 @@ namespace UniAtHome.BLL.DTOs.UniversityRequest
 
         public string Address { get; set; }
 
-        public int Country { get; set; }
+        public string Country { get; set; }
     }
 }
