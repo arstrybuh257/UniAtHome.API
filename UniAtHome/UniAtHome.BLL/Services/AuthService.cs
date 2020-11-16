@@ -57,7 +57,7 @@ namespace UniAtHome.BLL.Services
 
         public async Task RegisterUniversityAdminAsync(UniversityAdminRegistrationDTO request)
         {
-            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            University university = await universityRepository.GetByIdAsync(request.UniversityId);
             if (university == null)
             {
                 throw new BadRequestException("University doesn't exist!");
@@ -75,7 +75,7 @@ namespace UniAtHome.BLL.Services
 
         public async Task RegisterTeacherAsync(TeacherRegistrationDTO request)
         {
-            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            University university = await universityRepository.GetByIdAsync(request.UniversityId);
             if (university == null)
             {
                 throw new BadRequestException("University doesn't exist!");
@@ -93,7 +93,7 @@ namespace UniAtHome.BLL.Services
 
         public async Task RegisterStudentAsync(StudentRegistrationDTO request)
         {
-            var university = universityRepository.GetByIdAsync(request.UniversityId);
+            University university = await universityRepository.GetByIdAsync(request.UniversityId);
             if (university == null)
             {
                 throw new BadRequestException("University doesn't exist!");
