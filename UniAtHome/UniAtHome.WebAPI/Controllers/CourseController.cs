@@ -77,6 +77,13 @@ namespace UniAtHome.WebAPI.Controllers
             return BadRequest();
         }
 
+        [HttpGet]
+        public IActionResult GetCourseListAsync(FindCoursesRequest request)
+        {
+            //var courses = await courseService.
+            return BadRequest();
+        }
+
         // POST: api/Course
         [HttpPost]
         [Authorize(Roles = RoleName.TEACHER)]

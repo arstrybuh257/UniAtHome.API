@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Models;
+using UniAtHome.BLL.Models.Filters;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using UniAtHome.DAL.Repositories;
@@ -78,6 +80,24 @@ namespace UniAtHome.BLL.Services
             var courses = await courseRepository.Find(
                 course => EF.Functions.Like(course.Name, $"%{name}%"));
             return courses.Select(course => mapper.Map<CourseDTO>(course));
+        }
+
+        public async Task<IEnumerable<CourseDTO>> FindCoursesAsync(UniversityCoursesFilter filter)
+        {
+            var courses = await courseRepository.Find(
+                course => course.Name.Contains(filter.SearchText) || filter.SearchText == null && 
+                    course.UniversityId == filter.UniversityId);
+
+            return mapper.Map<IEnumerable<CourseDTO>>(courses);
+        }
+
+        public async Task<IEnumerable<CourseDTO>> FindCoursesAsync(UserCoursesFilter filter)
+        {
+            var courses = await courseRepository.Find(
+                course => course.Name.Contains(filter.SearchText) || filter.SearchText == null &&
+                    course.UniversityId == );
+
+            return mapper.Map<IEnumerable<CourseDTO>>(courses);
         }
 
         public async Task AddCourseMemberAsync(int courseId, string teacherEmail)
