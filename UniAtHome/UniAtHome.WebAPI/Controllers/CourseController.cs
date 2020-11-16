@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Models.Filters;
 using UniAtHome.DAL.Constants;
 using UniAtHome.WebAPI.Models.Course;
 using UniAtHome.WebAPI.Models.Requests;
@@ -79,9 +80,10 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpGet]
         [Authorize (Roles = RoleName.UNIVERSITY_ADMIN)]
-        public IActionResult GetCourseListAsync(FindCoursesRequest request)
+        public async Task<IActionResult> GetCourseListAsync(FindCoursesRequest request)
         {
-            //var courses = await courseService.
+            UniversityCoursesFilter filter = mapper.Map<UniversityCoursesFilter>(request);
+            var courses = await courseService.FindUniversityCoursesAsync(filter);
             return BadRequest();
         }
 
