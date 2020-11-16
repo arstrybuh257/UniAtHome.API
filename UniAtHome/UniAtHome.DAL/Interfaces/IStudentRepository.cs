@@ -7,6 +7,6 @@ namespace UniAtHome.DAL.Interfaces
     {
         Task<Student> GetByIdAsync(string id);
 
-        Task<Student> GetByEmailAsync(string email)
+        Task<Student> GetByEmailAsync(string email);
     }
 }

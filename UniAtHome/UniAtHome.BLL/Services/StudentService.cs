@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Course;
-using UniAtHome.BLL.DTOs.Students;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Models.Filters;
 using UniAtHome.DAL.Entities;
