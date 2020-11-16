@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Teacher;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Models.Filters;
 using UniAtHome.DAL.Constants;
+using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 
 namespace UniAtHome.WebAPI.Controllers
@@ -28,17 +30,18 @@ namespace UniAtHome.WebAPI.Controllers
         [Authorize(Roles = RoleName.ADMIN)]
         public async Task<ObjectResult> GetCoursesForTeacherAsync(string email)
         {
-            var coursesRequest = new TeachersCoursesRequest { TeacherEmail = email };
+            var coursesRequest = new CoursesFilter { UserEmail = email };
             var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest));
             return Ok(coursesResponse);
         }
 
         [HttpGet("courses")]
         [Authorize(Roles=RoleName.TEACHER)]
-        public async Task<ObjectResult> GetCoursesForUserAsync()
+        public async Task<ObjectResult> GetCoursesForUserAsync(FindCoursesRequest request)
         {
-            var coursesRequest = new TeachersCoursesRequest { TeacherEmail = User.Identity.Name };
-            var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest));
+            var filter = mapper.Map<CoursesFilter>(request);
+            filter.UserEmail = User.Identity.Name;
+            var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(filter));
             return Ok(coursesResponse);
         }
     }
