@@ -80,7 +80,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpGet]
         [Authorize (Roles = RoleName.UNIVERSITY_ADMIN)]
-        public async Task<IActionResult> GetCourseListAsync(FindCoursesRequest request)
+        public async Task<IActionResult> GetCourseListAsync([FromQuery]FindCoursesRequest request)
         {
             CoursesFilter filter = mapper.Map<CoursesFilter>(request);
             filter.UserEmail = User.Identity.Name;
