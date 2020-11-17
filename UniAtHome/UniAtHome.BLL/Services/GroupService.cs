@@ -14,15 +14,19 @@ namespace UniAtHome.BLL.Services
 
         private readonly IGroupRepository groupRepository;
 
+        private readonly IRepository<Student> studentsRepository;
+
         private readonly ITeacherRepository teacherRepository;
 
         public GroupService(
             ICourseRepository courseRepository, 
             IGroupRepository groupRepository,
+            IRepository<Student> studentsRepository,
             ITeacherRepository teacherRepository)
         {
             this.courseRepository = courseRepository;
             this.groupRepository = groupRepository;
+            this.studentsRepository = studentsRepository;
             this.teacherRepository = teacherRepository;
         }
 
@@ -58,15 +62,29 @@ namespace UniAtHome.BLL.Services
             await groupRepository.SaveChangesAsync();
         }
 
-        public async Task AddStudentToGroupAsync(int groupId, string studentId)
+        public async Task AddStudentToGroupAsync(int groupId, string studentEmail)
         {
-            await groupRepository.AddStudentToGroupAsync(groupId, studentId);
+            Student student = (await studentsRepository.Find(s => s.User.Email == studentEmail)).FirstOrDefault();
+            if (student == null)
+            {
+                throw new BadRequestException("Student doesn't exist");
+            }
+            await groupRepository.AddStudentToGroupAsync(groupId, student.UserId);
             await groupRepository.SaveChangesAsync();
         }
 
-        public async Task RemoveStudentFromGroupAsync(int groupId, string studentId)
+        public async Task RemoveStudentFromGroupAsync(int groupId, string studentEmail)
         {
-            await groupRepository.RemoveStudentFromGroupAsync(groupId, studentId);
+            Student student = (await studentsRepository.Find(s => s.User.Email == studentEmail)).FirstOrDefault();
+            if (student == null)
+            {
+                throw new BadRequestException("Student doesn't exist");
+            }
+            if (!await groupRepository.IsStudentInGroupAsync(groupId, student.UserId))
+            {
+                throw new BadRequestException("The student isn't in the group!");
+            }
+            await groupRepository.RemoveStudentFromGroupAsync(groupId, student.UserId);
             await groupRepository.SaveChangesAsync();
         }
 

@@ -35,10 +35,16 @@ namespace UniAtHome.DAL.Repositories
             return context.Set<Group>()
                 .Where(g => g.Id == groupId)
                 .SelectMany(g => g.StudentGroups)
+                .Include(gr => gr.Student.User)
                 .Select(gr => gr.Student)
-                .Include(st => st.User)
                 .AsNoTracking()
                 .ToArray();
+        }
+
+        public async Task<bool> IsStudentInGroupAsync(int groupId, string studentId)
+        {
+            return await context.Set<StudentGroup>()
+                .AnyAsync(gr => gr.GroupId == groupId && gr.StudentId == studentId);
         }
     }
 }
