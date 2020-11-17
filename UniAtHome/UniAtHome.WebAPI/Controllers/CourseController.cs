@@ -79,7 +79,7 @@ namespace UniAtHome.WebAPI.Controllers
         // POST: api/Course
         [HttpPost]
         [Authorize(Roles = RoleName.TEACHER)]
-        public async Task<IActionResult> CreateCourseAsync([FromBody] CreateCourseRequest request)
+        public async Task<IActionResult> CreateCourseAsync([FromForm] CreateCourseRequest request)
         {
             if (request != null && ModelState.IsValid)
             {
