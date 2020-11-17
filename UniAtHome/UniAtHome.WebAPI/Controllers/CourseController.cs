@@ -16,7 +16,6 @@ using UniAtHome.WebAPI.Models.Responses.Lesson;
 
 namespace UniAtHome.WebAPI.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController, Authorize]
     public class CourseController : ControllerBase
@@ -140,7 +139,7 @@ namespace UniAtHome.WebAPI.Controllers
                 throw new ForbiddenException("Don't have rights to access the course!");
             }
 
-            await courseService.RemoveCourseMemberAsync(request.CourseId, request.TeacherId);
+            await courseService.RemoveCourseMemberAsync(request.CourseId, request.TeacherEmail);
             return Ok();
         }
 
