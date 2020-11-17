@@ -42,9 +42,9 @@ namespace UniAtHome.DAL.Repositories
         public IEnumerable<Teacher> GetCourseTeachers(int courseId)
         {
             return context.Set<CourseMember>()
+                .Include(c => c.Teacher.User)
                 .Where(c => c.CourseId == courseId)
                 .Select(c => c.Teacher)
-                .Include(t => t.User)
                 .AsNoTracking()
                 .ToArray();
         }
