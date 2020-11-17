@@ -8,6 +8,6 @@ namespace UniAtHome.WebAPI.Models.Course
         public int CourseId { get; set; }
 
         [Required]
-        public string TeacherId { get; set; }
+        public string TeacherEmail { get; set; }
     }
 }

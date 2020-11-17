@@ -8,8 +8,10 @@ namespace UniAtHome.DAL.Interfaces
     {
         Task AddStudentToGroupAsync(int groupId, string studentId);
 
-        IEnumerable<Student> GetGroupStudents(int groupId);
-
         Task RemoveStudentFromGroupAsync(int groupId, string studentId);
+
+        Task<bool> IsStudentInGroupAsync(int groupId, string studentId);
+
+        IEnumerable<Student> GetGroupStudents(int groupId);
     }
 }

@@ -18,7 +18,6 @@ using UniAtHome.WebAPI.Models.Responses.Lesson;
 
 namespace UniAtHome.WebAPI.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController, Authorize]
     public class CourseController : ControllerBase
@@ -103,7 +102,7 @@ namespace UniAtHome.WebAPI.Controllers
         // POST: api/Course
         [HttpPost]
         [Authorize(Roles = RoleName.TEACHER)]
-        public async Task<IActionResult> CreateCourseAsync([FromBody] CreateCourseRequest request)
+        public async Task<IActionResult> CreateCourseAsync([FromForm] CreateCourseRequest request)
         {
             if (request != null && ModelState.IsValid)
             {
@@ -163,7 +162,7 @@ namespace UniAtHome.WebAPI.Controllers
                 throw new ForbiddenException("Don't have rights to access the course!");
             }
 
-            await courseService.RemoveCourseMemberAsync(request.CourseId, request.TeacherId);
+            await courseService.RemoveCourseMemberAsync(request.CourseId, request.TeacherEmail);
             return Ok();
         }
 
