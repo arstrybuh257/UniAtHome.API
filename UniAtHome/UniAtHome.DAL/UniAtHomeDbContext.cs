@@ -194,11 +194,11 @@ namespace UniAtHome.DAL
             {
                 if (auditableEntity.State == EntityState.Added || auditableEntity.State == EntityState.Modified)
                 {
-                    auditableEntity.Entity.Modified = DateTime.Now;
+                    auditableEntity.Entity.Modified = DateTimeOffset.UtcNow;
 
                     if (auditableEntity.State == EntityState.Added)
                     {
-                        auditableEntity.Entity.Added = DateTime.Now;
+                        auditableEntity.Entity.Added = DateTimeOffset.UtcNow;
                     }
                 }
             }

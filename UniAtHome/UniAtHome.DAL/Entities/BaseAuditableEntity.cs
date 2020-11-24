@@ -4,8 +4,8 @@ namespace UniAtHome.DAL.Entities
 {
     public class BaseAuditableEntity : BaseEntity
     {
-        public DateTime Added { get; set; }
+        public DateTimeOffset Added { get; set; }
 
-        public DateTime Modified { get; set; }
+        public DateTimeOffset Modified { get; set; }
     }
 }

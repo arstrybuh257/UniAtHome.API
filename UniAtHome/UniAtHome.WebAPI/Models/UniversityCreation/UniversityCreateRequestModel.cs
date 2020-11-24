@@ -22,6 +22,6 @@ namespace UniAtHome.WebAPI.Models.UniversityCreation
 
         public string Comment { get; set; }
 
-        public DateTime DateOfCreation { get; set; }
+        public DateTimeOffset DateOfCreation { get; set; }
     }
 }
