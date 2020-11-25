@@ -6,7 +6,7 @@ namespace UniAtHome.BLL.Interfaces.Zoom
 {
     public interface IZoomAuthService
     {
-        public bool Authorize(string email, string code);
+        public bool AuthorizeAsync(string email, string code);
 
         public void Refresh(string email);
 
