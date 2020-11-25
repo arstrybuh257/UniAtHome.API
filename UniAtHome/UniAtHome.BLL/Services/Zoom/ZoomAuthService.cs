@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces.Zoom;
 using UniAtHome.BLL.Options;
 using UniAtHome.DAL.Entities;
@@ -48,15 +49,19 @@ namespace UniAtHome.BLL.Services.Zoom
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 string json = await response.Content.ReadAsStringAsync();
-                JObject bodyObject = JObject.Parse(json);
-                string token = bodyObject["access_token"].Value<string>();
-                string refresh = bodyObject["refresh_token"].Value<string>();
-
+                ExtractAuthInfoFromTokenResponseBody(json, out string token, out string refresh);
                 await SaveZoomAuthorizationTokens(email, token, refresh);
 
                 return true;
             }
             return false;
+        }
+
+        private static void ExtractAuthInfoFromTokenResponseBody(string json, out string token, out string refresh)
+        {
+            JObject bodyObject = JObject.Parse(json);
+            token = bodyObject["access_token"].Value<string>();
+            refresh = bodyObject["refresh_token"].Value<string>();
         }
 
         private async Task SaveZoomAuthorizationTokens(string email, string token, string refresh)
@@ -84,13 +89,40 @@ namespace UniAtHome.BLL.Services.Zoom
             await zoomUsersRepository.SaveChangesAsync();
         }
 
-        public void Refresh(string email)
+        public async Task<bool> RefreshAsync(string email)
         {
+            User user = await usersRepository.FindByEmailAsync(email);
+            ZoomUser zoomUser = (await zoomUsersRepository
+                .Find(u => user.Id == u.UserId))
+                .FirstOrDefault();
+            if (zoomUser == null)
+            {
+                return false;
+            }
+
+            string refreshToken = null;
+            using var response = await zoomClient.PostAsync(
+                "oauth/token",
+                new Dictionary<string, string> {
+                    { "grantType", "refresh_token" },
+                    { "refresh_token", refreshToken }
+                },
+                null);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                ExtractAuthInfoFromTokenResponseBody(json, out string token, out string refresh);
+                await SaveZoomAuthorizationTokens(email, token, refresh);
+
+                return true;
+            }
+            return false;
 
         }
 
-        public void Revoke(string email)
+        public void RevokeAsync(string email)
         {
+            // TODO: It looks like we don't need it at all
             throw new NotImplementedException();
         }
     }
