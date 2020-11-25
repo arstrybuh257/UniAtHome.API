@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Interfaces.Zoom;
 using UniAtHome.BLL.Services;
 using UniAtHome.BLL.Services.Zoom;
 using UniAtHome.DAL;
@@ -51,7 +52,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddScoped<IRepository<UniversityCreateRequest>, Repository<UniversityCreateRequest>>();
-            services.AddScoped<IRepository<ZoomUser>>();
+            services.AddScoped<IRepository<ZoomUser>, Repository<ZoomUser>>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IEmailService, EmailService>();
@@ -69,7 +70,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<IUniversityRegistrationService, UniversityRegistrationService>();
 
             services.AddScoped<ZoomAdminClient>();
-            services.AddScoped<ZoomAuthService>();
+            services.AddScoped<IZoomAuthService, ZoomAuthService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 

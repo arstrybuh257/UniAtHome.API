@@ -6,7 +6,7 @@ namespace UniAtHome.BLL.Interfaces.Zoom
     {
         public Task<bool> AuthorizeAsync(string email, string code);
 
-        public void RefreshAsync(string email);
+        public Task<bool> RefreshAsync(string email);
 
         public void RevokeAsync(string email);
     }

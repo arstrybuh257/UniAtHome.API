@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using UniAtHome.BLL.Exceptions;
 using UniAtHome.BLL.Interfaces.Zoom;
 using UniAtHome.BLL.Options;
 using UniAtHome.DAL.Entities;
@@ -25,12 +25,12 @@ namespace UniAtHome.BLL.Services.Zoom
 
         public ZoomAuthService(
             ZoomAdminClient zoomClient,
-            ZoomClientConfig options,
+            IOptions<ZoomClientConfig> options,
             UserRepository usersRepository,
             IRepository<ZoomUser> zoomUsersRepository)
         {
             this.zoomClient = zoomClient;
-            this.options = options;
+            this.options = options.Value;
             this.usersRepository = usersRepository;
             this.zoomUsersRepository = zoomUsersRepository;
         }
@@ -40,7 +40,7 @@ namespace UniAtHome.BLL.Services.Zoom
             using var response = await zoomClient.PostAsync(
                 "oauth/token",
                 new Dictionary<string, string> {
-                    { "grantType", "authorization_code" },
+                    { "grant_type", "authorization_code" },
                     { "code", code },
                     { "redirect_uri", options.OAuthRedirectUrl }
                 },
@@ -100,11 +100,12 @@ namespace UniAtHome.BLL.Services.Zoom
                 return false;
             }
 
-            string refreshToken = null;
+            string refreshToken = zoomUser.RefreshToken;
+
             using var response = await zoomClient.PostAsync(
                 "oauth/token",
                 new Dictionary<string, string> {
-                    { "grantType", "refresh_token" },
+                    { "grant_type", "refresh_token" },
                     { "refresh_token", refreshToken }
                 },
                 null);
