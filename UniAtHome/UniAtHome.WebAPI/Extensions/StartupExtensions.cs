@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Services;
+using UniAtHome.BLL.Services.Zoom;
 using UniAtHome.DAL;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
@@ -42,7 +43,7 @@ namespace UniAtHome.WebAPI.Extensions
         public static IServiceCollection RegisterIoC(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient<UserRepository>();
+            services.AddScoped<UserRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IUniversityRepository, UniversityRepository>();
             services.AddScoped<IRepository<UniversityAdmin>, Repository<UniversityAdmin>>();
@@ -50,6 +51,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddScoped<IRepository<UniversityCreateRequest>, Repository<UniversityCreateRequest>>();
+            services.AddScoped<IRepository<ZoomUser>>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IEmailService, EmailService>();
@@ -65,6 +67,9 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddScoped<IUniversityRequestService, UniversityRequestService>();
             services.AddScoped<IUniversityRegistrationService, UniversityRegistrationService>();
+
+            services.AddScoped<ZoomAdminClient>();
+            services.AddScoped<ZoomAuthService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 
