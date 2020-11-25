@@ -35,6 +35,8 @@ namespace UniAtHome.DAL
 
         public DbSet<UniversityCreateRequest> UniversityCreateRequests { get; set; }
 
+        public DbSet<ZoomUser> ZoomUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -174,6 +176,15 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Email).IsRequired();
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.Comment);
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.DateOfCreation).IsRequired();
+
+            // Zoom user
+            modelBuilder.Entity<ZoomUser>().HasKey(t => t.UserId);
+            modelBuilder.Entity<ZoomUser>()
+                .HasOne(t => t.User)
+                .WithOne();
+            modelBuilder.Entity<ZoomUser>().Property(r => r.Token).IsRequired();
+            modelBuilder.Entity<ZoomUser>().Property(r => r.RefreshToken).IsRequired();
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
