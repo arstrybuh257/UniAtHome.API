@@ -2,35 +2,49 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs;
-using UniAtHome.BLL.DTOs.Auth;
+using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.DTOs.Teacher;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
-using UniAtHome.DAL.Repositories;
 
 namespace UniAtHome.BLL.Services
 {
-    public class TeacherService: AuthService, ITeacherService
+    public class TeacherService : ITeacherService
     {
-        private readonly IRepository<Teacher> teacherRepository;
+        private readonly ITeacherRepository teacherRepository;
 
         private readonly IRepository<Course> courseRepository;
 
         private readonly IMapper mapper;
 
         public TeacherService(
-            UserRepository usersRepository,
-            IAuthTokenGenerator tokenGenerator,
-            IRefreshTokenFactory refreshTokenFactory,
-            IRepository<Teacher> teacherRepository,
+            ITeacherRepository teacherRepository,
             IRepository<Course> courseRepository,
-            IMapper mapper) : base(usersRepository, tokenGenerator, refreshTokenFactory)
+            IMapper mapper)
         {
             this.teacherRepository = teacherRepository;
             this.courseRepository = courseRepository;
             this.mapper = mapper;
+        }
+
+        public async Task<TeacherInfoDTO> GetTeacherInfoAsync(string id)
+        {
+            var teacher = await teacherRepository.GetByIdAsync(id);
+            return new TeacherInfoDTO
+            {
+                Id = id,
+                FirstName = teacher.User.FirstName,
+                LastName = teacher.User.LastName,
+                UniversityId = teacher.UniversityId
+            };
+        }
+
+        public async Task<TeacherInfoDTO> GetTeacherInfoByEmailAsync(string email)
+        {
+            var teacher = (await teacherRepository
+                .Find(t => t.User.Email == email)).First();
+            return await GetTeacherInfoAsync(teacher.UserId); 
         }
 
         public async Task<IEnumerable<CourseDTO>> GetTeahersCoursesAsync(TeachersCoursesRequest coursesRequest)
@@ -42,21 +56,6 @@ namespace UniAtHome.BLL.Services
                     members => members.Teacher.User.Email == teacherEmail));
 
             return this.mapper.Map<IEnumerable<CourseDTO>>(courses);
-        }
-
-        public async Task<RegistrationResponse> RegisterTeacherAsync(RegistrationRequest request)
-        {
-            //KOSTIL`
-            var regiserResult = await this.RegisterAsync(request);
-
-            if (!regiserResult.IdentityResult.Succeeded)
-            {
-                return new RegistrationResponse(regiserResult.IdentityResult.Errors);
-            }
-
-            await this.teacherRepository.AddAsync(new Teacher { UserId = regiserResult.UserId });
-            await this.teacherRepository.SaveChangesAsync();
-            return new RegistrationResponse();
         }
     }
 }

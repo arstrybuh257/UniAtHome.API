@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UniAtHome.BLL.Options;
 using UniAtHome.DAL;
 using UniAtHome.WebAPI.Extensions;
+using UniAtHome.WebAPI.Middleware;
 
 namespace UniAtHome.WebAPI
 {
@@ -32,6 +34,8 @@ namespace UniAtHome.WebAPI
 
             services.AddJwtTokenAuthentication(Configuration);
 
+            services.Configure<StorageServiceConfig>(Configuration.GetSection("StorageService"));
+
             services.SwaggerConfiguration();
 
             services.AddControllers();
@@ -43,6 +47,8 @@ namespace UniAtHome.WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseHttpsRedirection();
 

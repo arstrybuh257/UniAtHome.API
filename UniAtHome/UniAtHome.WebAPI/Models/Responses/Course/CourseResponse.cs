@@ -10,6 +10,8 @@ namespace UniAtHome.WebAPI.Models.Responses.Course
 
         public string Description { get; set; }
 
+        public string ImagePath { get; set; }
+
         public DateTime Added { get; set; }
     }
 }

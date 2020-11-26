@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Teacher;
 using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Constants;
-using UniAtHome.WebAPI.Models.Responses;
 using UniAtHome.WebAPI.Models.Responses.Course;
 
 namespace UniAtHome.WebAPI.Controllers
@@ -27,7 +26,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpGet("courses/{email}")]
         [Authorize(Roles = RoleName.ADMIN)]
-        public async Task<ObjectResult> GetCoursesForTeacher(string email)
+        public async Task<ObjectResult> GetCoursesForTeacherAsync(string email)
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = email };
             var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest));
@@ -36,7 +35,7 @@ namespace UniAtHome.WebAPI.Controllers
 
         [HttpGet("courses")]
         [Authorize(Roles=RoleName.TEACHER)]
-        public async Task<ObjectResult> GetCoursesForUser()
+        public async Task<ObjectResult> GetCoursesForUserAsync()
         {
             var coursesRequest = new TeachersCoursesRequest { TeacherEmail = User.Identity.Name };
             var coursesResponse = mapper.Map<IEnumerable<CourseResponse>>(await teacherService.GetTeahersCoursesAsync(coursesRequest));

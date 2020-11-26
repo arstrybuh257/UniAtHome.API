@@ -7,18 +7,22 @@ namespace UniAtHome.DAL
 {
     public static class ModelBuilderExtensions
     {
+        private const int UNIVERSITY_ID = 1;
+
         private const string ADMIN_ROLE_ID = "2AEFE1C5-C5F0-4399-8FB8-420813567554";
         private const string UNIVERSITY_ADMIN_ROLE_ID = "99DA7670-5471-414F-834E-9B3A6B6C8F6F";
         private const string TEACHER_ROLE_ID = "828A3B02-77C0-45C1-8E97-6ED57711E577";
         private const string STUDENT_ROLE_ID = "422EEB6A-3031-4B66-ABA8-0F85AFC07C3C";
 
         private const string ADMIN_USER_ID = "00CA41A9-C962-4230-937E-D5F54772C062";
+        private const string UNIVERSITY_ADMIN_USER_ID = "BFCC8BAB-AD20-4F70-9CD9-D2003FAE6F09";
         private const string TEACHER_USER_ID = "E8D13331-62AB-463E-A283-6493B68A3622";
         private const string STUDENT_USER_ID = "E3A6BF34-A57D-4709-97CC-6AD1B2B3985B";
 
         public static void Seed(this ModelBuilder modelBuilder)
         {
             SeedRoles(modelBuilder);
+            SeedUniversity(modelBuilder);
             SeedUsers(modelBuilder);
         }
 
@@ -53,6 +57,19 @@ namespace UniAtHome.DAL
             });
         }
 
+        private static void SeedUniversity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<University>()
+                .HasData(new University
+                {
+                    Id = UNIVERSITY_ID,
+                    Name = "Kharkiv National University of Radio Electronics",
+                    ShortName = "Nure",
+                    Address = "Nauky Ave. 14, Kharkiv",
+                    Country = "Ukraine"
+                });
+        }
+
         private static void SeedUsers(ModelBuilder modelBuilder)
         {
             SeedUser(
@@ -63,6 +80,15 @@ namespace UniAtHome.DAL
                 email: "admin@gmail.com",
                 password: "Qwerty12345",
                 roleId: ADMIN_ROLE_ID);
+
+            SeedUser(
+                modelBuilder: modelBuilder,
+                id: UNIVERSITY_ADMIN_USER_ID,
+                firstName: "Vladimir",
+                lastName: "Bream",
+                email: "uadmin@gmail.com",
+                password: "Qwerty12345",
+                roleId: UNIVERSITY_ADMIN_ROLE_ID);
 
             SeedUser(
                 modelBuilder: modelBuilder,
@@ -85,10 +111,10 @@ namespace UniAtHome.DAL
 
         private static void SeedUser(
             ModelBuilder modelBuilder,
-            string id, 
-            string firstName, 
-            string lastName, 
-            string email, 
+            string id,
+            string firstName,
+            string lastName,
+            string email,
             string password,
             string roleId)
         {
@@ -111,11 +137,27 @@ namespace UniAtHome.DAL
 
             switch (roleId)
             {
+                case UNIVERSITY_ADMIN_ROLE_ID:
+                    modelBuilder.Entity<UniversityAdmin>().HasData(
+                        new UniversityAdmin
+                        {
+                            UserId = id,
+                            UniversityId = UNIVERSITY_ID
+                        });
+                    break;
                 case TEACHER_ROLE_ID:
-                    modelBuilder.Entity<Teacher>().HasData(new Teacher { UserId = id });
+                    modelBuilder.Entity<Teacher>().HasData(new Teacher
+                    {
+                        UserId = id,
+                        UniversityId = UNIVERSITY_ID
+                    });
                     break;
                 case STUDENT_ROLE_ID:
-                    modelBuilder.Entity<Student>().HasData(new Student { UserId = id });
+                    modelBuilder.Entity<Student>().HasData(new Student
+                    {
+                        UserId = id,
+                        UniversityId = UNIVERSITY_ID
+                    });
                     break;
                 default: break;
             }

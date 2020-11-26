@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UniAtHome.DAL.Entities;
 
 namespace UniAtHome.DAL.Interfaces
@@ -8,5 +9,15 @@ namespace UniAtHome.DAL.Interfaces
         Task<Course> GetCourseByIdAsync(int id);
 
         Task<Course> GetCourseWithLessonsByIdAsync(int id);
+
+        Task AddCourseMemberAsync(int courseId, string teacherId);
+
+        Task RemoveCourseMemberAsync(int courseId, string teacherId);
+
+        IEnumerable<Teacher> GetCourseTeachers(int courseId);
+
+        IEnumerable<Group> GetCourseGroups(int courseId);
+
+        Task<int> GetCourseMemberIdAsync(int courseId, string teacherId);
     }
 }

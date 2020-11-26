@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs;
-using UniAtHome.BLL.DTOs.Auth;
+using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.DTOs.Teacher;
 
 namespace UniAtHome.BLL.Interfaces
@@ -10,6 +9,8 @@ namespace UniAtHome.BLL.Interfaces
     {
         Task<IEnumerable<CourseDTO>> GetTeahersCoursesAsync(TeachersCoursesRequest coursesRequest);
 
-        Task<RegistrationResponse> RegisterTeacherAsync(RegistrationRequest request);
+        Task<TeacherInfoDTO> GetTeacherInfoAsync(string id);
+
+        Task<TeacherInfoDTO> GetTeacherInfoByEmailAsync(string email);
     }
 }

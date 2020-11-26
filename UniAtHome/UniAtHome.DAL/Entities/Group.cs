@@ -4,6 +4,8 @@ namespace UniAtHome.DAL.Entities
 {
     public class Group : BaseEntity
     {
+        public string Name { get; set; }
+
         public List<StudentGroup> StudentGroups { get; set; }
 
         public int CourseMemberId { get; set; }

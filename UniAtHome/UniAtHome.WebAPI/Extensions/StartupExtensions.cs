@@ -44,14 +44,27 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<UserRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IUniversityRepository, UniversityRepository>();
+            services.AddScoped<IRepository<UniversityAdmin>, Repository<UniversityAdmin>>();
+            services.AddScoped<IRepository<Student>, StudentRepository>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IRepository<UniversityCreateRequest>, Repository<UniversityCreateRequest>>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
 
             services.AddTransient<ICourseService, CourseService>();
-            services.AddTransient<IAuthServiceAsync, AuthServiceAsync>();
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<ITeacherService, TeacherService>();
             services.AddTransient<ILessonService, LessonService>();
+            services.AddTransient<IUniversityService, UniversityService>();
+            services.AddTransient<IGroupService, GroupService>();
+            services.AddTransient<IFileStorageService, FileStorageService>();
+            services.AddScoped<IUniversityRequestService, UniversityRequestService>();
+            services.AddScoped<IUniversityRegistrationService, UniversityRegistrationService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 
