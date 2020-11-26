@@ -14,6 +14,12 @@ namespace UniAtHome.BLL.Services.Zoom
 
         private readonly IRepository<ZoomUser> zoomUsersRepository;
 
+        public ZoomMeetingService(Lazy<IZoomAuthService> zoomAuthService, IRepository<ZoomUser> zoomUsersRepository)
+        {
+            this.zoomAuthService = zoomAuthService;
+            this.zoomUsersRepository = zoomUsersRepository;
+        }
+
         public async Task<ZoomMeetingCreatedDTO> CreateMeetingAsync(ZoomMeetingCreateDTO options, string ownerEmail)
         {
             ZoomUserClient zoomClient = new ZoomUserClient(ownerEmail, zoomUsersRepository, zoomAuthService);

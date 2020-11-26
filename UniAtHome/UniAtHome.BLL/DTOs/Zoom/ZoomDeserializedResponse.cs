@@ -1,4 +1,6 @@
-﻿namespace UniAtHome.BLL.DTOs.Zoom
+﻿using System.Net.Http;
+
+namespace UniAtHome.BLL.DTOs.Zoom
 {
     public class ZoomDeserializedResponse<T>
     {
