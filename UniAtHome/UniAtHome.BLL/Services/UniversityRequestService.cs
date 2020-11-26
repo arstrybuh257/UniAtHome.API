@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.UniversityRequest;
 using UniAtHome.BLL.Exceptions;
@@ -36,7 +35,7 @@ namespace UniAtHome.BLL.Services
         public async Task AddRequestAsync(UniversityCreateRequestDTO creationInfo)
         {
             UniversityCreateRequest createRequest = mapper.Map<UniversityCreateRequest>(creationInfo);
-            createRequest.DateOfCreation = DateTime.Now;
+            createRequest.DateOfCreation = DateTimeOffset.UtcNow;
             await requestsRepository.AddAsync(createRequest);
             await requestsRepository.SaveChangesAsync();
         }
