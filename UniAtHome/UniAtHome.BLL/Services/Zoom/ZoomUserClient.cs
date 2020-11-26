@@ -12,7 +12,7 @@ using UniAtHome.DAL.Interfaces;
 
 namespace UniAtHome.BLL.Services.Zoom
 {
-    public class ZoomUserClient : ZoomBaseClient
+    public class ZoomUserClient : ZoomClient
     {
         private const string USER_AUTH_SCHEME = "Bearer";
 

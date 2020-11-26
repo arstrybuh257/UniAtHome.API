@@ -73,6 +73,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ZoomAdminClient>();
             services.AddScoped<IZoomAuthService, ZoomAuthService>();
             services.AddScoped(services => new Lazy<IZoomAuthService>(services.GetService<IZoomAuthService>));
+            services.AddScoped<ZoomMeetingService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 

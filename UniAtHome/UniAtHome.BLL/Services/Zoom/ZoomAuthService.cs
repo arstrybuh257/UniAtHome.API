@@ -50,7 +50,7 @@ namespace UniAtHome.BLL.Services.Zoom
             {
                 string json = await response.Content.ReadAsStringAsync();
                 ExtractAuthInfoFromTokenResponseBody(json, out string token, out string refresh);
-                await SaveZoomAuthorizationTokens(email, token, refresh);
+                await SaveZoomAuthorizationTokensAsync(email, token, refresh);
 
                 return true;
             }
@@ -64,7 +64,7 @@ namespace UniAtHome.BLL.Services.Zoom
             refresh = bodyObject["refresh_token"].Value<string>();
         }
 
-        private async Task SaveZoomAuthorizationTokens(string email, string token, string refresh)
+        private async Task SaveZoomAuthorizationTokensAsync(string email, string token, string refresh)
         {
             User user = await usersRepository.FindByEmailAsync(email);
             ZoomUser zoomCreds = (await zoomUsersRepository
@@ -113,7 +113,7 @@ namespace UniAtHome.BLL.Services.Zoom
             {
                 string json = await response.Content.ReadAsStringAsync();
                 ExtractAuthInfoFromTokenResponseBody(json, out string token, out string refresh);
-                await SaveZoomAuthorizationTokens(email, token, refresh);
+                await SaveZoomAuthorizationTokensAsync(email, token, refresh);
 
                 return true;
             }

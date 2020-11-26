@@ -7,7 +7,7 @@ using UniAtHome.BLL.Options;
 
 namespace UniAtHome.BLL.Services.Zoom
 {
-    public class ZoomAdminClient : ZoomBaseClient
+    public class ZoomAdminClient : ZoomClient
     {
         private const string ADMIN_AUTH_SCHEME = "Basic";
 
