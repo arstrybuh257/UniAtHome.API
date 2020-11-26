@@ -4,7 +4,7 @@ namespace UniAtHome.DAL.Entities
 {
     public class Timetable
     {
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
 
         public int GroupId { get; set; }
 

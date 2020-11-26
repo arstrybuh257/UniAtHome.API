@@ -13,7 +13,7 @@ namespace UniAtHome.BLL.DTOs.Course
 
         public string TeacherEmail { get; set; }
 
-        public DateTime Added { get; set; }
+        public DateTimeOffset Added { get; set; }
 
         public string ImagePath { get; set; }
 

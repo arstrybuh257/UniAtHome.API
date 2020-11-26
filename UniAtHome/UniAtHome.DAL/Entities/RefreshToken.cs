@@ -8,7 +8,7 @@ namespace UniAtHome.DAL.Entities
 
         public string Token { get; set; }
 
-        public DateTime ExpirationDate { get; set; }
+        public DateTimeOffset ExpirationDate { get; set; }
 
         public User User { get; set; }
     }
