@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using UniAtHome.BLL.Options;
 
 namespace UniAtHome.BLL.Services.Zoom
@@ -10,16 +11,18 @@ namespace UniAtHome.BLL.Services.Zoom
     {
         private const string ADMIN_AUTH_SCHEME = "Basic";
 
-        public ZoomAdminClient(IOptions<ZoomClientConfig> options) 
-            : base(GetAdminAuthScheme(options.Value))
+        private readonly ZoomClientConfig config;
+
+        public ZoomAdminClient(IOptions<ZoomClientConfig> options)
         {
+            this.config = options.Value;
         }
 
-        private static AuthenticationHeaderValue GetAdminAuthScheme(ZoomClientConfig config)
+        protected override Task<AuthenticationHeaderValue> GetAuthHeaderAsync()
         {
             string tokenString = $"{config.ClientId}:{config.ClientSecret}";
             string tokenEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(tokenString));
-            return new AuthenticationHeaderValue(ADMIN_AUTH_SCHEME, tokenEncoded);
+            return Task.FromResult(new AuthenticationHeaderValue(ADMIN_AUTH_SCHEME, tokenEncoded));
         }
     }
 }

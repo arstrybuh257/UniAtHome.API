@@ -17,21 +17,25 @@ namespace UniAtHome.BLL.Services.Zoom
 
         private static readonly Uri zoomApiUrl = new Uri(@"https://zoom.us/");
 
-        protected ZoomBaseClient(AuthenticationHeaderValue oauthHeader)
+        protected ZoomBaseClient()
         {
             client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = oauthHeader;
         }
 
-        public Task<HttpResponseMessage> GetAsync(
+        protected abstract Task<AuthenticationHeaderValue> GetAuthHeaderAsync();
+
+        public virtual async Task<HttpResponseMessage> GetAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams)
         {
             string requestUrl = GetAbsoluteUrlWithParams(relativeUrl, queryParams);
-            return client.GetAsync(requestUrl);
+
+            client.DefaultRequestHeaders.Authorization = await GetAuthHeaderAsync();
+
+            return await client.GetAsync(requestUrl);
         }
 
-        public Task<HttpResponseMessage> PostAsync(
+        public virtual async Task<HttpResponseMessage> PostAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams,
             object body)
@@ -44,7 +48,9 @@ namespace UniAtHome.BLL.Services.Zoom
                 encoding: Encoding.UTF8,
                 mediaType: MediaTypeNames.Application.Json);
 
-            return client.PostAsync(requestUrl, content);
+            client.DefaultRequestHeaders.Authorization = await GetAuthHeaderAsync();
+
+            return await client.PostAsync(requestUrl, content);
         }
 
         private static string GetAbsoluteUrlWithParams(
