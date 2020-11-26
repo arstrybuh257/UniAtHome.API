@@ -49,28 +49,28 @@ namespace UniAtHome.DAL.Migrations
                         new
                         {
                             Id = "2AEFE1C5-C5F0-4399-8FB8-420813567554",
-                            ConcurrencyStamp = "997a03d5-eedc-400e-bd99-dd10447a7941",
+                            ConcurrencyStamp = "98ffc78f-539d-443c-9845-8318590fa726",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "99DA7670-5471-414F-834E-9B3A6B6C8F6F",
-                            ConcurrencyStamp = "9b269604-eabe-4a4a-8d34-529c70011f58",
+                            ConcurrencyStamp = "8674b9b3-3e49-4568-a89d-3a4f87ba7b01",
                             Name = "UniversityAdmin",
                             NormalizedName = "UNIVERSITYADMIN"
                         },
                         new
                         {
                             Id = "828A3B02-77C0-45C1-8E97-6ED57711E577",
-                            ConcurrencyStamp = "d1e0bc4d-4038-45ea-8bb2-6f751d6c0096",
+                            ConcurrencyStamp = "339c44ae-8540-4ab6-bf88-d8bbed2df8de",
                             Name = "Teacher",
                             NormalizedName = "TEACHER"
                         },
                         new
                         {
                             Id = "422EEB6A-3031-4B66-ABA8-0F85AFC07C3C",
-                            ConcurrencyStamp = "a5cf99a8-6af5-4346-ae71-4e55d42c1d97",
+                            ConcurrencyStamp = "342bc4c2-01ee-4ffc-9f30-c7ea2d648626",
                             Name = "Student",
                             NormalizedName = "STUDENT"
                         });
@@ -209,8 +209,8 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Added")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Added")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(2000)")
@@ -220,8 +220,8 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -288,8 +288,8 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Added")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Added")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -298,8 +298,8 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("nvarchar(2000)")
                         .HasMaxLength(2000);
 
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -320,8 +320,8 @@ namespace UniAtHome.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("ExpirationDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -406,8 +406,8 @@ namespace UniAtHome.DAL.Migrations
                     b.Property<int>("LessonId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.HasKey("GroupId", "LessonId");
 
@@ -493,8 +493,8 @@ namespace UniAtHome.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateOfCreation")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset>("DateOfCreation")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -600,7 +600,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "00CA41A9-C962-4230-937E-D5F54772C062",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a04f6aba-b98c-40bd-b518-94739211639a",
+                            ConcurrencyStamp = "cf485293-3f42-4ccc-8761-c57788947e55",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Admin",
@@ -608,9 +608,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEA35SbEFEFmOzEDeCW5JzSrD5i8NrVQprtkgKqY8r/qVN9Ky+4ZR9UDTdspXiiqkCA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECmdE6JqAmRUcCyUQBKPvxsffJxL7bWLXm8kAW8fLI0bBP5peguOPI/Tfby6UDPBxQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "be4b5a0c-f9c9-47a6-aeb7-7b58e9273d84",
+                            SecurityStamp = "396a19bd-aa18-4dbf-a177-457760182e09",
                             TwoFactorEnabled = false,
                             UserName = "admin@gmail.com"
                         },
@@ -618,7 +618,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "BFCC8BAB-AD20-4F70-9CD9-D2003FAE6F09",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8e7b6a9a-1145-4d07-bfe8-27d3d0d296f9",
+                            ConcurrencyStamp = "2aa5ec18-4b58-48bb-a28f-3935d1bfe3ca",
                             Email = "uadmin@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Vladimir",
@@ -626,9 +626,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "uadmin@gmail.com",
                             NormalizedUserName = "uadmin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEO8gGHvTDhP4diiX/ZPjKyB4c6fT9ZqcBkpGtVPZRjSmjlYOVoWQhshXbOrlgcPG3w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJA6oVW3DSGNuU9JchsNlG8X9DdagDRTCIoWa9pKeyEBtBE7lsYHieGQGCKjbWv2Gw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "da7e5de5-f380-4ac7-897e-b0534c0a5b9f",
+                            SecurityStamp = "64b9408b-bbfe-4ce2-909e-199f9f4190ab",
                             TwoFactorEnabled = false,
                             UserName = "uadmin@gmail.com"
                         },
@@ -636,7 +636,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "E8D13331-62AB-463E-A283-6493B68A3622",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "031b261b-0181-4abb-a9f2-c99e7bc9fdde",
+                            ConcurrencyStamp = "3b10ddf2-2d14-41a5-877c-bf1c8d66500b",
                             Email = "ihor.juice@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Ihor",
@@ -644,9 +644,9 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ihor.juice@gmail.com",
                             NormalizedUserName = "ihor.juice@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJre8w3UOxZKuWd0voSmbQk02t04rTlUyTgsgbzri2ix/mF5fEQP1034lHhRJDLPKw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEClA4okqusi36oMy4iJ8ulVCTRYTiuyCdkmVS3LbpJDI3UgWotrXt3Yy8Vwu2MshTA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6d497530-6dd0-4233-9e4b-440157486820",
+                            SecurityStamp = "b5a68493-4d1e-4ae2-ac5f-3ad2526a065a",
                             TwoFactorEnabled = false,
                             UserName = "ihor.juice@gmail.com"
                         },
@@ -654,7 +654,7 @@ namespace UniAtHome.DAL.Migrations
                         {
                             Id = "E3A6BF34-A57D-4709-97CC-6AD1B2B3985B",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9c655175-a575-42bc-a3e9-1413eb79514c",
+                            ConcurrencyStamp = "94bfb6a8-1653-4a53-86c5-cf8be62ff0c3",
                             Email = "slava.ivanov@gmail.com",
                             EmailConfirmed = false,
                             FirstName = "Slava",
@@ -662,30 +662,12 @@ namespace UniAtHome.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "slava.ivanov@gmail.com",
                             NormalizedUserName = "slava.ivanov@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAED+z3EZPMdEMnOksNep4GB8AYgk4Mp4h0h0qNHFPyDu8LAuLVcmKpx3I3ZnWrl1WFw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEADlwPnG5aa+ykSkz4OQe4xqoqdih3puVXJlmE18p+SDYT5sfwgJElNAsdHM8XMq2A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "51959a3f-bdf9-4699-bde5-87944bd354c7",
+                            SecurityStamp = "24a47252-13bc-4019-937e-5d5e853b1602",
                             TwoFactorEnabled = false,
                             UserName = "slava.ivanov@gmail.com"
                         });
-                });
-
-            modelBuilder.Entity("UniAtHome.DAL.Entities.ZoomUser", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("ZoomUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -859,15 +841,6 @@ namespace UniAtHome.DAL.Migrations
                     b.HasOne("UniAtHome.DAL.Entities.User", "User")
                         .WithOne()
                         .HasForeignKey("UniAtHome.DAL.Entities.UniversityAdmin", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UniAtHome.DAL.Entities.ZoomUser", b =>
-                {
-                    b.HasOne("UniAtHome.DAL.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("UniAtHome.DAL.Entities.ZoomUser", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
