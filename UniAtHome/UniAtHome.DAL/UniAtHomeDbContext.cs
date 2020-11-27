@@ -153,6 +153,7 @@ namespace UniAtHome.DAL
 
             //Timetable
             modelBuilder.Entity<Timetable>().HasKey(tt => new { tt.GroupId, tt.LessonId });
+            modelBuilder.Entity<Timetable>().Property(tt => tt.Date);
 
             // Refresh token
             modelBuilder.Entity<RefreshToken>().HasKey(rt => rt.Id);
@@ -178,12 +179,17 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<UniversityCreateRequest>().Property(r => r.DateOfCreation).IsRequired();
 
             // Zoom user
-            modelBuilder.Entity<ZoomUser>().HasKey(t => t.UserId);
-            modelBuilder.Entity<ZoomUser>()
-                .HasOne(t => t.User)
-                .WithOne();
-            modelBuilder.Entity<ZoomUser>().Property(r => r.Token).IsRequired();
-            modelBuilder.Entity<ZoomUser>().Property(r => r.RefreshToken).IsRequired();
+            modelBuilder.Entity<ZoomUser>().HasKey(u => u.UserId);
+            modelBuilder.Entity<ZoomUser>().HasOne(u => u.User).WithOne();
+            modelBuilder.Entity<ZoomUser>().Property(u => u.Token).IsRequired();
+            modelBuilder.Entity<ZoomUser>().Property(u => u.RefreshToken).IsRequired();
+
+            // Zoom meeting
+            modelBuilder.Entity<ZoomMeeting>().HasKey(m => new { m.GroupId, m.LessonId });
+            modelBuilder.Entity<ZoomMeeting>().Property(m => m.ZoomId).IsRequired();
+            modelBuilder.Entity<ZoomMeeting>().Property(m => m.StartTime).IsRequired();
+            modelBuilder.Entity<ZoomMeeting>().Property(m => m.StartUrl).IsRequired();
+            modelBuilder.Entity<ZoomMeeting>().Property(m => m.JoinUrl).IsRequired();
 
         }
 
