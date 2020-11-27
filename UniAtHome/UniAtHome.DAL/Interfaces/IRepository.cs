@@ -13,6 +13,8 @@ namespace UniAtHome.DAL.Interfaces
 
         Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
 
+        Task<T> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate);
+
         Task<T> GetByIdAsync(int id);
 
         void Remove(T entity);

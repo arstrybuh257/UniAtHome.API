@@ -37,6 +37,8 @@ namespace UniAtHome.DAL
 
         public DbSet<ZoomUser> ZoomUsers { get; set; }
 
+        public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -187,10 +189,6 @@ namespace UniAtHome.DAL
             // Zoom meeting
             modelBuilder.Entity<ZoomMeeting>().HasKey(m => new { m.GroupId, m.LessonId });
             modelBuilder.Entity<ZoomMeeting>().Property(m => m.ZoomId).IsRequired();
-            modelBuilder.Entity<ZoomMeeting>().Property(m => m.StartTime).IsRequired();
-            modelBuilder.Entity<ZoomMeeting>().Property(m => m.StartUrl).IsRequired();
-            modelBuilder.Entity<ZoomMeeting>().Property(m => m.JoinUrl).IsRequired();
-
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

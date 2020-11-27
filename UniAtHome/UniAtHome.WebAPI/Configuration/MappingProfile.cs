@@ -2,8 +2,10 @@
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.DTOs.Course;
+using UniAtHome.BLL.DTOs.Timetable;
 using UniAtHome.BLL.DTOs.University;
 using UniAtHome.BLL.DTOs.UniversityRequest;
+using UniAtHome.BLL.DTOs.Zoom;
 using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
@@ -48,6 +50,9 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<UniversityCreateRequestViewDTO, UniversityCreateRequestModel>();
 
             CreateMap<University, UniversityDTO>();
+
+            CreateMap<TimetableEntryDTO, Timetable>();
+            CreateMap<ZoomMeetingCreatedDTO, ZoomMeeting>();
         }
     }
 }

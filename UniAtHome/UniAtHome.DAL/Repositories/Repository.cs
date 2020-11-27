@@ -42,6 +42,11 @@ namespace UniAtHome.DAL.Repositories
             return await context.Set<T>().Where(predicate).AsNoTracking().ToListAsync();
         }
 
+        public Task<T> GetSingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return context.Set<T>().SingleOrDefaultAsync(predicate);
+        }
+
         public async Task AddRangeAsync(IEnumerable<T> entities)
         {
             await context.Set<T>().AddRangeAsync(entities);
