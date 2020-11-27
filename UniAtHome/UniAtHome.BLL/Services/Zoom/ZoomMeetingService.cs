@@ -23,7 +23,7 @@ namespace UniAtHome.BLL.Services.Zoom
 
         public async Task<ZoomMeetingDTO> CreateMeetingAsync(ZoomMeetingCreateDTO options, string ownerEmail)
         {
-            ZoomUserClient zoomClient = new ZoomUserClient(ownerEmail, zoomUsersRepository, zoomAuthService);
+            ZoomUserClient zoomClient = GetZoomClientForUser(ownerEmail);
             IZoomUserService userService = new ZoomUserService(zoomClient);
             ZoomUserInfoDTO user = await userService.GetUserInfoAsync();
 
@@ -37,9 +37,14 @@ namespace UniAtHome.BLL.Services.Zoom
             return response.Body;
         }
 
-        public async Task<ZoomMeetingDTO> GetMeetingInfo(long meetingId, string userEmail)
+        private ZoomUserClient GetZoomClientForUser(string userEmail)
         {
-            ZoomUserClient zoomClient = new ZoomUserClient(userEmail, zoomUsersRepository, zoomAuthService);
+            return new ZoomUserClient(userEmail, zoomUsersRepository, zoomAuthService);
+        }
+
+        public async Task<ZoomMeetingDTO> GetMeetingInfoAsync(long meetingId, string userEmail)
+        {
+            ZoomUserClient zoomClient = GetZoomClientForUser(userEmail);
             var response = await zoomClient
                 .GetDeserializedAsync<ZoomMeetingDTO>($"v2/meetings/{meetingId}");
 
@@ -58,6 +63,15 @@ namespace UniAtHome.BLL.Services.Zoom
             throw new BadRequestException(await response.HttpMessage.Content.ReadAsStringAsync());
         }
 
-        public async Task 
+        public async Task EditMeetingAsync(long meetingId, ZoomMeetingEditDTO meetingDTO, string userEmail)
+        {
+            ZoomUserClient zoomClient = GetZoomClientForUser(userEmail);
+            var response = await zoomClient.PatchAsync(
+                $"v2/meetings/{meetingId}", null, meetingDTO);
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new NotFoundException("Meeting doesn't exist!");
+            }
+        }
     }
 }

@@ -31,11 +31,41 @@ namespace UniAtHome.BLL.Services.Zoom
             string relativeUrl,
             IDictionary<string, string> queryParams = null)
         {
+            HttpRequestMessage request = await BuildRequestAsync(
+                relativeUrl, queryParams, null, HttpMethod.Get);
+            return await client.SendAsync(request);
+        }
+
+        private async Task<HttpRequestMessage> BuildRequestAsync(
+            string relativeUrl, 
+            IDictionary<string, string> queryParams, 
+            object body,
+            HttpMethod httpMethod)
+        {
             string requestUrl = GetAbsoluteUrlWithParams(relativeUrl, queryParams);
 
-            client.DefaultRequestHeaders.Authorization = await GetAuthHeaderAsync();
+            string bodyAsJson = JsonConvert.SerializeObject(body, GetContentSerializationSettings());
+            HttpContent content = new StringContent(
+                content: bodyAsJson,
+                encoding: Encoding.UTF8,
+                mediaType: MediaTypeNames.Application.Json);
 
-            return await client.GetAsync(requestUrl);
+            var request = new HttpRequestMessage(httpMethod, requestUrl);
+            request.Content = content;
+            request.Headers.Authorization = await GetAuthHeaderAsync();
+            return request;
+        }
+
+        private static string GetAbsoluteUrlWithParams(
+            string relativeUrl,
+            IDictionary<string, string> queryParams)
+        {
+            string absoluteUrl = new Uri(zoomApiUrl, relativeUrl).ToString();
+            if (queryParams?.Any() ?? false)
+            {
+                return QueryHelpers.AddQueryString(absoluteUrl, queryParams);
+            }
+            return absoluteUrl;
         }
 
         public async Task<ZoomDeserializedResponse<T>> GetDeserializedAsync<T>(
@@ -68,17 +98,10 @@ namespace UniAtHome.BLL.Services.Zoom
             IDictionary<string, string> queryParams,
             object body)
         {
-            string requestUrl = GetAbsoluteUrlWithParams(relativeUrl, queryParams);
+            HttpRequestMessage request = await BuildRequestAsync(
+                relativeUrl, queryParams, body, HttpMethod.Post);
 
-            string bodyAsJson = JsonConvert.SerializeObject(body, GetContentSerializationSettings());
-            HttpContent content = new StringContent(
-                content: bodyAsJson,
-                encoding: Encoding.UTF8,
-                mediaType: MediaTypeNames.Application.Json);
-
-            client.DefaultRequestHeaders.Authorization = await GetAuthHeaderAsync();
-
-            return await client.PostAsync(requestUrl, content);
+            return await client.SendAsync(request);
         }
 
         public async Task<ZoomDeserializedResponse<T>> PostDeserializedAsync<T>(
@@ -96,16 +119,15 @@ namespace UniAtHome.BLL.Services.Zoom
             };
         }
 
-        private static string GetAbsoluteUrlWithParams(
+        public virtual async Task<HttpResponseMessage> PatchAsync(
             string relativeUrl,
-            IDictionary<string, string> queryParams)
+            IDictionary<string, string> queryParams,
+            object body)
         {
-            string absoluteUrl = new Uri(zoomApiUrl, relativeUrl).ToString();
-            if (queryParams?.Any() ?? false)
-            {
-                return QueryHelpers.AddQueryString(absoluteUrl, queryParams);
-            }
-            return absoluteUrl;
+            HttpRequestMessage request = await BuildRequestAsync(
+                relativeUrl, queryParams, body, HttpMethod.Patch);
+
+            return await client.SendAsync(request);
         }
     }
 }
