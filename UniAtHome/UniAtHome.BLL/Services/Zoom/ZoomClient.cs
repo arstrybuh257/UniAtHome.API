@@ -29,7 +29,7 @@ namespace UniAtHome.BLL.Services.Zoom
 
         public virtual async Task<HttpResponseMessage> GetAsync(
             string relativeUrl,
-            IDictionary<string, string> queryParams)
+            IDictionary<string, string> queryParams = null)
         {
             string requestUrl = GetAbsoluteUrlWithParams(relativeUrl, queryParams);
 
@@ -40,7 +40,7 @@ namespace UniAtHome.BLL.Services.Zoom
 
         public async Task<ZoomDeserializedResponse<T>> GetDeserializedAsync<T>(
             string relativeUrl,
-            IDictionary<string, string> queryParams)
+            IDictionary<string, string> queryParams = null)
         {
             using var response = await GetAsync(relativeUrl, queryParams);
 

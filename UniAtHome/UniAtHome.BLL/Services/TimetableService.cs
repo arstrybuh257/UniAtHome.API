@@ -30,6 +30,24 @@ namespace UniAtHome.BLL.Services
 
         private readonly IMapper mapper;
 
+        public TimetableService(
+            IRepository<Lesson> lessonsRepository, 
+            IGroupRepository groupRepository, 
+            IRepository<Timetable> timetablesRepository, 
+            IRepository<ZoomMeeting> zoomMeetingRepository, 
+            ZoomMeetingService zoomMeetingService, 
+            ICourseService courseService, 
+            IMapper mapper)
+        {
+            this.lessonsRepository = lessonsRepository;
+            this.groupRepository = groupRepository;
+            this.timetablesRepository = timetablesRepository;
+            this.zoomMeetingRepository = zoomMeetingRepository;
+            this.zoomMeetingService = zoomMeetingService;
+            this.courseService = courseService;
+            this.mapper = mapper;
+        }
+
         public async Task CreateTimetableEntryAsync(TimetableEntryDTO timetableDto, string creatorEmail)
         {
             await ValidateTimetableCreation(timetableDto);
@@ -46,7 +64,7 @@ namespace UniAtHome.BLL.Services
             await timetablesRepository.SaveChangesAsync();
         }
 
-        private async Task<Lesson> ValidateTimetableCreation(TimetableEntryDTO timetableDto)
+        private async Task ValidateTimetableCreation(TimetableEntryDTO timetableDto)
         {
             Group group = await groupRepository.GetByIdAsync(timetableDto.GroupId);
             if (group == null)
@@ -64,8 +82,6 @@ namespace UniAtHome.BLL.Services
             {
                 throw new BadRequestException("The timetable entry already exists!");
             }
-
-            return lesson;
         }
 
         private async Task<ZoomMeeting> CreateZoomMeetingForTimetable(Timetable timetable, string creatorEmail)
@@ -76,7 +92,7 @@ namespace UniAtHome.BLL.Services
                 .Select(t => t.Email)
                 .Except(new[] { creatorEmail });
 
-            ZoomMeetingCreatedDTO createdMeeting = await zoomMeetingService
+            ZoomMeetingDTO createdMeeting = await zoomMeetingService
                 .CreateMeetingAsync(new ZoomMeetingCreateDTO
                 {
                     Type = ZoomMeetingType.Scheduled,
@@ -98,6 +114,7 @@ namespace UniAtHome.BLL.Services
                 ZoomId = createdMeeting.Id,
             };
         }
+
         public async Task EditTimetableEntryAsync(TimetableEntryDeleteDTO timetable)
         {
 
