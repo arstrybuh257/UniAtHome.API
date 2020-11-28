@@ -73,5 +73,11 @@ namespace UniAtHome.BLL.Services.Zoom
                 throw new NotFoundException("Meeting doesn't exist!");
             }
         }
+
+        public async Task DeleteMeetingAsync(long meetingId, string userEmail)
+        {
+            ZoomUserClient zoomClient = GetZoomClientForUser(userEmail);
+            var response = await zoomClient.
+        }
     }
 }

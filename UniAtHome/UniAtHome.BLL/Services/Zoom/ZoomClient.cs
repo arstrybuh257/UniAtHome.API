@@ -27,7 +27,19 @@ namespace UniAtHome.BLL.Services.Zoom
 
         protected abstract Task<AuthenticationHeaderValue> GetAuthHeaderAsync();
 
-        public virtual async Task<HttpResponseMessage> GetAsync(
+        protected virtual async Task<HttpResponseMessage> SendAsync(
+            string relativeUrl,
+            IDictionary<string, string> queryParams,
+            object body,
+            HttpMethod method)
+        {
+            HttpRequestMessage request = await BuildRequestAsync(
+                relativeUrl, queryParams, body, method);
+
+            return await client.SendAsync(request);
+        }
+
+        public async Task<HttpResponseMessage> GetAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams = null)
         {
@@ -93,7 +105,7 @@ namespace UniAtHome.BLL.Services.Zoom
             };
         }
 
-        public virtual async Task<HttpResponseMessage> PostAsync(
+        public async Task<HttpResponseMessage> PostAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams,
             object body)
@@ -119,13 +131,24 @@ namespace UniAtHome.BLL.Services.Zoom
             };
         }
 
-        public virtual async Task<HttpResponseMessage> PatchAsync(
+        public async Task<HttpResponseMessage> PatchAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams,
             object body)
         {
             HttpRequestMessage request = await BuildRequestAsync(
                 relativeUrl, queryParams, body, HttpMethod.Patch);
+
+            return await client.SendAsync(request);
+        }
+
+        public async Task<HttpResponseMessage> DeleteAsync(
+            string relativeUrl,
+            IDictionary<string, string> queryParams,
+            object body)
+        {
+            HttpRequestMessage request = await BuildRequestAsync(
+                relativeUrl, queryParams, body, HttpMethod.Delete);
 
             return await client.SendAsync(request);
         }
