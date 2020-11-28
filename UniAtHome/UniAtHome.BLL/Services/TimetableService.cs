@@ -104,6 +104,11 @@ namespace UniAtHome.BLL.Services
                     Agenda = lesson.Description,
                     Settings = new ZoomMeetingSettingsDTO
                     {
+                        // TODO: handle somehow editing this parameter when new teacher is added to the course
+                        // or the host-creator is removed.
+                        // I just can't 
+                        // г-(T_T)
+                        // \/|   |
                         AlternativeHosts = string.Join(',', courseTeachersButCreator),
                         JoinBeforeHost = true,
                         MeetingAuthentication = true,
@@ -116,6 +121,8 @@ namespace UniAtHome.BLL.Services
                 GroupId = timetable.GroupId,
                 LessonId = timetable.LessonId,
                 ZoomId = createdMeeting.Id,
+                StartUrl = createdMeeting.StartUrl,
+                JoinUrl = createdMeeting.JoinUrl
             };
         }
 
@@ -144,9 +151,9 @@ namespace UniAtHome.BLL.Services
         }
 
         private async Task<ZoomMeeting> ApplyChangesToZoomMeeting(
-            ZoomMeeting zoomMeeting, 
-            TimetableEntryDTO newTimetable, 
-            Timetable oldTimetable, 
+            ZoomMeeting zoomMeeting,
+            TimetableEntryDTO newTimetable,
+            Timetable oldTimetable,
             string userEmail)
         {
             if (newTimetable.WithZoomMeeting && zoomMeeting != null)
@@ -199,12 +206,41 @@ namespace UniAtHome.BLL.Services
 
             ZoomMeeting zoomMeeting = await zoomMeetingRepository.GetSingleOrDefaultAsync(
                 zm => zm.GroupId == timetable.GroupId && zm.LessonId == timetable.LessonId);
+
             if (zoomMeeting != null)
             {
                 await DeleteZoomMeeting(userEmail, zoomMeeting);
             }
             timetablesRepository.Remove(timetable);
             await timetablesRepository.SaveChangesAsync();
+        }
+
+        public async Task<TimetableDTO> GetTimetableAsync(int groupId, int lessonId, string userEmail)
+        {
+            Timetable timetable = await timetablesRepository.GetSingleOrDefaultAsync(
+                tt => tt.GroupId == groupId && tt.LessonId == lessonId);
+            if (timetable == null)
+            {
+                throw new NotFoundException("Timetable entry doesn't exist!");
+            }
+            var dto = new TimetableDTO
+            {
+                GroupId = groupId,
+                LessonId = lessonId,
+                DateTime = timetable.Date
+            };
+
+            ZoomMeeting zoomMeeting = await zoomMeetingRepository.GetSingleOrDefaultAsync(
+                zm => zm.GroupId == timetable.GroupId && zm.LessonId == timetable.LessonId);
+            if (zoomMeeting != null)
+            {
+                Lesson lesson = await lessonsRepository.GetByIdAsync(timetable.LessonId);
+                bool isCourseTeacher = courseService.GetCourseMembers(lesson.CourseId)
+                    .Any(t => t.Email == userEmail);
+
+                dto.ZoomUrl = isCourseTeacher ? zoomMeeting.StartUrl : zoomMeeting.JoinUrl;
+            }
+            return dto;
         }
     }
 }

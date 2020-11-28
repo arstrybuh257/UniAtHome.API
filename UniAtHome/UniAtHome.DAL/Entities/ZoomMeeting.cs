@@ -7,5 +7,9 @@
         public int LessonId { get; set; }
 
         public long ZoomId { get; set; }
+
+        public string JoinUrl { get; set; }
+
+        public string StartUrl { get; set; }
     }
 }
