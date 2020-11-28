@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Interfaces;
 
 namespace UniAtHome.DAL.Repositories
 {

@@ -31,12 +31,12 @@ namespace UniAtHome.BLL.Services
         private readonly IMapper mapper;
 
         public TimetableService(
-            IRepository<Lesson> lessonsRepository, 
-            IGroupRepository groupRepository, 
-            IRepository<Timetable> timetablesRepository, 
-            IRepository<ZoomMeeting> zoomMeetingRepository, 
-            ZoomMeetingService zoomMeetingService, 
-            ICourseService courseService, 
+            IRepository<Lesson> lessonsRepository,
+            IGroupRepository groupRepository,
+            IRepository<Timetable> timetablesRepository,
+            IRepository<ZoomMeeting> zoomMeetingRepository,
+            ZoomMeetingService zoomMeetingService,
+            ICourseService courseService,
             IMapper mapper)
         {
             this.lessonsRepository = lessonsRepository;
@@ -82,6 +82,10 @@ namespace UniAtHome.BLL.Services
             {
                 throw new BadRequestException("The timetable entry already exists!");
             }
+            if (timetableDto.DateTime <= DateTime.UtcNow)
+            {
+                throw new BadRequestException("Can't create the timetable entry in the past!");
+            }
         }
 
         private async Task<ZoomMeeting> CreateZoomMeetingForTimetable(Timetable timetable, string creatorEmail)
@@ -115,14 +119,92 @@ namespace UniAtHome.BLL.Services
             };
         }
 
-        public async Task EditTimetableEntryAsync(TimetableEntryDeleteDTO timetable)
+        public async Task EditTimetableEntryAsync(TimetableEntryDTO newTimetableDto, string userEmail)
         {
+            Timetable timetable = await timetablesRepository.GetSingleOrDefaultAsync(
+                    tt => tt.GroupId == newTimetableDto.GroupId && tt.LessonId == newTimetableDto.LessonId);
+            if (timetable == null)
+            {
+                throw new NotFoundException("Timetable entry doesn't exist!");
+            }
 
+            CopyTimetablePropertiesValuesFromTo(newTimetableDto, timetable);
+
+            ZoomMeeting zoomMeeting = await zoomMeetingRepository.GetSingleOrDefaultAsync(
+                zm => zm.GroupId == timetable.GroupId && zm.LessonId == timetable.LessonId);
+
+            zoomMeeting = await ApplyChangesToZoomMeeting(
+                zoomMeeting,
+                newTimetableDto,
+                timetable,
+                userEmail);
+
+            timetablesRepository.Update(timetable);
+            await timetablesRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteTimetableEntryAsync(TimetableEntryDeleteDTO timetable)
+        private async Task<ZoomMeeting> ApplyChangesToZoomMeeting(
+            ZoomMeeting zoomMeeting, 
+            TimetableEntryDTO newTimetable, 
+            Timetable oldTimetable, 
+            string userEmail)
         {
+            if (newTimetable.WithZoomMeeting && zoomMeeting != null)
+            {
+                await EditZoomMeeting(zoomMeeting, oldTimetable, userEmail);
+            }
+            else if (newTimetable.WithZoomMeeting && zoomMeeting == null)
+            {
+                zoomMeeting = await CreateZoomMeetingForTimetable(oldTimetable, userEmail);
+                await zoomMeetingRepository.AddAsync(zoomMeeting);
+            }
+            else if (!newTimetable.WithZoomMeeting && zoomMeeting != null)
+            {
+                await DeleteZoomMeeting(userEmail, zoomMeeting);
+            }
 
+            return zoomMeeting;
+        }
+
+        private static void CopyTimetablePropertiesValuesFromTo(TimetableEntryDTO from, Timetable to)
+        {
+            to.Date = from.DateTime;
+        }
+
+        private async Task EditZoomMeeting(
+            ZoomMeeting zoomMeeting,
+            Timetable newTimetable,
+            string userEmail)
+        {
+            await zoomMeetingService.EditMeetingAsync(zoomMeeting.ZoomId, new ZoomMeetingEditDTO
+            {
+                StartTime = newTimetable.Date
+            }, userEmail);
+        }
+
+        private async Task DeleteZoomMeeting(string userEmail, ZoomMeeting zoomMeeting)
+        {
+            await zoomMeetingService.DeleteMeetingAsync(zoomMeeting.ZoomId, userEmail);
+            zoomMeetingRepository.Remove(zoomMeeting);
+        }
+
+        public async Task DeleteTimetableEntryAsync(TimetableEntryDeleteDTO timetableDto, string userEmail)
+        {
+            Timetable timetable = await timetablesRepository.GetSingleOrDefaultAsync(
+                    tt => tt.GroupId == timetableDto.GroupId && tt.LessonId == timetableDto.LessonId);
+            if (timetable == null)
+            {
+                throw new NotFoundException("Timetable entry doesn't exist!");
+            }
+
+            ZoomMeeting zoomMeeting = await zoomMeetingRepository.GetSingleOrDefaultAsync(
+                zm => zm.GroupId == timetable.GroupId && zm.LessonId == timetable.LessonId);
+            if (zoomMeeting != null)
+            {
+                await DeleteZoomMeeting(userEmail, zoomMeeting);
+            }
+            timetablesRepository.Remove(timetable);
+            await timetablesRepository.SaveChangesAsync();
         }
     }
 }

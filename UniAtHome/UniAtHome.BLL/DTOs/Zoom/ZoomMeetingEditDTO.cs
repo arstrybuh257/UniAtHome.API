@@ -8,7 +8,7 @@ namespace UniAtHome.BLL.DTOs.Zoom
 
         public string Agenda { get; set; }
 
-        public DateTime StartTime { get; set; }
+        public DateTimeOffset StartTime { get; set; }
 
         public ZoomMeetingSettingsDTO Settings { get; set; } = new ZoomMeetingSettingsDTO();
     }
