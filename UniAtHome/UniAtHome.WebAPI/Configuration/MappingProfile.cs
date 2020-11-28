@@ -10,6 +10,7 @@ using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
+using UniAtHome.WebAPI.Models.Timetable;
 using UniAtHome.WebAPI.Models.UniversityCreation;
 using UniAtHome.WebAPI.Models.Users;
 
@@ -53,6 +54,9 @@ namespace UniAtHome.WebAPI.Configuration
 
             CreateMap<TimetableEntryDTO, Timetable>();
             CreateMap<ZoomMeetingDTO, ZoomMeeting>();
+            CreateMap<TimetableCreateRequest, TimetableEntryDTO>();
+            CreateMap<TimetableEditRequest, TimetableEntryDTO>();
+            CreateMap<TimetableDeleteRequest, TimetableEntryDeleteDTO>();
         }
     }
 }

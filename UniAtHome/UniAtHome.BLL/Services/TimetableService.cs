@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Timetable;
 using UniAtHome.BLL.DTOs.Zoom;
@@ -14,7 +12,7 @@ using UniAtHome.DAL.Interfaces;
 
 namespace UniAtHome.BLL.Services
 {
-    public class TimetableService
+    public class TimetableService : ITimetableService
     {
         private readonly IRepository<Lesson> lessonsRepository;
 
