@@ -144,11 +144,10 @@ namespace UniAtHome.BLL.Services.Zoom
 
         public async Task<HttpResponseMessage> DeleteAsync(
             string relativeUrl,
-            IDictionary<string, string> queryParams,
-            object body)
+            IDictionary<string, string> queryParams = null)
         {
             HttpRequestMessage request = await BuildRequestAsync(
-                relativeUrl, queryParams, body, HttpMethod.Delete);
+                relativeUrl, queryParams, null, HttpMethod.Delete);
 
             return await client.SendAsync(request);
         }

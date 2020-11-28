@@ -70,14 +70,22 @@ namespace UniAtHome.BLL.Services.Zoom
                 $"v2/meetings/{meetingId}", null, meetingDTO);
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new NotFoundException("Meeting doesn't exist!");
+                throw new NotFoundException("Meeting doesn't exist or is expired!");
             }
         }
 
         public async Task DeleteMeetingAsync(long meetingId, string userEmail)
         {
             ZoomUserClient zoomClient = GetZoomClientForUser(userEmail);
-            var response = await zoomClient.
+            var response = await zoomClient.DeleteAsync($"v2/meetings/{meetingId}");
+            switch(response.StatusCode)
+            {
+                case HttpStatusCode.NoContent: return;
+                case HttpStatusCode.BadRequest: 
+                    throw new BadRequestException("Can't delete the meeting!");
+                case HttpStatusCode.NotFound:
+                    throw new NotFoundException("Meeting doesn't exist or is expired!");
+            }
         }
     }
 }
