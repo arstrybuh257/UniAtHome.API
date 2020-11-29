@@ -22,12 +22,14 @@ namespace UniAtHome.DAL
         private const int COURSE_ID = 1;
         private const int COURSE_MEMBER_ID = 1;
         private const int GROUP_ID = 1;
+        private const int LESSON_ID = 1;
 
         public static void Seed(this ModelBuilder modelBuilder)
         {
             SeedRoles(modelBuilder);
             SeedUniversity(modelBuilder);
             SeedUsers(modelBuilder);
+            SeedCourses(modelBuilder);
         }
 
         private static void SeedRoles(ModelBuilder modelBuilder)
@@ -199,6 +201,15 @@ namespace UniAtHome.DAL
                 {
                     GroupId = GROUP_ID,
                     StudentId = STUDENT_USER_ID,
+                });
+
+            modelBuilder.Entity<Lesson>()
+                .HasData(new Lesson
+                {
+                    Id = LESSON_ID,
+                    Title = "Learning Java",
+                    Description = "Java does not rule, however we have to pretend it does",
+                    CourseId = COURSE_ID,
                 });
         }
     }
