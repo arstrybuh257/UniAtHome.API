@@ -52,7 +52,11 @@ namespace UniAtHome.WebAPI.Configuration
 
             CreateMap<University, UniversityDTO>();
 
-            CreateMap<TimetableEntryDTO, Timetable>();
+            CreateMap<TimetableEntryDTO, Timetable>()
+                .ForMember(
+                    tt => tt.Date,
+                    opt => opt.MapFrom(dto => dto.DateTime)
+                );
             CreateMap<ZoomMeetingDTO, ZoomMeeting>();
             CreateMap<TimetableCreateRequest, TimetableEntryDTO>();
             CreateMap<TimetableEditRequest, TimetableEntryDTO>();
