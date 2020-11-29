@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -39,13 +38,11 @@ namespace UniAtHome.BLL.Services.Zoom
             return await client.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> GetAsync(
+        public Task<HttpResponseMessage> GetAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams = null)
         {
-            HttpRequestMessage request = await BuildRequestAsync(
-                relativeUrl, queryParams, null, HttpMethod.Get);
-            return await client.SendAsync(request);
+            return this.SendAsync(relativeUrl, queryParams, null, HttpMethod.Get);
         }
 
         private async Task<HttpRequestMessage> BuildRequestAsync(
@@ -84,7 +81,7 @@ namespace UniAtHome.BLL.Services.Zoom
             string relativeUrl,
             IDictionary<string, string> queryParams = null)
         {
-            using var response = await GetAsync(relativeUrl, queryParams);
+            var response = await GetAsync(relativeUrl, queryParams);
 
             string json = await response.Content.ReadAsStringAsync();
             return new ZoomDeserializedResponse<T>
@@ -105,15 +102,12 @@ namespace UniAtHome.BLL.Services.Zoom
             };
         }
 
-        public async Task<HttpResponseMessage> PostAsync(
+        public Task<HttpResponseMessage> PostAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams,
             object body)
         {
-            HttpRequestMessage request = await BuildRequestAsync(
-                relativeUrl, queryParams, body, HttpMethod.Post);
-
-            return await client.SendAsync(request);
+            return this.SendAsync(relativeUrl, queryParams, body, HttpMethod.Post);
         }
 
         public async Task<ZoomDeserializedResponse<T>> PostDeserializedAsync<T>(
@@ -121,7 +115,7 @@ namespace UniAtHome.BLL.Services.Zoom
             IDictionary<string, string> queryParams,
             object body)
         {
-            using var response = await PostAsync(relativeUrl, queryParams, body);
+            var response = await PostAsync(relativeUrl, queryParams, body);
 
             string json = await response.Content.ReadAsStringAsync();
             return new ZoomDeserializedResponse<T>
@@ -131,25 +125,19 @@ namespace UniAtHome.BLL.Services.Zoom
             };
         }
 
-        public async Task<HttpResponseMessage> PatchAsync(
+        public Task<HttpResponseMessage> PatchAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams,
             object body)
         {
-            HttpRequestMessage request = await BuildRequestAsync(
-                relativeUrl, queryParams, body, HttpMethod.Patch);
-
-            return await client.SendAsync(request);
+            return this.SendAsync(relativeUrl, queryParams, body, HttpMethod.Patch);
         }
 
-        public async Task<HttpResponseMessage> DeleteAsync(
+        public Task<HttpResponseMessage> DeleteAsync(
             string relativeUrl,
             IDictionary<string, string> queryParams = null)
         {
-            HttpRequestMessage request = await BuildRequestAsync(
-                relativeUrl, queryParams, null, HttpMethod.Delete);
-
-            return await client.SendAsync(request);
+            return this.SendAsync(relativeUrl, queryParams, null, HttpMethod.Delete);
         }
     }
 }
