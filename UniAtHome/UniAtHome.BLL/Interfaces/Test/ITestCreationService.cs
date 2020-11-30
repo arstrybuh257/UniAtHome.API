@@ -1,15 +1,16 @@
-﻿using UniAtHome.BLL.DTOs.Test;
+﻿using System.Threading.Tasks;
+using UniAtHome.BLL.DTOs.Test;
 
 namespace UniAtHome.BLL.Interfaces.Test
 {
     public interface ITestCreationService
     {
-        int CreateTest(TestCreateDTO createDTO);
+        Task<int> CreateTestAsybc(TestCreateDTO createDTO);
 
-        void DeleteTest(int testId);
+        Task DeleteTestAsync(int testId);
 
-        void EditTest(TestDTO editDTO);
+        Task EditTestAsync(TestDTO editDTO);
 
-        TestDTO GetTest(int testId);
+        Task<TestDTO> GetTestAsync(int testId);
     }
 }

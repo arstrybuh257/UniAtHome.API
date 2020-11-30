@@ -1,15 +1,16 @@
-﻿using UniAtHome.BLL.DTOs.Test;
+﻿using System.Threading.Tasks;
+using UniAtHome.BLL.DTOs.Test;
 
 namespace UniAtHome.BLL.Interfaces.Test
 {
     public interface ITestAnswerCreationService
     {
-        int CreateAnswerVariant(TestAnswerVariantCreateDTO createDTO);
+        Task<int> CreateAnswerVariantAsync(TestAnswerVariantCreateDTO createDTO);
 
-        void DeleteAnswerVariant(int answerId);
+        Task DeleteAnswerVariantAsync(int answerId);
 
-        void EditAnswerVariant(TestAnswerVariantDTO editDTO);
+        Task EditAnswerVariantAsync(TestAnswerVariantDTO editDTO);
 
-        TestAnswerVariantDTO GetAnswerVariant(int answerId);
+        Task<TestAnswerVariantDTO> GetAnswerVariantAsync(int answerId);
     }
 }
