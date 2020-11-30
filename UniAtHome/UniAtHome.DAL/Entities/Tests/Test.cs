@@ -6,6 +6,8 @@ namespace UniAtHome.DAL.Entities.Tests
     {
         public int LessonId { get; set; }
 
+        public string Name { get; set; }
+
         public DateTime BeginTime { get; set; }
 
         public int DurationMinutes { get; set; }
