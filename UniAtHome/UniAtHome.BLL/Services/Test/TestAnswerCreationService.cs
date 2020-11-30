@@ -16,6 +16,16 @@ namespace UniAtHome.BLL.Services.Test
 
         private readonly IMapper mapper;
 
+        public TestAnswerCreationService(
+            IRepository<TestAnswerVariant> answers,
+            ITestQuestionCreationService questionCreationService,
+            IMapper mapper)
+        {
+            this.answers = answers;
+            this.questionCreationService = questionCreationService;
+            this.mapper = mapper;
+        }
+
         public async Task<int> CreateAnswerVariantAsync(TestAnswerVariantCreateDTO createDTO)
         {
             TestQuestionDTO question = await questionCreationService.GetQuestionAsync(createDTO.QuestionId);

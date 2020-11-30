@@ -33,6 +33,11 @@ namespace UniAtHome.BLL.DTOs.Test
 
     }
 
+    public class TestScheduleCreateDTO : TestSchedule
+    {
+
+    }
+
     public class TestScheduleDTO : TestSchedule
     {
 

@@ -10,11 +10,11 @@ namespace UniAtHome.BLL.Services.Test
 {
     public class TestCreationService : ITestCreationService
     {
-        private readonly IRepository<TestEntity> tests;
+        private readonly IRepository<TestSchedule> tests;
 
         private readonly IMapper mapper;
 
-        public TestCreationService(IRepository<TestEntity> tests, IMapper mapper)
+        public TestCreationService(IRepository<TestSchedule> tests, IMapper mapper)
         {
             this.tests = tests;
             this.mapper = mapper;
@@ -22,7 +22,7 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<int> CreateTestAsync(TestCreateDTO createDTO)
         {
-            TestEntity test = mapper.Map<TestEntity>(createDTO);
+            TestSchedule test = mapper.Map<TestSchedule>(createDTO);
 
             ValidateTest(test);
 
@@ -31,7 +31,7 @@ namespace UniAtHome.BLL.Services.Test
             return test.Id;
         }
 
-        private static void ValidateTest(TestEntity test)
+        private static void ValidateTest(TestSchedule test)
         {
             if (test.DurationMinutes <= 0)
             {
@@ -45,7 +45,7 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task DeleteTestAsync(int testId)
         {
-            TestEntity test = await tests.GetByIdAsync(testId);
+            TestSchedule test = await tests.GetByIdAsync(testId);
             if (test == null)
             {
                 throw new NotFoundException("The test doesn't exist!");
@@ -56,7 +56,7 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task EditTestAsync(TestDTO editDTO)
         {
-            TestEntity test = await tests.GetByIdAsync(editDTO.Id);
+            TestSchedule test = await tests.GetByIdAsync(editDTO.Id);
             if (test == null)
             {
                 throw new NotFoundException("The test doesn't exist!");
@@ -71,7 +71,7 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<TestDTO> GetTestAsync(int testId)
         {
-            TestEntity test = await tests.GetByIdAsync(testId);
+            TestSchedule test = await tests.GetByIdAsync(testId);
             if (test == null)
             {
                 throw new NotFoundException("The test doesn't exist!");
