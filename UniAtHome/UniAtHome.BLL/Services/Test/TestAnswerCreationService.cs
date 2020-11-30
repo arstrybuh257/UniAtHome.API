@@ -33,7 +33,7 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new BadRequestException("The test doesn't exist!");
             }
-            TestAnswerVariant answer = mapper.Map<TestAnswerVariantCreateDTO>(createDTO);
+            TestAnswerVariant answer = mapper.Map<TestAnswerVariant>(createDTO);
 
             await answers.AddAsync(answer);
             await answers.SaveChangesAsync();

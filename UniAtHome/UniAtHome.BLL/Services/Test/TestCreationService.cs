@@ -18,8 +18,12 @@ namespace UniAtHome.BLL.Services.Test
 
         private readonly IMapper mapper;
 
-        public TestCreationService(IRepository<TestEntity> tests, IMapper mapper)
+        public TestCreationService(
+            ICourseService courseService,
+            IRepository<TestEntity> tests,
+            IMapper mapper)
         {
+            this.courseService = courseService;
             this.tests = tests;
             this.mapper = mapper;
         }
