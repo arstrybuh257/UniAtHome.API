@@ -13,5 +13,7 @@ namespace UniAtHome.DAL.Entities
         public Course Course { get; set; }
 
         public List<Timetable> Timetables { get; set; }
+
+        public List<Tests.Test> Tests { get; set; } 
     }
 }
