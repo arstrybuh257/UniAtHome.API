@@ -40,6 +40,14 @@ namespace UniAtHome.DAL
 
         public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
 
+        public DbSet<Test> Tests { get; set; }
+
+        public DbSet<TestQuestion> TestQuestions { get; set; }
+
+        public DbSet<TestAnswerVariant> TestAnswerVariants { get; set; }
+
+        public DbSet<TestSchedule> TestSchedules { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
