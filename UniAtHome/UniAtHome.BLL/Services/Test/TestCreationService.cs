@@ -2,23 +2,23 @@
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Test;
 using UniAtHome.BLL.Exceptions;
-using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Interfaces.Test;
 using UniAtHome.DAL.Interfaces;
 using TestEntity = UniAtHome.DAL.Entities.Tests.Test;
 
 namespace UniAtHome.BLL.Services.Test
 {
-
     public class TestCreationService : ITestCreationService
     {
         private readonly IRepository<TestEntity> tests;
 
-        private readonly ILessonService lessonService;
-
-        private readonly ITimetableService timetableService;
-
         private readonly IMapper mapper;
+
+        public TestCreationService(IRepository<TestEntity> tests, IMapper mapper)
+        {
+            this.tests = tests;
+            this.mapper = mapper;
+        }
 
         public async Task<int> CreateTestAsync(TestCreateDTO createDTO)
         {
