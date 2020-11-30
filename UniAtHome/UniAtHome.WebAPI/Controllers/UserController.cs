@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using System.Linq;
 using System.Threading.Tasks;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.Exceptions;
@@ -13,6 +12,7 @@ using UniAtHome.WebAPI.Models.Users;
 
 namespace UniAtHome.WebAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController, Authorize]
     public class UserController : ControllerBase

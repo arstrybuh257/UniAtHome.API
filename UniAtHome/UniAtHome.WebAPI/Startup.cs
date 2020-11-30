@@ -35,6 +35,7 @@ namespace UniAtHome.WebAPI
             services.AddJwtTokenAuthentication(Configuration);
 
             services.Configure<StorageServiceConfig>(Configuration.GetSection("StorageService"));
+            services.Configure<ZoomClientConfig>(Configuration.GetSection("Zoom"));
 
             services.SwaggerConfiguration();
 
