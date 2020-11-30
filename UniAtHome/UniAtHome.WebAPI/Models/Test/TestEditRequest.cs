@@ -2,7 +2,7 @@
 
 namespace UniAtHome.WebAPI.Models.Test
 {
-    public class TestCreateRequest : TestCreateDTO
+    public class TestEditRequest : TestEditDTO
     {
     }
 }
