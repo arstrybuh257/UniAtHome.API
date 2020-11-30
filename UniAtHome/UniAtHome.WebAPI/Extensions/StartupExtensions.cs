@@ -54,6 +54,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddScoped<IRepository<UniversityCreateRequest>, Repository<UniversityCreateRequest>>();
             services.AddScoped<IRepository<ZoomUser>, Repository<ZoomUser>>();
+            services.AddScoped<IRepository<ZoomMeeting>, Repository<ZoomMeeting>>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IEmailService, EmailService>();
@@ -74,6 +75,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<IZoomAuthService, ZoomAuthService>();
             services.AddScoped(services => new Lazy<IZoomAuthService>(services.GetService<IZoomAuthService>));
             services.AddScoped<ZoomMeetingService>();
+            services.AddScoped<ITimetableService, TimetableService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 

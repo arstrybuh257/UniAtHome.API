@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using UniAtHome.BLL.DTOs.Zoom;
 using UniAtHome.BLL.Interfaces.Zoom;
 using UniAtHome.BLL.Services.Zoom;
 using UniAtHome.WebAPI.Models.Zoom;
@@ -26,15 +25,6 @@ namespace UniAtHome.WebAPI.Controllers
         public async Task<IActionResult> OnAuthorized([FromBody] ZoomAuthorizedRequest request)
         {
             await zoomAuthService.AuthorizeAsync(User.Identity.Name, request.Code);
-            return Ok();
-        }
-
-        // for test
-        [HttpPost("meeting")]
-        public async Task<IActionResult> CreateMeeting([FromBody] ZoomMeetingCreateDTO createDTO)
-        {
-            await meetingService.CreateMeetingAsync(createDTO, User.Identity.Name);
-
             return Ok();
         }
     }

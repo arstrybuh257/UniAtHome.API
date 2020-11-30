@@ -2,12 +2,15 @@
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.DTOs.Course;
+using UniAtHome.BLL.DTOs.Timetable;
 using UniAtHome.BLL.DTOs.University;
 using UniAtHome.BLL.DTOs.UniversityRequest;
+using UniAtHome.BLL.DTOs.Zoom;
 using UniAtHome.DAL.Entities;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
+using UniAtHome.WebAPI.Models.Timetable;
 using UniAtHome.WebAPI.Models.UniversityCreation;
 using UniAtHome.WebAPI.Models.Users;
 
@@ -48,6 +51,16 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<UniversityCreateRequestViewDTO, UniversityCreateRequestModel>();
 
             CreateMap<University, UniversityDTO>();
+
+            CreateMap<TimetableEntryDTO, Timetable>()
+                .ForMember(
+                    tt => tt.Date,
+                    opt => opt.MapFrom(dto => dto.DateTime)
+                );
+            CreateMap<ZoomMeetingDTO, ZoomMeeting>();
+            CreateMap<TimetableCreateRequest, TimetableEntryDTO>();
+            CreateMap<TimetableEditRequest, TimetableEntryDTO>();
+            CreateMap<TimetableDeleteRequest, TimetableEntryDeleteDTO>();
         }
     }
 }

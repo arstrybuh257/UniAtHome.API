@@ -19,11 +19,17 @@ namespace UniAtHome.DAL
         private const string TEACHER_USER_ID = "E8D13331-62AB-463E-A283-6493B68A3622";
         private const string STUDENT_USER_ID = "E3A6BF34-A57D-4709-97CC-6AD1B2B3985B";
 
+        private const int COURSE_ID = 1;
+        private const int COURSE_MEMBER_ID = 1;
+        private const int GROUP_ID = 1;
+        private const int LESSON_ID = 1;
+
         public static void Seed(this ModelBuilder modelBuilder)
         {
             SeedRoles(modelBuilder);
             SeedUniversity(modelBuilder);
             SeedUsers(modelBuilder);
+            SeedCourses(modelBuilder);
         }
 
         private static void SeedRoles(ModelBuilder modelBuilder)
@@ -161,6 +167,50 @@ namespace UniAtHome.DAL
                     break;
                 default: break;
             }
+        }
+
+        private static void SeedCourses(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Course>()
+                .HasData(new Course
+                {
+                    Id = COURSE_ID,
+                    Name = "Code analysis and refactoring",
+                    Description = "Teaching how to write clean code",
+                    UniversityId = UNIVERSITY_ID
+                });
+
+            modelBuilder.Entity<CourseMember>()
+                .HasData(new CourseMember
+                {
+                    Id = COURSE_MEMBER_ID,
+                    CourseId = COURSE_ID,
+                    TeacherId = TEACHER_USER_ID,
+                });
+
+            modelBuilder.Entity<Group>()
+                .HasData(new Group
+                {
+                    Id = GROUP_ID,
+                    Name = "SE-18-6",
+                    CourseMemberId = COURSE_MEMBER_ID,
+                });
+
+            modelBuilder.Entity<StudentGroup>()
+                .HasData(new StudentGroup
+                {
+                    GroupId = GROUP_ID,
+                    StudentId = STUDENT_USER_ID,
+                });
+
+            modelBuilder.Entity<Lesson>()
+                .HasData(new Lesson
+                {
+                    Id = LESSON_ID,
+                    Title = "Learning Java",
+                    Description = "Java does not rule, however we have to pretend it does",
+                    CourseId = COURSE_ID,
+                });
         }
     }
 }

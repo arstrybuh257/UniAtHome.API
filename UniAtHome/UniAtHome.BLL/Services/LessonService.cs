@@ -7,14 +7,15 @@ using UniAtHome.BLL.Interfaces;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Interfaces;
 using System.Linq;
+using UniAtHome.BLL.Exceptions;
 
 namespace UniAtHome.BLL.Services
 {
-    public class LessonService: ILessonService
+    public class LessonService : ILessonService
     {
         private readonly IRepository<Lesson> lessonRepository;
 
-        private readonly  ICourseRepository courseRepository;
+        private readonly ICourseRepository courseRepository;
 
         private readonly IMapper mapper;
 
@@ -33,18 +34,23 @@ namespace UniAtHome.BLL.Services
         //temporary returning boolean
         public async Task<bool> AddLessonAsync(CreateLessonDTO createLessonDTO)
         {
-            //TODO: should return errors if category doesn't exist and/or 
-            //if the teacher who sent this request can't add lesson to the course they doesn`t belong to
             var course = await courseRepository.GetCourseByIdAsync(createLessonDTO.Lesson.CourseId);
-            if (course!= null && course.CourseMembers.FirstOrDefault(m => m.Teacher.User.Email == createLessonDTO.TeacherEmail) != null)
+            if (course == null)
             {
-                var lesson = mapper.Map<Lesson>(createLessonDTO.Lesson);
-                await lessonRepository.AddAsync(lesson);
-                await lessonRepository.SaveChangesAsync();
-                return true;
+                throw new BadRequestException("The course doesn't exist!");
             }
 
-            return false;
+            bool teacherBelongsToCourse = course.CourseMembers.FirstOrDefault(
+                m => m.Teacher.User.Email == createLessonDTO.TeacherEmail) != null;
+            if (!teacherBelongsToCourse)
+            {
+                throw new BadRequestException("You have to a course member!");
+            }
+
+            var lesson = mapper.Map<Lesson>(createLessonDTO.Lesson);
+            await lessonRepository.AddAsync(lesson);
+            await lessonRepository.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<LessonDTO>> GetLessonsByCourseIdAsync(int id)

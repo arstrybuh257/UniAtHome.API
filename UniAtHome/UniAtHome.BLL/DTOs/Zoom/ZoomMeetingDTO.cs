@@ -2,7 +2,7 @@
 
 namespace UniAtHome.BLL.DTOs.Zoom
 {
-    public class ZoomMeetingCreatedDTO
+    public class ZoomMeetingDTO
     {
         public long Id { get; set; }
 

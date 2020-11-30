@@ -43,34 +43,19 @@ namespace UniAtHome.BLL.Services.Zoom
             return new AuthenticationHeaderValue(USER_AUTH_SCHEME, tokenString);
         }
 
-        public override async Task<HttpResponseMessage> PostAsync(
-            string relativeUrl,
-            IDictionary<string, string> queryParams,
-            object body)
-        {
-            var response = await base.PostAsync(relativeUrl, queryParams, body);
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                bool refreshed = await zoomAuthService.Value.RefreshAsync(this.email);
-                if (refreshed)
-                {
-                    response = await base.PostAsync(relativeUrl, queryParams, body);
-                }
-            }
-            return response;
-        }
-
-        public override async Task<HttpResponseMessage> GetAsync(
+        protected override async Task<HttpResponseMessage> SendAsync(
             string relativeUrl, 
-            IDictionary<string, string> queryParams)
+            IDictionary<string, string> queryParams, 
+            object body, 
+            HttpMethod method)
         {
-            var response = await base.GetAsync(relativeUrl, queryParams);
+            var response = await base.SendAsync(relativeUrl, queryParams, body, method);
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 bool refreshed = await zoomAuthService.Value.RefreshAsync(this.email);
                 if (refreshed)
                 {
-                    response = await base.GetAsync(relativeUrl, queryParams);
+                    response = await base.SendAsync(relativeUrl, queryParams, body, method);
                 }
             }
             return response;
