@@ -22,5 +22,7 @@ namespace UniAtHome.DAL.Entities
         public List<CourseMember> CourseMembers { get; set; }
 
         public List<Lesson> Lessons { get; set; }
+
+        public List<Tests.Test> Tests { get; set; }
     }
 }

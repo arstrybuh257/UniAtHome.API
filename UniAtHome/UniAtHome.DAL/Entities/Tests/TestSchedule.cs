@@ -12,8 +12,8 @@ namespace UniAtHome.DAL.Entities.Tests
 
         public DateTime BeginTime { get; set; }
 
-        public Lesson Lesson { get; set; }
+        public Test Test { get; set; }
 
-        public Group Group { get; set; }
+        public Timetable Timetable { get; set; }
     }
 }

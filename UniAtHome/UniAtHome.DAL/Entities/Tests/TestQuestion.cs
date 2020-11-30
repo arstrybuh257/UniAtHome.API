@@ -1,4 +1,6 @@
-﻿namespace UniAtHome.DAL.Entities.Tests
+﻿using System.Collections.Generic;
+
+namespace UniAtHome.DAL.Entities.Tests
 {
     public class TestQuestion : BaseEntity
     {
@@ -11,5 +13,7 @@
         public float Weight { get; set; }
 
         public Test Test { get; set; }
+
+        public List<TestAnswerVariant> Answers { get; set; }
     }
 }

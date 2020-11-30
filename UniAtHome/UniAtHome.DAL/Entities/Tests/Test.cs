@@ -1,4 +1,6 @@
-﻿namespace UniAtHome.DAL.Entities.Tests
+﻿using System.Collections.Generic;
+
+namespace UniAtHome.DAL.Entities.Tests
 {
     public class Test : BaseEntity
     {
@@ -17,5 +19,7 @@
         public float MaxMark { get; set; }
 
         public Course Course { get; set; }
+
+        public List<TestQuestion> Questions { get; set; }
     }
 }

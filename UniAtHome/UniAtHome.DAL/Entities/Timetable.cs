@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UniAtHome.DAL.Entities.Tests;
 
 namespace UniAtHome.DAL.Entities
 {
@@ -15,5 +17,7 @@ namespace UniAtHome.DAL.Entities
         public Group Group { get; set; }
 
         public ZoomMeeting ZoomMeeting { get; set; }
+
+        public List<TestSchedule> TestSchedules { get; set; }
     }
 }
