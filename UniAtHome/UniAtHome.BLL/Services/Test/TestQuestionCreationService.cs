@@ -12,7 +12,19 @@ namespace UniAtHome.BLL.Services.Test
     {
         private readonly IRepository<TestQuestion> questions;
 
+        private readonly ITestCreationService testCreationService;
+
         private readonly IMapper mapper;
+
+        public TestQuestionCreationService(
+            IRepository<TestQuestion> questions,
+            ITestCreationService testCreationService,
+            IMapper mapper)
+        {
+            this.questions = questions;
+            this.testCreationService = testCreationService;
+            this.mapper = mapper;
+        }
 
         private static void ValidateQuestion(TestQuestion question)
         {
@@ -24,6 +36,11 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<int> CreateQuestionAsync(TestQuestionCreateDTO createDTO)
         {
+            TestDTO test = await testCreationService.GetTestAsync(createDTO.TestId);
+            if (test == null)
+            {
+                throw new BadRequestException("The test doesn't exist!");
+            }
             TestQuestion question = mapper.Map<TestQuestion>(createDTO);
 
             ValidateQuestion(question);
