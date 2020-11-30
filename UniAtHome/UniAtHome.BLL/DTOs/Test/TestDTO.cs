@@ -1,7 +1,9 @@
 ﻿namespace UniAtHome.BLL.DTOs.Test
 {
-    public class TestCreateDTO
+    public class TestDTO
     {
+        public int Id { get; set; }
+
         public int CourseId { get; set; }
 
         public string Name { get; set; }
