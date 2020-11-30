@@ -1,4 +1,5 @@
 ﻿using System;
+using UniAtHome.DAL.Entities.Tests;
 
 namespace UniAtHome.BLL.DTOs.Test
 {
@@ -28,6 +29,11 @@ namespace UniAtHome.BLL.DTOs.Test
     }
 
     public class TestAnswerVariantDTO : DAL.Entities.Tests.TestAnswerVariant
+    {
+
+    }
+
+    public class TestScheduleDTO : TestSchedule
     {
 
     }

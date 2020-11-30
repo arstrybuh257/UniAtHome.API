@@ -34,7 +34,7 @@ namespace UniAtHome.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTimetable(int groupId, int lessonId)
         {
-            TimetableDTO timetable = await timetableService.GetTimetableAsync(
+            TimetableDTO timetable = await timetableService.GetTimetableWithZoomLinkAsync(
                 groupId,
                 lessonId,
                 User.Identity.Name);

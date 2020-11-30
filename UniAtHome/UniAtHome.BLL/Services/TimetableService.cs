@@ -213,7 +213,7 @@ namespace UniAtHome.BLL.Services
             await timetablesRepository.SaveChangesAsync();
         }
 
-        public async Task<TimetableDTO> GetTimetableAsync(int groupId, int lessonId, string userEmail)
+        public async Task<TimetableDTO> GetTimetableAsync(int groupId, int lessonId)
         {
             Timetable timetable = await timetablesRepository.GetSingleOrDefaultAsync(
                 tt => tt.GroupId == groupId && tt.LessonId == lessonId);
@@ -227,12 +227,18 @@ namespace UniAtHome.BLL.Services
                 LessonId = lessonId,
                 DateTime = timetable.Date
             };
+            return dto;
+        }
+
+        public async Task<TimetableDTO> GetTimetableWithZoomLinkAsync(int groupId, int lessonId, string userEmail)
+        {
+            TimetableDTO dto = await GetTimetableAsync(groupId, lessonId);
 
             ZoomMeeting zoomMeeting = await zoomMeetingRepository.GetSingleOrDefaultAsync(
-                zm => zm.GroupId == timetable.GroupId && zm.LessonId == timetable.LessonId);
+                zm => zm.GroupId == dto.GroupId && zm.LessonId == dto.LessonId);
             if (zoomMeeting != null)
             {
-                Lesson lesson = await lessonsRepository.GetByIdAsync(timetable.LessonId);
+                Lesson lesson = await lessonsRepository.GetByIdAsync(dto.LessonId);
                 bool isCourseTeacher = courseService.GetCourseMembers(lesson.CourseId)
                     .Any(t => t.Email == userEmail);
 

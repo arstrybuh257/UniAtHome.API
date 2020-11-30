@@ -5,7 +5,7 @@ namespace UniAtHome.BLL.Interfaces.Test
 {
     public interface ITestCreationService
     {
-        Task<int> CreateTestAsybc(TestCreateDTO createDTO);
+        Task<int> CreateTestAsync(TestCreateDTO createDTO);
 
         Task DeleteTestAsync(int testId);
 
