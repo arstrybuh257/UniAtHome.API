@@ -3,9 +3,14 @@ using UniAtHome.DAL.Entities.Tests;
 
 namespace UniAtHome.BLL.DTOs.Test
 {
-    // TODO: remove inheritance
     public class TestCreateDTO : DAL.Entities.Tests.Test
     {
+
+    }
+
+    public class TestEditDTO : DAL.Entities.Tests.Test
+    {
+
     }
 
     public class TestDTO : DAL.Entities.Tests.Test
@@ -14,6 +19,11 @@ namespace UniAtHome.BLL.DTOs.Test
     }
 
     public class TestQuestionCreateDTO : DAL.Entities.Tests.TestQuestion
+    {
+
+    }
+
+    public class TestQuestionEditDTO : DAL.Entities.Tests.TestQuestion
     {
 
     }
@@ -28,12 +38,22 @@ namespace UniAtHome.BLL.DTOs.Test
 
     }
 
+    public class TestAnswerVariantEditDTO : DAL.Entities.Tests.TestAnswerVariant
+    {
+
+    }
+
     public class TestAnswerVariantDTO : DAL.Entities.Tests.TestAnswerVariant
     {
 
     }
 
     public class TestScheduleCreateDTO : TestSchedule
+    {
+
+    }
+
+    public class TestScheduleEditDTO : TestSchedule
     {
 
     }

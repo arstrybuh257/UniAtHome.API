@@ -9,7 +9,7 @@ namespace UniAtHome.BLL.Interfaces.Test
 
         Task RemoveTestFromScheduleAsync(int scheduleId);
 
-        Task EditTestScheduleAsync(TestScheduleDTO editDTO);
+        Task EditTestScheduleAsync(TestScheduleEditDTO editDTO);
 
         Task<TestScheduleDTO> GetTestScheduleAsync(int scheduleId);
     }

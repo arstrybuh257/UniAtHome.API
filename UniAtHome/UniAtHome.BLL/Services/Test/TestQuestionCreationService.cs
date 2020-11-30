@@ -61,7 +61,7 @@ namespace UniAtHome.BLL.Services.Test
             await questions.SaveChangesAsync();
         }
 
-        public async Task EditQuestionAsync(TestQuestionDTO editDTO)
+        public async Task EditQuestionAsync(TestQuestionEditDTO editDTO)
         {
             TestQuestion question = await questions.GetByIdAsync(editDTO.Id);
             if (question == null)

@@ -51,7 +51,7 @@ namespace UniAtHome.BLL.Services.Test
             await answers.SaveChangesAsync();
         }
 
-        public async Task EditAnswerVariantAsync(TestAnswerVariantDTO editDTO)
+        public async Task EditAnswerVariantAsync(TestAnswerVariantEditDTO editDTO)
         {
             TestAnswerVariant answer = await answers.GetByIdAsync(editDTO.Id);
             if (answer == null)

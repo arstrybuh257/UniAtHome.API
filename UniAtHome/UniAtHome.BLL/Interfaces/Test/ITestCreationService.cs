@@ -9,7 +9,7 @@ namespace UniAtHome.BLL.Interfaces.Test
 
         Task DeleteTestAsync(int testId);
 
-        Task EditTestAsync(TestDTO editDTO);
+        Task EditTestAsync(TestEditDTO editDTO);
 
         Task<TestDTO> GetTestAsync(int testId);
     }

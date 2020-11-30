@@ -2,6 +2,8 @@
 {
     public class Test : BaseEntity
     {
+        public int CourseId { get; set; }
+
         public string Name { get; set; }
 
         public int DurationMinutes { get; set; }
@@ -13,5 +15,7 @@
         public int AttemptsAllowed { get; set; }
 
         public float MaxMark { get; set; }
+
+        public Course Course { get; set; }
     }
 }

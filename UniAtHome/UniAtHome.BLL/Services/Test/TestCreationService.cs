@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
+using UniAtHome.BLL.DTOs.Course;
 using UniAtHome.BLL.DTOs.Test;
 using UniAtHome.BLL.Exceptions;
+using UniAtHome.BLL.Interfaces;
 using UniAtHome.BLL.Interfaces.Test;
 using UniAtHome.DAL.Interfaces;
 using TestEntity = UniAtHome.DAL.Entities.Tests.Test;
@@ -10,11 +12,13 @@ namespace UniAtHome.BLL.Services.Test
 {
     public class TestCreationService : ITestCreationService
     {
-        private readonly IRepository<TestSchedule> tests;
+        private readonly ICourseService courseService;
+
+        private readonly IRepository<TestEntity> tests;
 
         private readonly IMapper mapper;
 
-        public TestCreationService(IRepository<TestSchedule> tests, IMapper mapper)
+        public TestCreationService(IRepository<TestEntity> tests, IMapper mapper)
         {
             this.tests = tests;
             this.mapper = mapper;
@@ -22,7 +26,13 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<int> CreateTestAsync(TestCreateDTO createDTO)
         {
-            TestSchedule test = mapper.Map<TestSchedule>(createDTO);
+            CourseDTO course = await courseService.GetCourseByIdAsync(createDTO.CourseId);
+            if (course == null)
+            {
+                throw new BadRequestException("The course doesn't exist!");
+            }
+
+            TestEntity test = mapper.Map<TestEntity>(createDTO);
 
             ValidateTest(test);
 
@@ -31,7 +41,7 @@ namespace UniAtHome.BLL.Services.Test
             return test.Id;
         }
 
-        private static void ValidateTest(TestSchedule test)
+        private static void ValidateTest(TestEntity test)
         {
             if (test.DurationMinutes <= 0)
             {
@@ -39,13 +49,13 @@ namespace UniAtHome.BLL.Services.Test
             }
             if (test.AttemptsAllowed < 0)
             {
-                throw new BadRequestException("Attemps count can't be negative!");
+                throw new BadRequestException("Attempts count can't be negative!");
             }
         }
 
         public async Task DeleteTestAsync(int testId)
         {
-            TestSchedule test = await tests.GetByIdAsync(testId);
+            TestEntity test = await tests.GetByIdAsync(testId);
             if (test == null)
             {
                 throw new NotFoundException("The test doesn't exist!");
@@ -54,9 +64,9 @@ namespace UniAtHome.BLL.Services.Test
             await tests.SaveChangesAsync();
         }
 
-        public async Task EditTestAsync(TestDTO editDTO)
+        public async Task EditTestAsync(TestEditDTO editDTO)
         {
-            TestSchedule test = await tests.GetByIdAsync(editDTO.Id);
+            TestEntity test = await tests.GetByIdAsync(editDTO.Id);
             if (test == null)
             {
                 throw new NotFoundException("The test doesn't exist!");
@@ -71,7 +81,7 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<TestDTO> GetTestAsync(int testId)
         {
-            TestSchedule test = await tests.GetByIdAsync(testId);
+            TestEntity test = await tests.GetByIdAsync(testId);
             if (test == null)
             {
                 throw new NotFoundException("The test doesn't exist!");

@@ -64,7 +64,7 @@ namespace UniAtHome.BLL.Services.Test
             }
         }
 
-        public async Task EditTestScheduleAsync(TestScheduleDTO editDTO)
+        public async Task EditTestScheduleAsync(TestScheduleEditDTO editDTO)
         {
             TestSchedule schedule = await schedules.GetByIdAsync(editDTO.Id);
             if (schedule == null)

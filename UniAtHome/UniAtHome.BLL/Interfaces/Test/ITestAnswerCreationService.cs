@@ -9,7 +9,7 @@ namespace UniAtHome.BLL.Interfaces.Test
 
         Task DeleteAnswerVariantAsync(int answerId);
 
-        Task EditAnswerVariantAsync(TestAnswerVariantDTO editDTO);
+        Task EditAnswerVariantAsync(TestAnswerVariantEditDTO editDTO);
 
         Task<TestAnswerVariantDTO> GetAnswerVariantAsync(int answerId);
     }
