@@ -6,7 +6,7 @@
 
         public int QuestionId { get; set; }
 
-        public int AnswerVariantId { get; set; }
+        public bool Correct { get; set; }
 
         public TestAttempt Attempt { get; set; }
 

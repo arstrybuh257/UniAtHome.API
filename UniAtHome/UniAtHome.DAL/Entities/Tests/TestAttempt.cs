@@ -8,9 +8,9 @@ namespace UniAtHome.DAL.Entities.Tests
 
         public int TestId { get; set; }
 
-        public DateTime BeginTime { get; set; }
+        public DateTimeOffset BeginTime { get; set; }
 
-        public DateTime? EndTime { get; set; }
+        public DateTimeOffset? EndTime { get; set; }
 
         public User User { get; set; }
 
