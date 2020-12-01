@@ -12,19 +12,19 @@ namespace UniAtHome.BLL.Services
 {
     public class StudentService : IStudentService
     {
-        private readonly IRepository<Student> studentRepository;
-
         private readonly IRepository<Course> coursesRepository;
+
+        private readonly IRepository<Group> groupsRepository;
 
         private readonly IMapper mapper;
 
         public StudentService(
-            IRepository<Student> studentRepository, 
-            IRepository<Course> coursesRepository, 
+            IRepository<Course> coursesRepository,
+            IRepository<Group> groupsRepository,
             IMapper mapper)
         {
-            this.studentRepository = studentRepository;
             this.coursesRepository = coursesRepository;
+            this.groupsRepository = groupsRepository;
             this.mapper = mapper;
         }
 
@@ -39,6 +39,15 @@ namespace UniAtHome.BLL.Services
                             studentGroup => studentGroup.Student.User.Email == studentEmail))));
 
             return this.mapper.Map<IEnumerable<CourseDTO>>(courses);
+        }
+
+        public async Task<IEnumerable<GroupDTO>> GetStudentsGroupsAsync(string studentEmail)
+        {
+            var groups = await groupsRepository.Find(
+                gr => gr.StudentGroups.Any(
+                    st => st.Student.User.Email == studentEmail)
+                );
+            return mapper.Map<IEnumerable<GroupDTO>>(groups);
         }
     }
 }

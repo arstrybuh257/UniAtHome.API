@@ -12,6 +12,9 @@ namespace UniAtHome.BLL.DTOs.Test
 
         public int LessonId { get; set; }
 
-        public DateTime BeginTime { get; set; }
+        public DateTimeOffset BeginTime { get; set; }
+
+        public DateTimeOffset EndTime { get; set; }
+
     }
 }

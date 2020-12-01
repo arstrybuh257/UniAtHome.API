@@ -34,6 +34,7 @@ namespace UniAtHome.WebAPI.Configuration
                 dest => dest.Title,
                 opt => opt.MapFrom(src => src.Name));
             CreateMap<LessonDTO, LessonResponse>();
+            CreateMap<Group, GroupDTO>();
 
             CreateMap<AdminRegistrationRequest, AdminRegistrationDTO>();
             CreateMap<UniversityAdminRegistrationRequest, UniversityAdminRegistrationDTO>();

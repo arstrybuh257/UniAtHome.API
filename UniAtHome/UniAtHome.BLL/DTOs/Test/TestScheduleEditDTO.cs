@@ -6,6 +6,9 @@ namespace UniAtHome.BLL.DTOs.Test
     {
         public int Id { get; set; }
 
-        public DateTime BeginTime { get; set; }
+        public DateTimeOffset BeginTime { get; set; }
+
+        public DateTimeOffset EndTime { get; set; }
+
     }
 }

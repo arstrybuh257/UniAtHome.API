@@ -10,7 +10,9 @@ namespace UniAtHome.DAL.Entities.Tests
 
         public int LessonId { get; set; }
 
-        public DateTime BeginTime { get; set; }
+        public DateTimeOffset BeginTime { get; set; }
+
+        public DateTimeOffset EndTime { get; set; }
 
         public Test Test { get; set; }
 
