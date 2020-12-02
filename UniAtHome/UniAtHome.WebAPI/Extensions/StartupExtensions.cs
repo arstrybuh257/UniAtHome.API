@@ -88,6 +88,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ITestQuestionCreationService, TestQuestionCreationService>();
             services.AddScoped<ITestAnswerCreationService, TestAnswerCreationService>();
             services.AddScoped<ITestSchedulingService, TestSchedulingService>();
+            services.AddScoped<ITestGenerationService, TestGenerationService>();
             services.AddScoped<ITestCreationService, TestCreationService>();
             services.AddScoped<ITestTakingService, TestTakingService>();
 
