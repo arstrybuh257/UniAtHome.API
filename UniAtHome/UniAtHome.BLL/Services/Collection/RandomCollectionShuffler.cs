@@ -5,7 +5,7 @@ using UniAtHome.BLL.Interfaces.Collection;
 
 namespace UniAtHome.BLL.Services.Collection
 {
-    public class CollectionShuffler : ICollectionShuffler
+    public class RandomCollectionShuffler : ICollectionShuffler
     {
         public IEnumerable<T> Shuffle<T>(IEnumerable<T> source)
         {

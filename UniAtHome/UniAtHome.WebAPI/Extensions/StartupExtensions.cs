@@ -8,9 +8,11 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using UniAtHome.BLL.Interfaces;
+using UniAtHome.BLL.Interfaces.Collection;
 using UniAtHome.BLL.Interfaces.Test;
 using UniAtHome.BLL.Interfaces.Zoom;
 using UniAtHome.BLL.Services;
+using UniAtHome.BLL.Services.Collection;
 using UniAtHome.BLL.Services.Test;
 using UniAtHome.BLL.Services.Zoom;
 using UniAtHome.DAL;
@@ -62,6 +64,8 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<IRepository<TestQuestion>, Repository<TestQuestion>>();
             services.AddScoped<IRepository<TestAnswerVariant>, Repository<TestAnswerVariant>>();
             services.AddScoped<IRepository<TestSchedule>, Repository<TestSchedule>>();
+            services.AddScoped<IRepository<TestAttempt>, Repository<TestAttempt>>();
+            services.AddScoped<IRepository<TestAnsweredQuestion>, Repository<TestAnsweredQuestion>>();
 
             services.AddSingleton<IRefreshTokenFactory, RefreshTokenFactory>();
             services.AddSingleton<IEmailService, EmailService>();
@@ -77,11 +81,14 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddScoped<IUniversityRequestService, UniversityRequestService>();
             services.AddScoped<IUniversityRegistrationService, UniversityRegistrationService>();
+            services.AddScoped<ICollectionShuffler, RandomCollectionShuffler>();
 
             services.AddScoped<ITestCreationService, TestCreationService>();
             services.AddScoped<ITestQuestionCreationService, TestQuestionCreationService>();
             services.AddScoped<ITestAnswerCreationService, TestAnswerCreationService>();
             services.AddScoped<ITestSchedulingService, TestSchedulingService>();
+            services.AddScoped<ITestCreationService, TestCreationService>();
+            services.AddScoped<ITestTakingService, TestTakingService>();
 
             services.AddScoped<ZoomAdminClient>();
             services.AddScoped<IZoomAuthService, ZoomAuthService>();
