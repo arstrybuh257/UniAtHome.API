@@ -179,7 +179,7 @@ namespace UniAtHome.BLL.Services.Test
         private async Task ValidateAnswerTimeAsync(AnswerSubmitDTO submit, TestAttempt attempt)
         {
             var test = await tests.GetByIdAsync(attempt.TestId);
-            if (attempt.BeginTime.AddMinutes(test.DurationMinutes) >= DateTimeOffset.UtcNow)
+            if (attempt.BeginTime.AddMinutes(test.DurationMinutes) < DateTimeOffset.UtcNow)
             {
                 await FinishAsync(attempt.Id, submit.Email);
                 throw new ForbiddenException("The time is over!");
@@ -253,10 +253,18 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<IEnumerable<TestFinishedDTO>> GetAllFinishedAttemptsAsync(int testId, string email)
         {
+            var test = await tests.GetByIdAsync(testId);
             var finishedAttempts = await attempts.Find(
-                a => a.User.Email == email && a.TestId == testId && a.EndTime != null);
+                a => a.User.Email == email && a.TestId == testId);
+            var timedOutAttempts = finishedAttempts.Where(
+                a => a.EndTime != null && a.BeginTime.AddMinutes(test.DurationMinutes) < DateTimeOffset.UtcNow);
+            foreach(var expiredAttempt in timedOutAttempts)
+            {
+                await FinishAsync(expiredAttempt.Id, email);
+            }
+
             var info = new List<TestFinishedDTO>();
-            foreach (var attempt in finishedAttempts)
+            foreach (var attempt in finishedAttempts.Concat(timedOutAttempts))
             {
                 info.Add(await GetFinishedAttemptResultsAsync(attempt));
             }
