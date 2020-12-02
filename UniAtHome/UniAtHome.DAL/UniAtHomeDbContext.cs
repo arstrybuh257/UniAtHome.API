@@ -48,6 +48,10 @@ namespace UniAtHome.DAL
 
         public DbSet<TestSchedule> TestSchedules { get; set; }
 
+        public DbSet<TestAttempt> TestAttempts { get; set; }
+
+        public DbSet<TestAnsweredQuestion> TestAnsweredQuestions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -214,6 +218,20 @@ namespace UniAtHome.DAL
             // Test schedule
             modelBuilder.Entity<TestSchedule>().HasKey(sch => sch.Id);
             modelBuilder.Entity<TestSchedule>().HasOne(sch => sch.Timetable).WithMany(tt => tt.TestSchedules);
+
+            // Test attmepts
+            modelBuilder.Entity<TestAttempt>().HasKey(a => a.Id);
+            modelBuilder.Entity<TestAttempt>().HasOne(a => a.Test).WithMany(t => t.TestAttempts);
+            modelBuilder.Entity<TestAttempt>().HasOne(a => a.User).WithMany(u => u.TestAttempts);
+
+            // Test question answers
+            modelBuilder.Entity<TestAnsweredQuestion>().HasKey(aq => new { aq.AttempId, aq.QuestionId });
+            modelBuilder.Entity<TestAnsweredQuestion>()
+                .HasOne(aq => aq.Attempt)
+                .WithMany(t => t.AnsweredQuestions);
+            modelBuilder.Entity<TestAnsweredQuestion>()
+                .HasOne(aq => aq.Question)
+                .WithMany(q => q.AnsweredQuestions);
 
         }
 

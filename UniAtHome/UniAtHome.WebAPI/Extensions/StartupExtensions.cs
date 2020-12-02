@@ -81,6 +81,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddTransient<IFileStorageService, FileStorageService>();
             services.AddScoped<IUniversityRequestService, UniversityRequestService>();
             services.AddScoped<IUniversityRegistrationService, UniversityRegistrationService>();
+            services.AddScoped<ITimetableService, TimetableService>();
             services.AddScoped<ICollectionShuffler, RandomCollectionShuffler>();
 
             services.AddScoped<ITestCreationService, TestCreationService>();
@@ -94,7 +95,6 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<IZoomAuthService, ZoomAuthService>();
             services.AddScoped(services => new Lazy<IZoomAuthService>(services.GetService<IZoomAuthService>));
             services.AddScoped<ZoomMeetingService>();
-            services.AddScoped<ITimetableService, TimetableService>();
 
             services.AddScoped<DbContext, UniAtHomeDbContext>();
 

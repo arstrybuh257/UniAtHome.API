@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UniAtHome.DAL.Entities.Tests
 {
@@ -15,5 +16,7 @@ namespace UniAtHome.DAL.Entities.Tests
         public User User { get; set; }
 
         public Test Test { get; set; }
+
+        public IList<TestAnsweredQuestion> AnsweredQuestions { get; set; }
     }
 }

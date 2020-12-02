@@ -21,5 +21,7 @@ namespace UniAtHome.DAL.Entities.Tests
         public Course Course { get; set; }
 
         public List<TestQuestion> Questions { get; set; }
+
+        public List<TestAttempt> TestAttempts { get; set; }
     }
 }
