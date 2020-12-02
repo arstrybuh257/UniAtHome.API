@@ -79,6 +79,8 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<TestAnswerVariant, TestAnswerVariantDTO>();
             CreateMap<TestSchedule, TestScheduleDTO>();
             CreateMap<TestAnswerRequest, AnswerSubmitDTO>();
+            CreateMap<TestQuestion, TestTakingDTO.QuestionDTO>();
+            CreateMap<TestAnswerVariant, TestTakingDTO.AnswerDTO>();
         }
     }
 }

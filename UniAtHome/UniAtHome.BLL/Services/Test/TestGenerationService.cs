@@ -20,6 +20,18 @@ namespace UniAtHome.BLL.Services.Test
 
         private readonly IMapper mapper;
 
+        public TestGenerationService(
+            IRepository<TestQuestion> questionsRepository,
+            IRepository<TestAnswerVariant> answersRepository,
+            ICollectionShuffler collectionShuffler,
+            IMapper mapper)
+        {
+            this.questionsRepository = questionsRepository;
+            this.answersRepository = answersRepository;
+            this.collectionShuffler = collectionShuffler;
+            this.mapper = mapper;
+        }
+
         public async Task<TestTakingDTO> GenerateTestAsync(TestEntity test)
         {
             var testResponse = new TestTakingDTO
