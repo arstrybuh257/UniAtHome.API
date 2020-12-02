@@ -9,7 +9,6 @@ using UniAtHome.BLL.Interfaces.Test;
 using UniAtHome.DAL.Entities;
 using UniAtHome.DAL.Entities.Tests;
 using UniAtHome.DAL.Interfaces;
-using UniAtHome.DAL.Repositories;
 using TestEntity = UniAtHome.DAL.Entities.Tests.Test;
 
 namespace UniAtHome.BLL.Services.Test
@@ -32,13 +31,32 @@ namespace UniAtHome.BLL.Services.Test
 
         private readonly IRepository<TestSchedule> schedules;
 
-        private readonly IGroupService groupService;
-
         private readonly ITestGenerationService testGenerator;
+
+        public TestTakingService(
+            IRepository<TestEntity> tests,
+            IRepository<TestQuestion> questions,
+            IRepository<TestAnswerVariant> answerVariants,
+            IRepository<TestAnsweredQuestion> answeredQuestions,
+            IStudentService studentService,
+            IRepository<Student> students,
+            IRepository<TestAttempt> attempts,
+            IRepository<TestSchedule> schedules,
+            ITestGenerationService testGenerator)
+        {
+            this.tests = tests;
+            this.questions = questions;
+            this.answerVariants = answerVariants;
+            this.answeredQuestions = answeredQuestions;
+            this.studentService = studentService;
+            this.students = students;
+            this.attempts = attempts;
+            this.schedules = schedules;
+            this.testGenerator = testGenerator;
+        }
 
         public async Task<TestTakingDTO> StartTestAsync(int id, string email)
         {
-            // TODO: check attempts allowed and made
             var student = await students.GetSingleOrDefaultAsync(s => s.User.Email == email);
             if (student == null)
             {
@@ -49,6 +67,22 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new BadRequestException("The test doesn't exist!");
             }
+
+            await ValidateTestAccessibilityAsync(email, test);
+
+            await ValidateAttemptsMadeAsync(id, email, test);
+
+            await ValidateWhetherTestIsAvailableByTimeAsync(id, email);
+
+            TestAttempt testAttempt = await CreateAndSaveNewAttemptAsync(id, student);
+
+            var generatedTest = await testGenerator.GenerateTestAsync(test);
+            generatedTest.AttemptId = testAttempt.Id;
+            return generatedTest;
+        }
+
+        private async Task ValidateTestAccessibilityAsync(string email, TestEntity test)
+        {
             var courses = await studentService.GetStudentsCoursesAsync(new DTOs.Students.StudentsCoursesRequest
             {
                 StudentEmail = email
@@ -57,8 +91,21 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new ForbiddenException("The student can't take tests of this course!");
             }
+        }
+
+        private async Task ValidateAttemptsMadeAsync(int id, string email, TestEntity test)
+        {
+            int attemptsMade = (await attempts.Find(a => a.User.Email == email && a.TestId == id)).Count();
+            if (attemptsMade >= test.AttemptsAllowed)
+            {
+                throw new ForbiddenException($"Already made {attemptsMade}/{test.AttemptsAllowed} attemts!");
+            }
+        }
+
+        private async Task ValidateWhetherTestIsAvailableByTimeAsync(int id, string email)
+        {
             var groupsOfStudent = (await studentService.GetStudentsGroupsAsync(email))
-                .Select(gr => gr.Id);
+                            .Select(gr => gr.Id);
             DateTimeOffset now = DateTimeOffset.UtcNow;
             bool isAvailableByTime = (await schedules
                 .Find(sch => sch.TestId == id && now > sch.BeginTime && now <= sch.EndTime))
@@ -68,7 +115,10 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new ForbiddenException("The test isn't scheduled for now");
             }
+        }
 
+        private async Task<TestAttempt> CreateAndSaveNewAttemptAsync(int id, Student student)
+        {
             var testAttempt = new TestAttempt
             {
                 TestId = id,
@@ -79,10 +129,7 @@ namespace UniAtHome.BLL.Services.Test
 
             await attempts.AddAsync(testAttempt);
             await attempts.SaveChangesAsync();
-
-            var generatedTest = await testGenerator.GenerateTestAsync(test);
-            generatedTest.AttemptId = testAttempt.Id;
-            return generatedTest;
+            return testAttempt;
         }
 
         public async Task SubmitAnswerAsync(AnswerSubmitDTO submit)
@@ -93,6 +140,10 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new BadRequestException("Not valid attempt!");
             }
+            if (student == null)
+            {
+                throw new ForbiddenException("The user either is not a student or is not registered!");
+            }
             if (attempt.UserId == student.UserId)
             {
                 throw new ForbiddenException("Isn't the attempt of the user!");
@@ -101,24 +152,15 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new ForbiddenException("Can't send answers after the attempt is over!");
             }
-            var test = await tests.GetByIdAsync(attempt.TestId);
-            if (attempt.BeginTime.AddMinutes(test.DurationMinutes) >= DateTimeOffset.UtcNow)
-            {
-                await FinishAsync(attempt.Id, submit.Email);
-                throw new ForbiddenException("The time is over!");
-            }
+            await ValidateAnswerTimeAsync(submit, attempt);
 
-            var correctAnswers = await answerVariants.Find(
-                a => a.QuestionId == submit.QuestionId && a.IsCorrect);
-            var correctAnswersIds = correctAnswers.Select(a => a.Id);
-            bool allVaraintsAreCorrect = correctAnswers.Count() == submit.SelectedAnswers.Count()
-                && submit.SelectedAnswers.Intersect(correctAnswersIds).Count() == submit.SelectedAnswers.Count();
+            bool isCorrect = await CheckAnswerCorrectnessAsync(submit);
 
             var previousAnswer = await answeredQuestions.GetSingleOrDefaultAsync(
                 aq => aq.AttempId == submit.AttempId && aq.QuestionId == submit.QuestionId);
             if (previousAnswer != null)
             {
-                previousAnswer.IsCorrect = allVaraintsAreCorrect;
+                previousAnswer.IsCorrect = isCorrect;
                 answeredQuestions.Update(previousAnswer);
             }
             else
@@ -127,17 +169,41 @@ namespace UniAtHome.BLL.Services.Test
                 {
                     AttempId = submit.AttempId,
                     QuestionId = submit.QuestionId,
-                    IsCorrect = allVaraintsAreCorrect
+                    IsCorrect = isCorrect
                 };
                 await answeredQuestions.AddAsync(questionAswer);
             }
             await answeredQuestions.SaveChangesAsync();
         }
 
+        private async Task ValidateAnswerTimeAsync(AnswerSubmitDTO submit, TestAttempt attempt)
+        {
+            var test = await tests.GetByIdAsync(attempt.TestId);
+            if (attempt.BeginTime.AddMinutes(test.DurationMinutes) >= DateTimeOffset.UtcNow)
+            {
+                await FinishAsync(attempt.Id, submit.Email);
+                throw new ForbiddenException("The time is over!");
+            }
+        }
+
+        private async Task<bool> CheckAnswerCorrectnessAsync(AnswerSubmitDTO submit)
+        {
+            var correctAnswers = await answerVariants.Find(
+                            a => a.QuestionId == submit.QuestionId && a.IsCorrect);
+            var correctAnswersIds = correctAnswers.Select(a => a.Id);
+            bool allVaraintsAreCorrect = correctAnswers.Count() == submit.SelectedAnswers.Count()
+                && submit.SelectedAnswers.Intersect(correctAnswersIds).Count() == submit.SelectedAnswers.Count();
+            return allVaraintsAreCorrect;
+        }
+
         public async Task<TestFinishedDTO> FinishAsync(int attemptId, string email)
         {
             var attempt = await attempts.GetByIdAsync(attemptId);
             var student = await students.GetSingleOrDefaultAsync(s => s.User.Email == email);
+            if (student == null)
+            {
+                throw new ForbiddenException("The user either is not a student or is not registered!");
+            }
             if (attempt == null)
             {
                 throw new BadRequestException("Not valid attempt!");
@@ -185,9 +251,16 @@ namespace UniAtHome.BLL.Services.Test
             };
         }
 
-        public async Task<IEnumerable<TestFinishedDTO>> GetAllAttemptsAsync(int testId, string email)
+        public async Task<IEnumerable<TestFinishedDTO>> GetAllFinishedAttemptsAsync(int testId, string email)
         {
-            throw new NotImplementedException();
+            var finishedAttempts = await attempts.Find(
+                a => a.User.Email == email && a.TestId == testId && a.EndTime != null);
+            var info = new List<TestFinishedDTO>();
+            foreach (var attempt in finishedAttempts)
+            {
+                info.Add(await GetFinishedAttemptResultsAsync(attempt));
+            }
+            return info;
         }
     }
 }

@@ -12,6 +12,6 @@ namespace UniAtHome.BLL.Interfaces.Test
 
         Task<TestFinishedDTO> FinishAsync(int attemptId, string email);
 
-        Task<IEnumerable<TestFinishedDTO>> GetAllAttemptsAsync(int testId, string email);
+        Task<IEnumerable<TestFinishedDTO>> GetAllFinishedAttemptsAsync(int testId, string email);
     }
 }
