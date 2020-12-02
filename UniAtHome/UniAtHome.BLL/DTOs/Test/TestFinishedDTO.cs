@@ -10,7 +10,7 @@ namespace UniAtHome.BLL.DTOs.Test
 
         public int CorrectAnswers { get; set; }
 
-        public int TotalAnswers { get; set; }
+        public int TotalQuestions { get; set; }
 
         public float Mark { get; set; }
 

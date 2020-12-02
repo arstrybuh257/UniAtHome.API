@@ -18,6 +18,8 @@ namespace UniAtHome.BLL.Services.Test
     {
         private readonly IRepository<TestEntity> tests;
 
+        private readonly IRepository<TestQuestion> questions;
+
         private readonly IRepository<TestAnswerVariant> answerVariants;
 
         private readonly IRepository<TestAnsweredQuestion> answeredQuestions;
@@ -134,8 +136,55 @@ namespace UniAtHome.BLL.Services.Test
 
         public async Task<TestFinishedDTO> FinishAsync(int attemptId, string email)
         {
-            throw new NotImplementedException();
+            var attempt = await attempts.GetByIdAsync(attemptId);
+            var student = await students.GetSingleOrDefaultAsync(s => s.User.Email == email);
+            if (attempt == null)
+            {
+                throw new BadRequestException("Not valid attempt!");
+            }
+            if (attempt.UserId != student.UserId)
+            {
+                throw new ForbiddenException("Isn't the attempt of the user!");
+            }
+            if (attempt.EndTime != null)
+            {
+                throw new BadRequestException("The test is already finished!");
+            }
+
+            attempt.EndTime = DateTimeOffset.UtcNow;
+            attempts.Update(attempt);
+            await attempts.SaveChangesAsync();
+
+            return await GetFinishedAttemptResultsAsync(attempt);
         }
+
+        private async Task<TestFinishedDTO> GetFinishedAttemptResultsAsync(TestAttempt attempt)
+        {
+            var test = await tests.GetByIdAsync(attempt.Id);
+            var allQuestions = await questions.Find(q => q.TestId == test.Id);
+            float questionsWeightSum = allQuestions.Sum(q => q.Weight);
+            var correctAnswersOfUser = await answeredQuestions
+                .Find(aq => aq.AttempId == attempt.Id && aq.IsCorrect);
+            var correctAnswersWeight = allQuestions
+                .Where(q => correctAnswersOfUser
+                    .Any(ca => ca.QuestionId == q.Id))
+                .Sum(q => q.Weight);
+
+            float mark = test.MaxMark * correctAnswersWeight / questionsWeightSum;
+
+            return new TestFinishedDTO
+            {
+                TestId = test.Id,
+                AttemptId = attempt.Id,
+                Begin = attempt.BeginTime,
+                End = attempt.EndTime.Value,
+                CorrectAnswers = correctAnswersOfUser.Count(),
+                TotalQuestions = allQuestions.Count(),
+                Mark = mark,
+                MaxMark = test.MaxMark,
+            };
+        }
+
         public async Task<IEnumerable<TestFinishedDTO>> GetAllAttemptsAsync(int testId, string email)
         {
             throw new NotImplementedException();
