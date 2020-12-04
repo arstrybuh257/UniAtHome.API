@@ -11,7 +11,8 @@ namespace UniAtHome.BLL.Interfaces
 
         Task EditTimetableEntryAsync(TimetableEntryDTO newTimetableDto, string userEmail);
 
-        Task<TimetableDTO> GetTimetableAsync(int groupId, int lessonId, string userEmail);
-    }
+        Task<TimetableDTO> GetTimetableWithZoomLinkAsync(int groupId, int lessonId, string userEmail);
 
+        Task<TimetableDTO> GetTimetableAsync(int groupId, int lessonId);
+    }
 }

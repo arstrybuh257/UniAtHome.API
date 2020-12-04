@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Entities.Tests;
 
 namespace UniAtHome.DAL
 {
@@ -38,6 +39,14 @@ namespace UniAtHome.DAL
         public DbSet<ZoomUser> ZoomUsers { get; set; }
 
         public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
+
+        public DbSet<Test> Tests { get; set; }
+
+        public DbSet<TestQuestion> TestQuestions { get; set; }
+
+        public DbSet<TestAnswerVariant> TestAnswerVariants { get; set; }
+
+        public DbSet<TestSchedule> TestSchedules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -189,6 +198,23 @@ namespace UniAtHome.DAL
             // Zoom meeting
             modelBuilder.Entity<ZoomMeeting>().HasKey(m => new { m.GroupId, m.LessonId });
             modelBuilder.Entity<ZoomMeeting>().Property(m => m.ZoomId).IsRequired();
+
+            // Test
+            modelBuilder.Entity<Test>().HasKey(t => t.Id);
+            modelBuilder.Entity<Test>().HasOne(t => t.Course).WithMany(c => c.Tests);
+
+            // Test question
+            modelBuilder.Entity<TestQuestion>().HasKey(q => q.Id);
+            modelBuilder.Entity<TestQuestion>().HasOne(q => q.Test).WithMany(t => t.Questions);
+
+            // Test answer variant
+            modelBuilder.Entity<TestAnswerVariant>().HasKey(a => a.Id);
+            modelBuilder.Entity<TestAnswerVariant>().HasOne(a => a.Question).WithMany(q => q.Answers);
+
+            // Test schedule
+            modelBuilder.Entity<TestSchedule>().HasKey(sch => sch.Id);
+            modelBuilder.Entity<TestSchedule>().HasOne(sch => sch.Timetable).WithMany(tt => tt.TestSchedules);
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

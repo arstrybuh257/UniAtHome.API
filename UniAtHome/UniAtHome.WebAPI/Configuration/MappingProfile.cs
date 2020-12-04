@@ -2,11 +2,13 @@
 using UniAtHome.BLL.DTOs;
 using UniAtHome.BLL.DTOs.Auth;
 using UniAtHome.BLL.DTOs.Course;
+using UniAtHome.BLL.DTOs.Test;
 using UniAtHome.BLL.DTOs.Timetable;
 using UniAtHome.BLL.DTOs.University;
 using UniAtHome.BLL.DTOs.UniversityRequest;
 using UniAtHome.BLL.DTOs.Zoom;
 using UniAtHome.DAL.Entities;
+using UniAtHome.DAL.Entities.Tests;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
@@ -61,6 +63,19 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<TimetableCreateRequest, TimetableEntryDTO>();
             CreateMap<TimetableEditRequest, TimetableEntryDTO>();
             CreateMap<TimetableDeleteRequest, TimetableEntryDeleteDTO>();
+
+            CreateMap<TestCreateDTO, Test>();
+            CreateMap<TestQuestionCreateDTO, TestQuestion>();
+            CreateMap<TestAnswerVariantCreateDTO, TestAnswerVariant>();
+            CreateMap<TestScheduleCreateDTO, TestSchedule>();
+            CreateMap<TestEditDTO, Test>();
+            CreateMap<TestQuestionEditDTO, TestQuestion>();
+            CreateMap<TestAnswerVariantEditDTO, TestAnswerVariant>();
+            CreateMap<TestScheduleEditDTO, TestSchedule>();
+            CreateMap<Test, TestDTO>();
+            CreateMap<TestQuestion, TestQuestionDTO>();
+            CreateMap<TestAnswerVariant, TestAnswerVariantDTO>();
+            CreateMap<TestSchedule, TestScheduleDTO>();
         }
     }
 }
