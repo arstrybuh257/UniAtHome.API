@@ -12,6 +12,7 @@ using UniAtHome.DAL.Entities.Tests;
 using UniAtHome.WebAPI.Models.Requests;
 using UniAtHome.WebAPI.Models.Responses.Course;
 using UniAtHome.WebAPI.Models.Responses.Lesson;
+using UniAtHome.WebAPI.Models.Test;
 using UniAtHome.WebAPI.Models.Timetable;
 using UniAtHome.WebAPI.Models.UniversityCreation;
 using UniAtHome.WebAPI.Models.Users;
@@ -34,6 +35,7 @@ namespace UniAtHome.WebAPI.Configuration
                 dest => dest.Title,
                 opt => opt.MapFrom(src => src.Name));
             CreateMap<LessonDTO, LessonResponse>();
+            CreateMap<Group, GroupDTO>();
 
             CreateMap<AdminRegistrationRequest, AdminRegistrationDTO>();
             CreateMap<UniversityAdminRegistrationRequest, UniversityAdminRegistrationDTO>();
@@ -76,6 +78,9 @@ namespace UniAtHome.WebAPI.Configuration
             CreateMap<TestQuestion, TestQuestionDTO>();
             CreateMap<TestAnswerVariant, TestAnswerVariantDTO>();
             CreateMap<TestSchedule, TestScheduleDTO>();
+            CreateMap<TestAnswerRequest, AnswerSubmitDTO>();
+            CreateMap<TestQuestion, TestTakingDTO.QuestionDTO>();
+            CreateMap<TestAnswerVariant, TestTakingDTO.AnswerDTO>();
         }
     }
 }

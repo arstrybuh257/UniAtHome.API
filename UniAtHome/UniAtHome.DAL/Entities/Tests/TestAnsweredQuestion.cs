@@ -1,12 +1,12 @@
 ﻿namespace UniAtHome.DAL.Entities.Tests
 {
-    public class TestChosenAnswer
+    public class TestAnsweredQuestion
     {
         public int AttempId { get; set; }
 
         public int QuestionId { get; set; }
 
-        public int AnswerVariantId { get; set; }
+        public bool IsCorrect { get; set; }
 
         public TestAttempt Attempt { get; set; }
 

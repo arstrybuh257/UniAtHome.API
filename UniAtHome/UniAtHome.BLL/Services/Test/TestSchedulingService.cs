@@ -62,6 +62,10 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new BadRequestException("Can't begin test before lesson start!");
             }
+            if (schedule.BeginTime >= schedule.EndTime)
+            {
+                throw new BadRequestException("Test can't end before it begins");
+            }
         }
 
         public async Task EditTestScheduleAsync(TestScheduleEditDTO editDTO)

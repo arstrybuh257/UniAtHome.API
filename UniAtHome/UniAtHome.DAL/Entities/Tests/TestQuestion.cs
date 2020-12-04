@@ -15,5 +15,7 @@ namespace UniAtHome.DAL.Entities.Tests
         public Test Test { get; set; }
 
         public List<TestAnswerVariant> Answers { get; set; }
+
+        public List<TestAnsweredQuestion> AnsweredQuestions { get; set; }
     }
 }
