@@ -18,6 +18,6 @@ namespace UniAtHome.DAL.Interfaces
 
         IEnumerable<Group> GetCourseGroups(int courseId);
 
-        Task<int> GetCourseMemberIdAsync(int courseId, string teacherId);
+        Task<int?> GetCourseMemberIdAsync(int courseId, string teacherId);
     }
 }
