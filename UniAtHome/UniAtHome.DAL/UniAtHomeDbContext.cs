@@ -228,7 +228,8 @@ namespace UniAtHome.DAL
             modelBuilder.Entity<TestAnsweredQuestion>().HasKey(aq => new { aq.AttemptId, aq.QuestionId });
             modelBuilder.Entity<TestAnsweredQuestion>()
                 .HasOne(aq => aq.Attempt)
-                .WithMany(t => t.AnsweredQuestions);
+                .WithMany(t => t.AnsweredQuestions)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<TestAnsweredQuestion>()
                 .HasOne(aq => aq.Question)
                 .WithMany(q => q.AnsweredQuestions);
