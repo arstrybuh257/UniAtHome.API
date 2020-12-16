@@ -4,7 +4,7 @@ namespace UniAtHome.BLL.DTOs.Test
 {
     public class AnswerSubmitDTO
     {
-        public int AttempId { get; set; }
+        public int AttemptId { get; set; }
 
         public string Email { get; set; }
 

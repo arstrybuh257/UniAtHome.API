@@ -135,7 +135,7 @@ namespace UniAtHome.BLL.Services.Test
         public async Task SubmitAnswerAsync(AnswerSubmitDTO submit)
         {
             var student = await students.GetSingleOrDefaultAsync(s => s.User.Email == submit.Email);
-            var attempt = await attempts.GetByIdAsync(submit.AttempId);
+            var attempt = await attempts.GetByIdAsync(submit.AttemptId);
             if (attempt == null)
             {
                 throw new BadRequestException("Not valid attempt!");
@@ -144,7 +144,7 @@ namespace UniAtHome.BLL.Services.Test
             {
                 throw new ForbiddenException("The user either is not a student or is not registered!");
             }
-            if (attempt.UserId == student.UserId)
+            if (attempt.UserId != student.UserId)
             {
                 throw new ForbiddenException("Isn't the attempt of the user!");
             }
@@ -157,7 +157,7 @@ namespace UniAtHome.BLL.Services.Test
             bool isCorrect = await CheckAnswerCorrectnessAsync(submit);
 
             var previousAnswer = await answeredQuestions.GetSingleOrDefaultAsync(
-                aq => aq.AttempId == submit.AttempId && aq.QuestionId == submit.QuestionId);
+                aq => aq.AttemptId == submit.AttemptId && aq.QuestionId == submit.QuestionId);
             if (previousAnswer != null)
             {
                 previousAnswer.IsCorrect = isCorrect;
@@ -167,7 +167,7 @@ namespace UniAtHome.BLL.Services.Test
             {
                 var questionAswer = new TestAnsweredQuestion
                 {
-                    AttempId = submit.AttempId,
+                    AttemptId = submit.AttemptId,
                     QuestionId = submit.QuestionId,
                     IsCorrect = isCorrect
                 };
@@ -214,7 +214,7 @@ namespace UniAtHome.BLL.Services.Test
             }
             if (attempt.EndTime != null)
             {
-                throw new BadRequestException("The test is already finished!");
+                throw new BadRequestException("The test attempt is already finished!");
             }
 
             attempt.EndTime = DateTimeOffset.UtcNow;
@@ -230,7 +230,7 @@ namespace UniAtHome.BLL.Services.Test
             var allQuestions = await questions.Find(q => q.TestId == test.Id);
             float questionsWeightSum = allQuestions.Sum(q => q.Weight);
             var correctAnswersOfUser = await answeredQuestions
-                .Find(aq => aq.AttempId == attempt.Id && aq.IsCorrect);
+                .Find(aq => aq.AttemptId == attempt.Id && aq.IsCorrect);
             var correctAnswersWeight = allQuestions
                 .Where(q => correctAnswersOfUser
                     .Any(ca => ca.QuestionId == q.Id))
