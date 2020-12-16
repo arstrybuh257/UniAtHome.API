@@ -257,7 +257,7 @@ namespace UniAtHome.BLL.Services.Test
             var finishedAttempts = await attempts.Find(
                 a => a.User.Email == email && a.TestId == testId);
             var timedOutAttempts = finishedAttempts.Where(
-                a => a.EndTime != null && a.BeginTime.AddMinutes(test.DurationMinutes) < DateTimeOffset.UtcNow);
+                a => a.EndTime == null && a.BeginTime.AddMinutes(test.DurationMinutes) < DateTimeOffset.UtcNow);
             foreach(var expiredAttempt in timedOutAttempts)
             {
                 await FinishAsync(expiredAttempt.Id, email);
