@@ -32,11 +32,11 @@ namespace UniAtHome.DAL.Repositories
             context.Set<CourseMember>().Remove(binding);
         }
 
-        public async Task<int> GetCourseMemberIdAsync(int courseId, string teacherId)
+        public async Task<int?> GetCourseMemberIdAsync(int courseId, string teacherId)
         {
             var courseMember = await context.Set<CourseMember>()
-                .FirstAsync(cm => cm.CourseId == courseId && cm.TeacherId == teacherId);
-            return courseMember.Id;
+                .FirstOrDefaultAsync(cm => cm.CourseId == courseId && cm.TeacherId == teacherId);
+            return courseMember?.Id;
         }
 
         public IEnumerable<Teacher> GetCourseTeachers(int courseId)

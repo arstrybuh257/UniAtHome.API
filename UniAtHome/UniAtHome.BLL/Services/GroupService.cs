@@ -19,7 +19,7 @@ namespace UniAtHome.BLL.Services
         private readonly ITeacherRepository teacherRepository;
 
         public GroupService(
-            ICourseRepository courseRepository, 
+            ICourseRepository courseRepository,
             IGroupRepository groupRepository,
             IRepository<Student> studentsRepository,
             ITeacherRepository teacherRepository)
@@ -38,13 +38,21 @@ namespace UniAtHome.BLL.Services
                 .FirstOrDefault();
             if (existingGroup != null)
             {
-                throw new BadRequestException("Group already exists!");
+                throw new BadRequestException("Group already exists.");
             }
+
             var teacher = await teacherRepository.GetByEmailAsync(dto.TeacherEmail);
+            int? courseMemberId = await courseRepository.GetCourseMemberIdAsync(
+                dto.CourseId, teacher.UserId);
+            if (courseMemberId == null)
+            {
+                throw new BadRequestException("The teacher doesn't belong to the course.");
+            }
+
             Group group = new Group
             {
                 Name = dto.Name,
-                CourseMemberId = await courseRepository.GetCourseMemberIdAsync(dto.CourseId, teacher.UserId)
+                CourseMemberId = courseMemberId.Value
             };
             await groupRepository.AddAsync(group);
             await groupRepository.SaveChangesAsync();
