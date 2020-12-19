@@ -12,24 +12,35 @@ namespace UniAtHome.WebAPI.Controllers
     [ApiController, Authorize(Roles = RoleName.TEACHER)]
     public class TestCreateController : Controller
     {
-        private ITestCreationService testCreationService;
+        private readonly ITestCreationService testCreationService;
 
-        private ITestQuestionCreationService testQuestionCreationService;
+        private readonly ITestQuestionCreationService testQuestionCreationService;
 
-        private ITestAnswerCreationService testAnswerCreationService;
+        private readonly ITestAnswerCreationService testAnswerCreationService;
 
-        private ITestSchedulingService testSchedulingService;
+        private readonly ITestSchedulingService testSchedulingService;
+
+        private readonly ITestFullInfoService testFullInfoService;
 
         public TestCreateController(
             ITestCreationService testCreationService,
             ITestQuestionCreationService testQuestionCreationService,
             ITestAnswerCreationService testAnswerCreationService,
-            ITestSchedulingService testSchedulingService)
+            ITestSchedulingService testSchedulingService,
+            ITestFullInfoService testFullInfoService)
         {
             this.testCreationService = testCreationService;
             this.testQuestionCreationService = testQuestionCreationService;
             this.testAnswerCreationService = testAnswerCreationService;
             this.testSchedulingService = testSchedulingService;
+            this.testFullInfoService = testFullInfoService;
+        }
+
+        [HttpGet("full")]
+        public async Task<IActionResult> GetTestFullInfo(int id)
+        {
+            var dto = await testFullInfoService.GetTestFullInfoAsync(id);
+            return Json(dto);
         }
 
         [HttpPost("test")]

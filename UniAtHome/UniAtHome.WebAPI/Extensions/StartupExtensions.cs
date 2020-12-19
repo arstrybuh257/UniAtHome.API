@@ -91,6 +91,7 @@ namespace UniAtHome.WebAPI.Extensions
             services.AddScoped<ITestGenerationService, TestGenerationService>();
             services.AddScoped<ITestCreationService, TestCreationService>();
             services.AddScoped<ITestTakingService, TestTakingService>();
+            services.AddScoped<ITestFullInfoService, TestFullInfoService>();
 
             services.AddScoped<ZoomAdminClient>();
             services.AddScoped<IZoomAuthService, ZoomAuthService>();
